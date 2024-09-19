@@ -31,6 +31,10 @@ class JWTAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
+        String path = request.getRequestURI();
+        String method = request.getMethod();
+        log.info("Matching path: {}: {}",method, path);
+
         final String authHeader = request.getHeader("Authorization");
 
         if (authHeader == null || authHeader.isBlank()) {

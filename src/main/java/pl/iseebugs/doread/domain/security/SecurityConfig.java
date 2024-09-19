@@ -41,6 +41,7 @@ class SecurityConfig {
                                 "/index.html",
                                 "/api/allModules",
                                 "/api/auth",
+                                "/api/auth/create",
                                 "/api/auth/create/**",
                                 "/api/auth/confirm",
                                 "/api/auth/signin",
