@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>do read - Landing Page</title>
+    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
+    <style>
+        body {
+            background-color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding-top: 50px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 50px;
+            color: red;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            text-align: left;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        button.register {
+            background-color: #f44336;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>do read</h1>
+
+    <!-- Formularz logowania -->
+    <form th:action="@{/login}" method="post">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Wprowadź email" required>
+
+        <label for="password">Hasło</label>
+        <input type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
+
+        <button type="submit">Zaloguj się</button>
+    </form>
+
+    <!-- Formularz rejestracji -->
+    <form th:action="@{/register}" method="post">
+        <label for="emailRegister">Email</label>
+        <input type="email" id="emailRegister" name="email" placeholder="Wprowadź email" required>
+
+        <label for="passwordRegister">Hasło</label>
+        <input type="password" id="passwordRegister" name="password" placeholder="Wprowadź hasło" required>
+
+        <button type="submit" class="register">Załóż konto</button>
+    </form>
+</div>
+
+</body>
+</html>
