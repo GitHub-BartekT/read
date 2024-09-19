@@ -1,0 +1,48 @@
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB_NAME}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:pass}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: false
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASS}
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
+  config:
+    import: "classpath:email-config.yml"
+
+auth:
+  secret: ${SECRET}
+  expiration-refresh-token-time: 86400000 # 24 hours or 86400 000 milliseconds
+  expiration-access-token-time: 3600000 # 60 minutes or 3600 000 milliseconds
+  expiration-confirmation-token-time: 1440 # 1 day or 1440 minutes
+  expiration-delete-token-time: 1440 # 1 day or 1440 minutes
+
+app:
+  uri: http://localhost
+  port: 8080
