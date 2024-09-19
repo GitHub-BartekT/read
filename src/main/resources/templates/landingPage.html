@@ -107,14 +107,27 @@
             },
             body: JSON.stringify({ email, password })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.statusCode !== 200) {
-                    showError(data.message);
+            .then(response => {
+                if (response.ok) {  // Sprawdź status HTTP (np. 200 OK)
+                    return response.json();  // Jeśli status 200-299, przetwarzaj odpowiedź JSON
                 } else {
-                    showError(data.message);
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Wystąpił błąd podczas logowania.');
+                    });
+                }
+            })            .then(data => {
+                if (data.statusCode !== 200) {
+                    showError(data.body.message);
+                } else {
+                    const accessToken = data.data.accessToken;
+                    const refreshToken = data.data.refreshToken;
+
+                    // Zapis tokenów w localStorage
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('refreshToken', refreshToken);
                     // Zalogowano pomyślnie, przekierowanie lub inne akcje
                     console.log('Zalogowano:', data);
+                    accessDashboard();
                 }
             })
             .catch(error => showError('Wystąpił błąd podczas logowania.'));
@@ -149,6 +162,36 @@
     function showError(message) {
         const errorMessageElement = document.getElementById('errorMessage');
         errorMessageElement.textContent = message;
+    }
+
+    function accessDashboard() {
+        console.log('Wywołanie funkcji accessDashboard')
+        const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+            showError('Brak tokenu autoryzacyjnego. Zaloguj się ponownie.');
+            return;
+        }
+
+        fetch('/api/dashboard', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();  // Zakładamy, że odpowiedź to tekst
+                } else {
+                    throw new Error('Brak dostępu do dashboardu, problem z autoryzacją.');
+                }
+            })
+            .then(data => {
+                console.log('Dostępne dane z dashboardu:', data);
+                // Wyświetlenie danych na stronie
+            })
+            .catch(error => showError(error.message));
     }
 </script>
 

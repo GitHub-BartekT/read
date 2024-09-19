@@ -58,7 +58,8 @@ class SecurityConfig {
                                 "/api/auth/delete/**",
                                 "/api/auth/users/password",
                                 "/api/auth/users/delete-confirm",
-                                "/api/auth/refresh")
+                                "/api/auth/refresh",
+                                "/api/dashboard")
                         .hasAnyAuthority("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
