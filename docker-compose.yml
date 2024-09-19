@@ -11,9 +11,9 @@ services:
       - ./log:/root/log:cached
       - ./latest.dump:/latest.dump
     environment:
-      POSTGRES_DB: auth
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      POSTGRES_DB: read
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
 

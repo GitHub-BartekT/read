@@ -1,0 +1,41 @@
+main{
+    width:100%;
+    margin: 0 auto;
+}
+h1 {
+    color: #a81818;
+    text-align: center;
+    font-size: 50px;
+}
+.button-newSession
+ {
+    color: #a81818;
+    background: white;
+    border-radius: 12px;
+    padding: 28px 100px;
+    width: 400px;
+    font-size: 50px;
+ }
+.button-properties{
+    color: black;
+    background: #afafaf;
+    border-radius: 12px;
+    padding: 14px 100px;
+    width: 400px;
+    font-size: 25px;
+}
+.column {
+    flex-direction: column;
+    width: 412px;
+    display: flex;
+    margin: auto;
+}
+.div{
+    color: white;
+    background: white;
+}
+.text-session{
+    font-size: 125px;
+    color: #a81818;
+}
+

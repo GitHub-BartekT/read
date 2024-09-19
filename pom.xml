@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>pl.iseebugs</groupId>
-	<artifactId>Security</artifactId>
+	<artifactId>read</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Security</name>
+	<name>do read</name>
 	<description>Demo project for Spring Boot security</description>
 	<properties>
 		<java.version>17</java.version>
