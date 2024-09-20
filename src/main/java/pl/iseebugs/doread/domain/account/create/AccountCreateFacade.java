@@ -57,6 +57,7 @@ public class AccountCreateFacade {
         String email = registrationRequest.getEmail();
         String password = securityFacade.passwordEncode(registrationRequest.getPassword());
 
+        createAccountValidator.isValidEmail(email);
         createAccountValidator.validateEmailConflict(email);
 
         AppUserReadModel createdUser = createAppUser(email, password);

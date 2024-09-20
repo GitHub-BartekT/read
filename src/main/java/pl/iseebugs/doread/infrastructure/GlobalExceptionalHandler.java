@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
+import pl.iseebugs.doread.domain.account.create.InvalidEmailTypException;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
@@ -15,7 +16,7 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 class GlobalExceptionalHandler {
 
     @ExceptionHandler(EmailSender.EmailConflictException.class)
-    ResponseEntity<ApiResponse<Void>> handlerEmailConflictException(EmailSender.EmailConflictException e){
+    ResponseEntity<ApiResponse<Void>> handlerEmailConflictException(EmailSender.EmailConflictException e) {
         return ResponseEntity.ok().body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.CONFLICT.value(),
@@ -23,7 +24,7 @@ class GlobalExceptionalHandler {
     }
 
     @ExceptionHandler(InvalidEmailTypeException.class)
-    ResponseEntity<ApiResponse<Void>> handlerInvalidEmailTypeException(InvalidEmailTypeException e){
+    ResponseEntity<ApiResponse<Void>> handlerInvalidEmailTypeException(InvalidEmailTypeException e) {
         return ResponseEntity.ok().body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.INTERNAL_SERVER_ERROR.value(),
@@ -31,7 +32,7 @@ class GlobalExceptionalHandler {
     }
 
     @ExceptionHandler(AppUserNotFoundException.class)
-    ResponseEntity<ApiResponse<Void>> handlerAppUserNotFoundException(AppUserNotFoundException e){
+    ResponseEntity<ApiResponse<Void>> handlerAppUserNotFoundException(AppUserNotFoundException e) {
         return ResponseEntity.ok().body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.NOT_FOUND.value(),
@@ -39,10 +40,19 @@ class GlobalExceptionalHandler {
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
-    ResponseEntity<ApiResponse<Void>> handlerEmailNotFoundException(EmailNotFoundException e){
+    ResponseEntity<ApiResponse<Void>> handlerEmailNotFoundException(EmailNotFoundException e) {
         return ResponseEntity.ok().body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.NOT_FOUND.value(),
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidEmailTypException
+            .class)
+    ResponseEntity<ApiResponse<Void>> handlerInvalidEmailTypException (InvalidEmailTypException e) {
+        return ResponseEntity.ok().body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.BAD_REQUEST.value(),
                         e.getMessage()));
     }
 }
