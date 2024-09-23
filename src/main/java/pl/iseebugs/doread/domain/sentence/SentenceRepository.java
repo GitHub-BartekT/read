@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
-    List<Sentence> findByModuleId(Long moduleId);
+    List<Sentence> findByModuleIdAndUserId(Long userId, Long moduleId);
     Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
 }

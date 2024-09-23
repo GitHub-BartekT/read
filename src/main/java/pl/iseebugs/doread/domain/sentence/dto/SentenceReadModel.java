@@ -10,6 +10,7 @@ import lombok.Getter;
 public class SentenceReadModel {
     private Long id;
     private Long moduleId;
+    private Long userId;
     private Long ordinalNumber;
     private String sentence;
 }

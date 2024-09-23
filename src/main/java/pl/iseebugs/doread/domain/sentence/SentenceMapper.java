@@ -10,6 +10,7 @@ class SentenceMapper {
                 .id(sentence.getId())
                 .ordinalNumber(sentence.getOrdinalNumber())
                 .moduleId(sentence.getModuleId())
+                .userId(sentence.getUserId())
                 .sentence(sentence.getSentence())
                 .build();
     }
@@ -19,6 +20,7 @@ class SentenceMapper {
                 .id(sentence.getId())
                 .ordinalNumber(sentence.getOrdinalNumber())
                 .moduleId(sentence.getModuleId())
+                .userId(sentence.getUserId())
                 .sentence(sentence.getSentence())
                 .build();
     }
@@ -28,6 +30,7 @@ class SentenceMapper {
                 .id(sentence.getId())
                 .ordinalNumber(sentence.getOrdinalNumber())
                 .moduleId(sentence.getModuleId())
+                .userId(sentence.getUserId())
                 .sentence(sentence.getSentence())
                 .build();
     }

@@ -10,7 +10,6 @@ import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -18,8 +17,8 @@ public class SentenceFacade {
 
     SentenceRepository sentenceRepository;
 
-    public List<SentenceReadModel> findAllByModuleId(Long moduleId) {
-        return sentenceRepository.findByModuleId(moduleId).stream()
+    public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
+        return sentenceRepository.findByModuleIdAndUserId(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
     }
@@ -35,21 +34,22 @@ public class SentenceFacade {
     }
 
     @Transactional
-    public SentenceReadModel create(Long moduleId, String sentenceText) {
+    public SentenceReadModel create(Long userId, Long moduleId, String sentenceText) {
         if (sentenceText == null || sentenceText.isEmpty()) {
             throw new IllegalArgumentException("Sentence text must not be null or empty");
         }
         Sentence sentence = Sentence.builder()
                 .moduleId(moduleId)
                 .sentence(sentenceText)
+                .userId(userId)
                 .build();
         Sentence result = sentenceRepository.save(sentence);
         return SentenceMapper.toReadModel(result);
     }
 
     @Transactional
-    public List<SentenceReadModel> replaceSetByModuleId(Long moduleId, List<SentenceWriteModel> inserts) {
-        List<Sentence> existingSentences = sentenceRepository.findByModuleId(moduleId);
+    public List<SentenceReadModel> replaceSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
+        List<Sentence> existingSentences = sentenceRepository.findByModuleIdAndUserId(moduleId, userId);
 
         List<Long> newIds = inserts.stream()
                 .map(SentenceWriteModel::getId)
@@ -78,7 +78,7 @@ public class SentenceFacade {
             sentence.setOrdinalNumber((long) (i + 1));
             sentenceRepository.save(sentence);
         }
-        return findAllByModuleId(moduleId);
+        return findAllByModuleId(userId, moduleId);
     }
 
     @Transactional

@@ -17,6 +17,8 @@ class Sentence {
     private Long id;
     @Column(name = "module_id")
     private Long moduleId;
+    @Column(name = "user_id")
+    private Long userId;
     @Column(name = "ordinal_number")
     private Long ordinalNumber;
     @Column(name = "sentence")
