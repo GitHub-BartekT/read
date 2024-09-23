@@ -105,7 +105,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({email, password})
         })
             .then(response => {
                 if (response.ok) {  // Sprawdź status HTTP (np. 200 OK)
@@ -115,21 +115,20 @@
                         throw new Error(data.message || 'Wystąpił błąd podczas logowania.');
                     });
                 }
-            })            .then(data => {
-                if (data.statusCode !== 200) {
-                    showError(data.body.message);
-                } else {
-                    const accessToken = data.data.accessToken;
-                    const refreshToken = data.data.refreshToken;
+            }).then(data => {
+            if (data.statusCode !== 200) {
+                showError(data.body.message);
+            } else {
+                const accessToken = data.data.accessToken;
+                const refreshToken = data.data.refreshToken;
 
-                    // Zapis tokenów w localStorage
-                    localStorage.setItem('accessToken', accessToken);
-                    localStorage.setItem('refreshToken', refreshToken);
-                    // Zalogowano pomyślnie, przekierowanie lub inne akcje
-                    console.log('Zalogowano:', data);
-                    accessDashboard();
-                }
-            })
+                // Zapis tokenów w localStorage
+                localStorage.setItem('accessToken', accessToken);
+                localStorage.setItem('refreshToken', refreshToken);
+
+                accessDashboard();
+            }
+        })
             .catch(error => showError('Wystąpił błąd podczas logowania.'));
     });
 
@@ -143,7 +142,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({email, password})
         })
             .then(response => response.json())
             .then(data => {
@@ -188,8 +187,7 @@
                 }
             })
             .then(data => {
-                console.log('Dostępne dane z dashboardu:', data);
-                // Wyświetlenie danych na stronie
+                document.body.innerHTML = data;
             })
             .catch(error => showError(error.message));
     }
