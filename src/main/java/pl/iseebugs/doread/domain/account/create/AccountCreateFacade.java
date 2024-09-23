@@ -30,7 +30,7 @@ import static pl.iseebugs.doread.domain.account.AccountHelper.getUUID;
 public class AccountCreateFacade {
 
     private static final String USER_ROLE = "USER";
-    private static final String TOKEN_CONFIRMATION_ENDPOINT = "/api/auth/create/confirm?token=";
+    private static final String TOKEN_CONFIRMATION_ENDPOINT = "/api/auth/confirm?token=";
     private static final int TOKEN_CREATED_STATUS = 201;
     private static final int TOKEN_EXISTS_STATUS = 204;
     private static final int ACCOUNT_ALREADY_CONFIRMED_STATUS = 401;
