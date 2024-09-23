@@ -22,4 +22,13 @@ class SentenceMapper {
                 .sentence(sentence.getSentence())
                 .build();
     }
+
+    public static Sentence toEntity(SentenceReadModel sentence){
+        return Sentence.builder()
+                .id(sentence.getId())
+                .ordinalNumber(sentence.getOrdinalNumber())
+                .moduleId(sentence.getModuleId())
+                .sentence(sentence.getSentence())
+                .build();
+    }
 }
