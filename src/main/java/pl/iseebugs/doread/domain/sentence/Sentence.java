@@ -11,9 +11,17 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 class Sentence {
+
+    @SequenceGenerator(
+            name = "sentences_sequence",
+            sequenceName = "sentences_sequence",
+            allocationSize = 1
+    )
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "sentences_sequence"
+    )
     private Long id;
     @Column(name = "module_id")
     private Long moduleId;
