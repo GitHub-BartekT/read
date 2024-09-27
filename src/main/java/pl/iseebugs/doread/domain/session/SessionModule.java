@@ -10,7 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sessions_modules", uniqueConstraints = {@UniqueConstraint(columnNames = {"sessions_id", "module_id"})})
-public class SessionModule {
+class SessionModule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessions_modules_sequence")

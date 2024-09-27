@@ -11,7 +11,7 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
 @AllArgsConstructor
 @Controller
-public class AccountConfirmMVCController {
+class AccountConfirmMVCController {
 
     AccountCreateFacade accountCreateFacade;
 

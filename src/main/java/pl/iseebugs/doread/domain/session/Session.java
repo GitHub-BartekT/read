@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "sessions")
-public class Session {
+class Session {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessions_sequence")
@@ -23,7 +23,7 @@ public class Session {
     private Long userId;
 
     @Column(name = "group_name", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'new group session'")
-    private String groupName;
+    private String name;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "ordinal_type", nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'QUEUE'")

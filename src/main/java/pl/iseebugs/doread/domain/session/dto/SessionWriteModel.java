@@ -9,11 +9,11 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SessionDto {
+public class SessionWriteModel {
     private Long id;
     private Long userId;
-    private String groupName;
+    private String name;
     private OrdinalType ordinalType;
     private String ordinalSchema;
-    private List<SessionModuleDto> sessionModules;  // Lista DTO dla module
+    private List<SessionModuleDto> sessionModules;
 }

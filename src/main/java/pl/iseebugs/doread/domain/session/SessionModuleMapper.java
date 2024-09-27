@@ -1,9 +1,8 @@
 package pl.iseebugs.doread.domain.session;
 
-import pl.iseebugs.doread.domain.session.SessionModule;
 import pl.iseebugs.doread.domain.session.dto.SessionModuleDto;
 
-public class SessionModuleMapper {
+class SessionModuleMapper {
 
     public static SessionModuleDto toDto(SessionModule sessionModule) {
         return SessionModuleDto.builder()
