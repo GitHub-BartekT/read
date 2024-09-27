@@ -31,7 +31,7 @@ class SessionMapper {
         Session session = Session.builder()
                 .id(sessionWriteModel.getId())
                 .userId(sessionWriteModel.getUserId())
-                .groupName(sessionWriteModel.getName())
+                .name(sessionWriteModel.getName())
                 .ordinalType(sessionWriteModel.getOrdinalType())
                 .ordinalSchema(sessionWriteModel.getOrdinalSchema())
                 .build();

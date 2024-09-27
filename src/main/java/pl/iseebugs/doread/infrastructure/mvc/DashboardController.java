@@ -38,7 +38,7 @@ class DashboardController {
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
 
         var sessions = sessionFacade.findAllSessionsByUserId(user.id());
-       // model.addAttribute("sessions", sessions);
+        model.addAttribute("sessions", sessions);
         return "dashboard";
     }
 }
