@@ -34,7 +34,7 @@ public class SecurityFacade {
         return passwordEncoder.encode(rawPassword);
     }
 
-    public String extractUsername(String token) {
+    public String extractEmail(String token) {
         return jwtUtils.extractUsername(token);
     }
 
