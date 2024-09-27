@@ -20,7 +20,7 @@ import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
-public class AccountLifecycleController {
+class AccountLifecycleController {
 
     LifecycleAccountFacade lifecycleAccountFacade;
 

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Controller
 @RequestMapping("/api")
-public class DashboardController {
+class DashboardController {
 
     @GetMapping("/dashboard")
     public String getDashboard() {
