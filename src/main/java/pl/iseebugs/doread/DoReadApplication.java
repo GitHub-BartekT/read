@@ -6,9 +6,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import pl.iseebugs.doread.domain.account.AppProperties;
 import pl.iseebugs.doread.domain.email.EmailProperties;
 import pl.iseebugs.doread.domain.security.AuthorizationProperties;
+import pl.iseebugs.doread.domain.sentence.SentencesProperties;
 
 @SpringBootApplication
-@EnableConfigurationProperties({EmailProperties.class, AuthorizationProperties.class, AppProperties.class})
+@EnableConfigurationProperties({EmailProperties.class, AuthorizationProperties.class, AppProperties.class, SentencesProperties.class})
 public class DoReadApplication {
 
 	public static void main(String[] args) {

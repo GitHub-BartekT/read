@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 @Service
 public class ModuleFacade {
 
-    AppUserFacade appUserFacade;
+    private final AppUserFacade appUserFacade;
     private final ModuleRepository moduleRepository;
 
 
-    public ModuleReadModel createModule (Long userId, ModuleWriteModel toCreate) throws AppUserNotFoundException {
-        if (toCreate.getModuleName() == null || toCreate.getModuleName().isEmpty()) {
-            toCreate.setModuleName("New module");
+    public ModuleReadModel createModule (Long userId, String moduleName) throws AppUserNotFoundException {
+        if (moduleName == null || moduleName.isEmpty()) {
+            moduleName = "New module";
         }
 
         if(userId < 1){
@@ -32,10 +32,11 @@ public class ModuleFacade {
         AppUserReadModel user = appUserFacade.findUserById(userId);
 
         Module toSave = Module.builder()
-                .moduleName(toCreate.getModuleName())
+                .moduleName(moduleName)
                 .userId(user.id())
                 .sessionsPerDay(3)
                 .presentationsPerSession(5)
+                .newSentencesPerDay(1)
                 .actualDay(1)
                 .nextSession(1)
                 .isPrivate(true)
