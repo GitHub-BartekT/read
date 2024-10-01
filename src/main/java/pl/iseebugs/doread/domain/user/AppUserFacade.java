@@ -1,21 +1,23 @@
 package pl.iseebugs.doread.domain.user;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
+import pl.iseebugs.doread.domain.module.ModuleFacade;
+import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
+import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
 @Service
+@AllArgsConstructor
 public class AppUserFacade {
 
     private final AppUserRepository appUserRepository;
-
-    @Autowired
-    public AppUserFacade(AppUserRepository appUserRepository) {
-        this.appUserRepository = appUserRepository;
-    }
+    private final SentenceFacade sentenceFacade;
+    private final ModuleFacade moduleFacade;
 
     public boolean existsByEmail(String email) {
         return appUserRepository.existsByEmail(email);
@@ -97,7 +99,15 @@ public class AppUserFacade {
         }
         AppUser toCreate = AppUserMapper.toAppUser(appUser);
         AppUser created = appUserRepository.save(toCreate);
+
+        creatingPredefineModule(created.getId());
+
         return AppUserMapper.toAppUserReadModel(created);
+    }
+
+    private void creatingPredefineModule(final Long userId) throws AppUserNotFoundException {
+        ModuleReadModel module = moduleFacade.createModule(userId, "Język polski");
+        sentenceFacade.createSentencesFromProperties(userId, module.getId());
     }
 
 }

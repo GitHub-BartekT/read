@@ -46,10 +46,6 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
-    public void createPredefineModule(Long userId){
-
-    }
-
     public List<ModuleReadModel> findAllByUserId(Long userId) {
         return moduleRepository.findAllByUserId(userId)
                 .stream()

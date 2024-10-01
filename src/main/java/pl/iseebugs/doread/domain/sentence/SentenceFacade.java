@@ -55,11 +55,11 @@ public class SentenceFacade {
      *
      * @param userId    ID użytkownika
      * @param moduleId  ID modułu
-     * @param sentences Lista zdań do utworzenia
      * @return Lista utworzonych zdań w postaci SentenceReadModel
      */
     @Transactional
-    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId, List<String> sentences) {
+    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId) {
+        List<String> sentences = sentencesProperties.polish();
         if (sentences == null || sentences.isEmpty()) {
             throw new IllegalArgumentException("Lista zdań nie może być pusta.");
         }
