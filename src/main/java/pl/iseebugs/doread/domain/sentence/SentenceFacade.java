@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.domain.sentence;
 
 import lombok.AllArgsConstructor;
+import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -10,12 +11,14 @@ import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
 public class SentenceFacade {
 
     SentenceRepository sentenceRepository;
+    SentencesProperties sentencesProperties;
 
     public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
         return sentenceRepository.findByModuleIdAndUserId(userId, moduleId).stream()
@@ -45,6 +48,39 @@ public class SentenceFacade {
                 .build();
         Sentence result = sentenceRepository.save(sentence);
         return SentenceMapper.toReadModel(result);
+    }
+
+    /**
+     * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
+     *
+     * @param userId    ID użytkownika
+     * @param moduleId  ID modułu
+     * @param sentences Lista zdań do utworzenia
+     * @return Lista utworzonych zdań w postaci SentenceReadModel
+     */
+    @Transactional
+    public List<SentenceReadModel> createMultipleSentences(Long userId, Long moduleId, List<String> sentences) {
+        if (sentences == null || sentences.isEmpty()) {
+            throw new IllegalArgumentException("Lista zdań nie może być pusta.");
+        }
+
+        // Używamy IntStream do nadawania kolejnych ordinalNumber
+        List<Sentence> sentenceEntities = IntStream.range(0, sentences.size())
+                .mapToObj(i -> Sentence.builder()
+                        .moduleId(moduleId)
+                        .userId(userId)
+                        .ordinalNumber((long) (i + 1))  // ordinalNumber zaczyna się od 1
+                        .sentence(sentences.get(i))
+                        .build())
+                .toList();
+
+        // Zapisujemy wszystkie zdania w bazie danych
+        List<Sentence> savedSentences = sentenceRepository.saveAll(sentenceEntities);
+
+        // Zwracamy utworzone zdania w postaci SentenceReadModel
+        return savedSentences.stream()
+                .map(SentenceMapper::toReadModel)
+                .toList();
     }
 
     @Transactional
