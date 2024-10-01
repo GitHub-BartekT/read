@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class ModuleFacade {
 
-    AppUserFacade appUserFacade;
+    private final AppUserFacade appUserFacade;
     private final ModuleRepository moduleRepository;
 
 
@@ -36,6 +36,7 @@ public class ModuleFacade {
                 .userId(user.id())
                 .sessionsPerDay(3)
                 .presentationsPerSession(5)
+                .newSentencesPerDay(1)
                 .actualDay(1)
                 .nextSession(1)
                 .isPrivate(true)

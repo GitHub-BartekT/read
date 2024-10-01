@@ -27,16 +27,13 @@ spring:
     port: ${MAIL_PORT}
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASS}
-
     properties:
       mail:
         smtp:
           auth: true
           starttls:
-            enable: true
-          connectiontimeout: 5000
-          timeout: 3000
-          writetimeout: 5000
+            enable: false
+
   config:
     import: "classpath:email-config.yml"
 auth:
