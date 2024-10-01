@@ -51,7 +51,21 @@ app:
   port: 8080
 
 sentences:
-  - zdanie_1
-  - zdanie_2
-  - zdanie_3
-  - zdanie_4
+  polish:
+    - polish
+    - mama
+    - tata
+    - brat
+    - siostra
+    - babcia
+    - dziadek
+    - buła
+    - banan
+    - chleb
+    - marchewka
+    - dynia
+    - mus
+    - zupa
+    - woda
+    - mleko
+
