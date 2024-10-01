@@ -59,25 +59,22 @@ public class SentenceFacade {
      * @return Lista utworzonych zdań w postaci SentenceReadModel
      */
     @Transactional
-    public List<SentenceReadModel> createMultipleSentences(Long userId, Long moduleId, List<String> sentences) {
+    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId, List<String> sentences) {
         if (sentences == null || sentences.isEmpty()) {
             throw new IllegalArgumentException("Lista zdań nie może być pusta.");
         }
 
-        // Używamy IntStream do nadawania kolejnych ordinalNumber
         List<Sentence> sentenceEntities = IntStream.range(0, sentences.size())
                 .mapToObj(i -> Sentence.builder()
                         .moduleId(moduleId)
                         .userId(userId)
-                        .ordinalNumber((long) (i + 1))  // ordinalNumber zaczyna się od 1
+                        .ordinalNumber((long) (i + 1)) 
                         .sentence(sentences.get(i))
                         .build())
                 .toList();
 
-        // Zapisujemy wszystkie zdania w bazie danych
         List<Sentence> savedSentences = sentenceRepository.saveAll(sentenceEntities);
 
-        // Zwracamy utworzone zdania w postaci SentenceReadModel
         return savedSentences.stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
