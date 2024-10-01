@@ -65,7 +65,7 @@ public class AccountHelper {
     }
 
     public AppUserReadModel getAppUserReadModelFromToken(final String accessToken) throws EmailNotFoundException {
-        String userEmail = securityFacade.extractUsername(accessToken);
+        String userEmail = securityFacade.extractEmail(accessToken);
         return appUserFacade.findByEmail(userEmail);
     }
 }

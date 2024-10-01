@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.domain.user.dto;
 
 import lombok.Builder;
+import lombok.Getter;
 
 @Builder
 public record AppUserReadModel(
