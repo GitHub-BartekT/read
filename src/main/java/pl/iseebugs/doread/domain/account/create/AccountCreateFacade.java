@@ -9,6 +9,7 @@ import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
+import pl.iseebugs.doread.domain.account.predefinedmodule.PredefinedModuleFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
@@ -40,20 +41,23 @@ public class AccountCreateFacade {
     ConfirmationTokenService confirmationTokenService;
     AccountHelper accountHelper;
     CreateAccountValidator createAccountValidator;
+    PredefinedModuleFacade predefinedModuleFacade;
 
     AccountCreateFacade(SecurityFacade securityFacade,
                         AppUserFacade appUserFacade,
                         ConfirmationTokenService confirmationTokenService,
                         AccountHelper accountHelper,
-                        CreateAccountValidator createAccountValidator) {
+                        CreateAccountValidator createAccountValidator,
+                        PredefinedModuleFacade predefinedModuleFacade) {
         this.securityFacade = securityFacade;
         this.appUserFacade = appUserFacade;
         this.confirmationTokenService = confirmationTokenService;
         this.accountHelper = accountHelper;
         this.createAccountValidator = createAccountValidator;
+        this.predefinedModuleFacade = predefinedModuleFacade;
     }
 
-    public ApiResponse<LoginTokenDto> signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException {
+    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException {
         String email = registrationRequest.getEmail();
         String password = securityFacade.passwordEncode(registrationRequest.getPassword());
 
@@ -62,6 +66,7 @@ public class AccountCreateFacade {
 
         AppUserReadModel createdUser = createAppUser(email, password);
         String token = confirmationTokenService.createNewConfirmationToken(createdUser.id());
+        predefinedModuleFacade.creatingPredefinedModule(createdUser.id());
 
         sendConfirmationEmail(email, token);
 

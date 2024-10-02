@@ -20,15 +20,15 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            width: 90%; /* Kontener zajmuje 90% szerokości strony */
-            max-width: 1200px; /* Maksymalna szerokość kontenera */
-            gap: 20px; /* Odstęp między kolumnami */
+            width: 90%;
+            max-width: 1200px;
+            gap: 20px;
             position: relative;
             top: -50px;
         }
 
         .column {
-            flex: 1; /* Obie kolumny zajmują tyle samo miejsca */
+            flex: 1;
             background-color: white;
             padding: 20px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -37,12 +37,12 @@
         }
 
         .left-column {
-            flex: 2; /* Lewa kolumna jest większa */
-            align-self: flex-start; /* Lewa kolumna zaczyna się wyżej */
+            flex: 2;
+            align-self: flex-start;
         }
 
         .right-column {
-            align-self: flex-end; /* Prawa kolumna zostaje wyrównana do dołu */
+            align-self: flex-end;
         }
 
         h1 {
@@ -54,13 +54,13 @@
         .button {
             display: block;
             width: 100%;
-            padding: 30px 20px; /* Zwiększamy wysokość przycisku */
+            padding: 30px 20px;
             margin: 10px 0;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 25px;
-            font-size: 24px; /* Większa czcionka */
+            font-size: 24px;
             cursor: pointer;
             text-align: center;
             transition: background-color 0.3s ease;
@@ -72,7 +72,7 @@
 
         .yellow-button {
             background-color: #ffcc00;
-            color: #1a237e; /* Granatowy tekst */
+            color: #1a237e;
         }
 
         .yellow-button:hover {
@@ -102,20 +102,20 @@
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
-                gap: 10px; /* Mniejszy odstęp między kolumnami na małych ekranach */
+                gap: 10px;
             }
 
             .column {
-                width: 100%; /* Kolumny zajmują całą szerokość na mniejszych ekranach */
+                width: 100%;
             }
 
             h1 {
-                font-size: 30px; /* Mniejszy rozmiar tekstu na mniejszych ekranach */
+                font-size: 30px;
             }
 
             .button {
-                font-size: 18px; /* Mniejszy rozmiar przycisków na mniejszych ekranach */
-                padding: 20px 15px; /* Mniejsze przyciski na małych ekranach */
+                font-size: 18px;
+                padding: 20px 15px;
             }
 
             .blue-button {
@@ -131,13 +131,13 @@
     <div class="column left-column">
         <h1>Rozpocznij sesję</h1>
 
-        <div th:if="${sessions.size() > 0}">
-            <div th:each="session : ${sessions}">
-                <button class="button" th:text="${session.name}"></button>
+        <div th:if="${userSessions.size() > 0}">
+            <div th:each="userSession : ${userSessions}">
+                <button class="button" th:text="${userSession.name}"></button>
             </div>
         </div>
 
-        <div th:if="${sessions.size() == 0}">
+        <div th:if="${userSessions.size() == 0}">
             <button class="button yellow-button">Stwórz nowy moduł</button>
         </div>
     </div>

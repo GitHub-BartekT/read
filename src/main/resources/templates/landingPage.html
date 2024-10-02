@@ -181,7 +181,7 @@
         })
             .then(response => {
                 if (response.ok) {
-                    return response.text();  // Zakładamy, że odpowiedź to tekst
+                    return response.text();
                 } else {
                     throw new Error('Brak dostępu do dashboardu, problem z autoryzacją.');
                 }
