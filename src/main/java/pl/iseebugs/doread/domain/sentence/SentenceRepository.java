@@ -11,4 +11,10 @@ import java.util.List;
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
     List<Sentence> findByModuleIdAndUserId(Long userId, Long moduleId);
     Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
+    List<Sentence> findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
+            Long userId,
+            Long moduleId,
+            Long startOrdinalNumber,
+            Long endOrdinalNumber
+    );
 }

@@ -6,6 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.iseebugs.doread.domain.module.ModuleFacade;
+import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
+import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
@@ -26,11 +29,21 @@ public class SentenceFacade {
                 .toList();
     }
 
+    public List<SentenceReadModel> findAllByModuleIdAndBetween(Long userId, Long moduleId, Long startOrdinalNumber, Long endOrdinalNumber) {
+        return sentenceRepository.findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
+                        userId,
+                        moduleId,
+                        startOrdinalNumber,
+                        endOrdinalNumber).stream()
+                .map(SentenceMapper::toReadModel)
+                .toList();
+    }
+
     public SentenceReadModel findById(Long id) {
         return sentenceRepository.findById(id).map(SentenceMapper::toReadModel)
                 .orElseThrow(() -> new IllegalArgumentException("Sentence with id " + id + " not found"));
     }
-    
+
     public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
         return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
                 .map(SentenceMapper::toReadModel);
@@ -53,8 +66,8 @@ public class SentenceFacade {
     /**
      * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
      *
-     * @param userId    ID użytkownika
-     * @param moduleId  ID modułu
+     * @param userId   ID użytkownika
+     * @param moduleId ID modułu
      * @return Lista utworzonych zdań w postaci SentenceReadModel
      */
     @Transactional
@@ -68,7 +81,7 @@ public class SentenceFacade {
                 .mapToObj(i -> Sentence.builder()
                         .moduleId(moduleId)
                         .userId(userId)
-                        .ordinalNumber((long) (i + 1)) 
+                        .ordinalNumber((long) (i + 1))
                         .sentence(sentences.get(i))
                         .build())
                 .toList();
