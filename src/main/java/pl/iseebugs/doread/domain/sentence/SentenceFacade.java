@@ -1,14 +1,10 @@
 package pl.iseebugs.doread.domain.sentence;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.iseebugs.doread.domain.module.ModuleFacade;
-import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
-import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
@@ -94,7 +90,7 @@ public class SentenceFacade {
     }
 
     @Transactional
-    public List<SentenceReadModel> replaceSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
+    public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
         List<Sentence> existingSentences = sentenceRepository.findByModuleIdAndUserId(moduleId, userId);
 
         List<Long> newIds = inserts.stream()
