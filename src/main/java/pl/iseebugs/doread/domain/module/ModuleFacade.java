@@ -61,9 +61,9 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public Optional<ModuleReadModel> findByIdAndUserId(Long id, Long userId) {
+    public ModuleReadModel findByIdAndUserId(Long id, Long userId) throws ModuleNotFoundException {
         return moduleRepository.findByIdAndUserId(id, userId)
-                .map(ModuleMapper::toReadModel);
+                .map(ModuleMapper::toReadModel).orElseThrow(ModuleNotFoundException::new);
     }
 
     public void deleteByIdAndUserId(Long id, Long userId) {
