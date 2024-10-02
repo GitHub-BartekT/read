@@ -11,7 +11,9 @@ import pl.iseebugs.doread.domain.account.create.RegistrationTokenConflictExcepti
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
+import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.security.projection.LoginTokenDto;
+import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
 @AllArgsConstructor
@@ -22,7 +24,7 @@ class AccountCreateController {
     AccountCreateFacade accountCreateFacade;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<LoginTokenDto>> signUp(@RequestBody LoginRequest signUpRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException {
+    public ResponseEntity<ApiResponse<LoginTokenDto>> signUp(@RequestBody LoginRequest signUpRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException {
         return ResponseEntity.ok(accountCreateFacade.signUp(signUpRequest));
     }
 

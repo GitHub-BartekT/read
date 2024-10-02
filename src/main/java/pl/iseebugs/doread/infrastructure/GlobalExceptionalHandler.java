@@ -10,6 +10,7 @@ import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.create.InvalidEmailTypException;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
+import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
 @ControllerAdvice
@@ -53,6 +54,14 @@ class GlobalExceptionalHandler {
         return ResponseEntity.ok().body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage()));
+    }
+
+    @ExceptionHandler(SessionNotFoundException.class)
+    ResponseEntity<ApiResponse<Void>> handlerSessionNotFoundException(SessionNotFoundException e) {
+        return ResponseEntity.ok().body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.NOT_FOUND.value(),
                         e.getMessage()));
     }
 }

@@ -9,11 +9,13 @@ import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
-import pl.iseebugs.doread.domain.account.predefinedmodule.PredefinedModuleFacade;
+import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
+import pl.iseebugs.doread.domain.predefinedmodule.PredefinedModuleFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.security.projection.LoginTokenDto;
+import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -57,7 +59,7 @@ public class AccountCreateFacade {
         this.predefinedModuleFacade = predefinedModuleFacade;
     }
 
-    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException {
+    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException {
         String email = registrationRequest.getEmail();
         String password = securityFacade.passwordEncode(registrationRequest.getPassword());
 
