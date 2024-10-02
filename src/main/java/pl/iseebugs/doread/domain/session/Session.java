@@ -3,6 +3,7 @@ package pl.iseebugs.doread.domain.session;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -33,6 +34,7 @@ class Session {
     private String ordinalSchema;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "sessions_id")
     @OrderBy("ordinalPosition ASC")
-    private List<SessionModule> sessionModules;
+    private List<SessionModule> sessionModules = new ArrayList<>();;
 }
