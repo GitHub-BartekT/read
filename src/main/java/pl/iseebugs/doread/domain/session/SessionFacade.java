@@ -89,8 +89,8 @@ public class SessionFacade {
 
         for (SessionModule sessionModule : modules) {
             ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, sessionModule.getModuleId());
-            long firstSentence = module.getActualDay() - 1L;
-            long lastSentence = module.getPresentationsPerSession() + firstSentence;
+            long firstSentence = module.getActualDay();
+            long lastSentence = module.getPresentationsPerSession() + firstSentence -1L;
             List<SentenceReadModel> sentences = sentenceFacade.findAllByModuleIdAndBetween(
                     userId,
                     module.getId(),
