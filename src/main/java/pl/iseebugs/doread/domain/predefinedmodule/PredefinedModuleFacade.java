@@ -1,4 +1,4 @@
-package pl.iseebugs.doread.domain.account.predefinedmodule;
+package pl.iseebugs.doread.domain.predefinedmodule;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

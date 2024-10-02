@@ -9,7 +9,7 @@ import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
-import pl.iseebugs.doread.domain.account.predefinedmodule.PredefinedModuleFacade;
+import pl.iseebugs.doread.domain.predefinedmodule.PredefinedModuleFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
