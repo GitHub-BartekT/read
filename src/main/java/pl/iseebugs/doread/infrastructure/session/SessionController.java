@@ -35,7 +35,7 @@ class SessionController {
     AppUserFacade appUserFacade;
 
     @GetMapping("/next-session")
-    public ResponseEntity<ApiResponse<List<String>>> signUp(@RequestHeader("Authorization") String authHeader, @RequestParam Long sessionId) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, EmailNotFoundException {
+    public ResponseEntity<ApiResponse<List<String>>> nextSession(@RequestHeader("Authorization") String authHeader, @RequestParam Long sessionId) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, EmailNotFoundException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -44,6 +44,18 @@ class SessionController {
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
         List<String> data = sessionFacade.getNextSession(user.id(), sessionId);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Lista słów.", data));
+    }
+
+    @PatchMapping("/end-session")
+    public ResponseEntity<ApiResponse<List<String>>> endSession(@RequestHeader("Authorization") String authHeader, @RequestParam Long sessionId) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, EmailNotFoundException {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String accessToken = authHeader.substring(7);
+        String userEmail = securityFacade.extractEmail(accessToken);
+        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
+        sessionFacade.endSession(user.id(), sessionId);
+        return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(200, "End session."));
     }
 }
 

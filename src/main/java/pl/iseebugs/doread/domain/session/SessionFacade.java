@@ -114,6 +114,21 @@ public class SessionFacade {
         return nextSessionSentences;
     }
 
+    public void endSession(Long userId, Long sessionId) throws AppUserNotFoundException, SessionNotFoundException, ModuleNotFoundException {
+        AppUserReadModel user = appUserFacade.findUserById(userId);
+
+        Session userSession = sessionRepository.findByIdAndUserId(sessionId, userId)
+                .orElseThrow(SessionNotFoundException::new);
+
+        List<SessionModule> modules = userSession.getSessionModules();
+
+        for (SessionModule sessionModule : modules) {
+            ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, sessionModule.getModuleId());
+            moduleFacade.setNextSession(userId, module.getId());
+        }
+    }
+
+
     public void deleteSession(Long userId, Long sessionId) {
         sessionRepository.deleteByUserIdAndId(userId, sessionId);
     }

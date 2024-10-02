@@ -56,7 +56,7 @@ class GlobalExceptionalHandler {
                         HttpStatus.BAD_REQUEST.value(),
                         e.getMessage()));
     }
-    
+
     @ExceptionHandler(SessionNotFoundException.class)
     ResponseEntity<ApiResponse<Void>> handlerSessionNotFoundException(SessionNotFoundException e) {
         return ResponseEntity.ok().body(
