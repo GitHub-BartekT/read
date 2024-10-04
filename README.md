@@ -14,26 +14,6 @@ Most of the children watch cartoons. Program is compatible with the learning met
 ![landing-page.png](documentation%2Freadme%2Flanding-page.png)
 ### Session page
 ![session.png](documentation%2Freadme%2Fsession.png)
-## Technologies
-1.  Backend
-  - Environment - Intellij IDEA
-    - Java 17
-    - Maven
-    - Spring Boot
-  - Databases
-    - Postegre SQL
-    - Hibernate
-    - FlyWay
-  - Security
-    - Email login confirmation
-    - JWT - access and refresh
-    - more information ->  [my security git-hub repo](https://github.com/GitHub-BartekT/SpringBoot_Security_Module)
-4.  Frontend
-  - HTML
-  - CSS
-  - JavaScript
-5.  Version Control
-  - Git / GitHub
 ## What Has Been Accomplished💡
 Basic functionality in Java with Spring Boot and Security.
 ### Architecture ✅
@@ -41,7 +21,27 @@ Clean, modular hexagonal architecture. Uses my existing security repository. RES
 ### Database✅
 Database setup using PostegreSQL with migrations managed by Flyway. Entity Relationship Diagram (ERD) designed and available for reference.
 #### Entity Relationship Diagram
-![ERD](documentation%2Freadme%2Fschema.png)
+![schema.png](documentation%2Freadme%2Fschema.png)
+### Technologies
+1.  Backend
+- Environment - Intellij IDEA
+    - Java 17
+    - Maven
+    - Spring Boot
+- Databases
+    - Postegre SQL
+    - Hibernate
+    - FlyWay
+- Security
+    - Email login confirmation
+    - JWT - access and refresh
+    - more information ->  [my security git-hub repo](https://github.com/GitHub-BartekT/SpringBoot_Security_Module)
+4.  Frontend
+- HTML
+- CSS
+- JavaScript
+5.  Version Control
+- Git / GitHub
 ### Version 1.0 - SNAPSHOT
 1. Basic functionality - ✅
   1. running session
