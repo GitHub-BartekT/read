@@ -18,7 +18,7 @@ class SessionModule {
     private Long id;
 
     @Column(name = "sessions_id", nullable = false)
-    private Long sessionId;  // Relacja do encji Session
+    private Long sessionId;
 
     @Column(name = "module_id", nullable = false)
     private Long moduleId;
