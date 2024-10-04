@@ -35,7 +35,9 @@ class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
+                                "/dashboard.html",
+                                "/session.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -59,7 +61,10 @@ class SecurityConfig {
                                 "/api/auth/users/password",
                                 "/api/auth/users/delete-confirm",
                                 "/api/auth/refresh",
-                                "/api/dashboard")
+                                "/api/dashboard",
+                                "/api/session",
+                                "/dashboard"
+                                )
                         .hasAnyAuthority("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
