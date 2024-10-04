@@ -4,73 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>do read - Landing Page</title>
-    <link rel="stylesheet" th:href="@{/css/stylesheet.css}">
-    <style>
-        body {
-            background-color: white;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            padding-top: 50px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 50px;
-            color: red;
-            margin-bottom: 30px;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 16px;
-            text-align: left;
-        }
-
-        input {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        button.login {
-            background-color: #4CAF50;
-        }
-
-        button.register {
-            background-color: #007bff;
-        }
-
-        button:hover {
-            opacity: 0.9;
-        }
-
-        .error-message {
-            color: red;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/landing-page.css}">
 </head>
 <body>
 
@@ -125,7 +59,6 @@
                 // Zapis tokenów w localStorage
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
-
                 accessDashboard();
             }
         })
@@ -187,7 +120,10 @@
                 }
             })
             .then(data => {
-                document.body.innerHTML = data;
+                window.location.href = '/dashboard.html';
+
+        /*        document.body.innerHTML = data;  // Zastąp treść strony danymi z dashboardu
+                window.history.pushState({}, '', '/dashboard.html');  // Zaktualizuj adres URL*/
             })
             .catch(error => showError(error.message));
     }

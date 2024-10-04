@@ -3,126 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            width: 90%;
-            max-width: 1200px;
-            gap: 20px;
-            position: relative;
-            top: -50px;
-        }
-
-        .column {
-            flex: 1;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .left-column {
-            flex: 2;
-            align-self: flex-start;
-        }
-
-        .right-column {
-            align-self: flex-end;
-        }
-
-        h1 {
-            font-size: 40px;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .button {
-            display: block;
-            width: 100%;
-            padding: 30px 20px;
-            margin: 10px 0;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 24px;
-            cursor: pointer;
-            text-align: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .button:hover {
-            background-color: #45a049;
-        }
-
-        .yellow-button {
-            background-color: #ffcc00;
-            color: #1a237e;
-        }
-
-        .yellow-button:hover {
-            background-color: #e6b800;
-        }
-
-        .blue-button {
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 25px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .blue-button:hover {
-            background-color: #0056b3;
-        }
-
-        .right-column .blue-button {
-            margin: 10px 0;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .column {
-                width: 100%;
-            }
-
-            h1 {
-                font-size: 30px;
-            }
-
-            .button {
-                font-size: 18px;
-                padding: 20px 15px;
-            }
-
-            .blue-button {
-                font-size: 18px;
-            }
-        }
-    </style>
+    <title>do read - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+<!--
+    <script type="text/javascript" th:src="@{/js/hello.js}"></script>
+-->
 </head>
 <body>
 
@@ -133,7 +18,9 @@
 
         <div th:if="${userSessions.size() > 0}">
             <div th:each="userSession : ${userSessions}">
-                <button class="button" th:text="${userSession.name}"></button>
+                <button  class="button" th:text="${userSession.name}"
+                        th:id="'session-' + ${userSession.id}">alert
+                </button>
             </div>
         </div>
 
@@ -147,8 +34,133 @@
         <button class="blue-button">Ustawienia</button>
         <button class="blue-button">Moduły</button>
         <button class="blue-button">Sesje</button>
+        <button type="button" onclick="greeting()">Click Me!!</button>
     </div>
 </div>
+<script type="text/javascript" th:src="@{/js/hello.js}"></script>
 
+<script>
+    showAlert();
+    const moduleButtons = document.getElementById('buttons');
+    const moduleButtonsPressed = e => {
+        const isButton = e.target.nodeName === 'BUTTON';
+
+        if (!isButton) {
+            console.info("no click");
+            return
+        }
+        document.getElementById('aha').innerText = "adsfa";
+        console.info("click");
+        showAlert();
+    };
+    moduleButtons.addEventListener("click", moduleButtonsPressed);
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Skrypt został wczytany poprawnie');
+
+        // Dodaj obsługę zdarzeń do wszystkich przycisków z sesjami
+        const sessionButtons = document.querySelectorAll('.button');
+        sessionButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                showAlert();
+            });
+        });
+
+        function showAlert() {
+            alert("The button was clicked!");
+        }
+    });
+  accessDashboard();
+
+    function accessDashboard() {
+        console.log('Wywołanie funkcji accessDashboard')
+        const token = localStorage.getItem('accessToken');
+
+        if (!token) {
+            showError('Brak tokenu autoryzacyjnego. Zaloguj się ponownie.');
+            return;
+        }
+
+        fetch('/api/dashboard', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Brak dostępu do dashboardu, problem z autoryzacją.');
+                }
+            })
+            .then(data => {
+                document.body.innerHTML = data;
+            })
+            .catch(error => showError(error.message));
+
+        console.log('Tu powinien być template: dashboard');
+    }
+
+    function showError(message) {
+        const errorMessageElement = document.getElementById('errorMessage');
+        errorMessageElement.textContent = message;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        console.log('Skrypt został wczytany poprawnie');
+
+// Pobierz token dostępu z lokalnego magazynu (lub cookies, jeśli tam go zapisujesz)
+        var accessToken = localStorage.getItem('accessToken');
+        console.log('Token: ', accessToken);
+
+
+// Sprawdź, czy token istnieje
+        if (accessToken) {
+            console.log('Token dostępu istnieje:', accessToken);
+
+// Znajdź wszystkie przyciski z sesjami
+            const sessionButtons = document.querySelectorAll('.button');
+            console.log('Znaleziono przyciski:', sessionButtons.length);
+
+            sessionButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    console.log('Przycisk został kliknięty');
+
+// Pobranie sessionId z atrybutu data-session-id
+                    let sessionId = button.getAttribute('data-session-id');
+                    console.log('ID sesji:', sessionId);
+
+// Wyślij żądanie GET na endpoint z tokenem
+                    fetch(`/api/session?sessionId=${sessionId}`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,  // dodajemy nagłówek z tokenem
+                            'Content-Type': 'application/json'  // dodaj nagłówek Content-Type
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Unauthorized access');
+                            }
+                            return response.text();  // Oczekujemy odpowiedzi jako tekst HTML
+                        })
+                        .then(html => {
+                            console.log('Otrzymana odpowiedź: ', html);
+                            document.body.innerHTML = html;
+                        })
+                        .catch(error => {
+                            console.error('Błąd przy pobieraniu sesji:', error);
+                            alert('Błąd przy pobieraniu sesji. Sprawdź token dostępu.');
+                        });
+                });
+            });
+        } else {
+            alert('Brak tokenu. Proszę zalogować się ponownie.');
+        }
+    });*/
+</script>-->
 </body>
 </html>
