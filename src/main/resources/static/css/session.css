@@ -1,0 +1,16 @@
+body {
+    background-color: white;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 125px;
+    color: #a81818;
+    text-align: center;
+}
+
+#current-sentence {
+    font-size: 125px;
+    color: red;
+    text-align: center;
+}

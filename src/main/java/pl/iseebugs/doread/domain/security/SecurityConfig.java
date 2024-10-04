@@ -35,7 +35,9 @@ class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**", "/dashboard.html").permitAll()
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
+                                "/dashboard.html",
+                                "/session.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
