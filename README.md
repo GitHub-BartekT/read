@@ -1,12 +1,16 @@
 # $${\color{red}{do-read}}$$
-Program helps children learn to read.
+The **do-read** app helps children learn to read by playing short, 
+focused reading sessions before watching cartoons. 
+This method is inspired by Glenn and Janet Doman’s book 
+and aims to reduce the time parents spend preparing learning materials while keeping children engaged.
 
 ## How it works
 ### Problem
-In book “How to teach your baby to read” by Glenn and Janet Doman is described method of teaching toddlers and preschool children reading.
-Time of everyday learning is very short (less than a minute), but preparing and organizing necessary materials takes a lot of time and energy. After a few weeks many parents give up because of lack of time.
+In the book *How to Teach Your Baby to Read*, the Domans describe a method to teach toddlers and preschoolers to read. While the daily learning sessions are short, 
+the preparation takes a lot of effort, leading many parents to abandon the method over time.
 ### Solution
-Most of the children watch cartoons. Program is compatible with the learning method of reading. In time when child is complete focussing on a screen parents can play sessions before cartoons.
+Most children regularly watch cartoons. **do-read** integrates reading lessons into their screen time, where parents can play brief reading sessions that align with the Domans’ teaching methods.
+
 ## Screenshots
 ### Login page
 ![login-page.png](documentation%2Freadme%2Flogin-page.png)
@@ -15,61 +19,58 @@ Most of the children watch cartoons. Program is compatible with the learning met
 ### Session page
 ![session.png](documentation%2Freadme%2Fsession.png)
 ## What Has Been Accomplished💡
-Basic functionality in Java with Spring Boot and Security.
 ### Architecture ✅
-Clean, modular hexagonal architecture. Uses my existing security repository. REST API endpoints. Frontend and emails are created as html files. Some of them are static files, some are MVC templates.
-### Database✅
-Database setup using PostegreSQL with migrations managed by Flyway. Entity Relationship Diagram (ERD) designed and available for reference.
-#### Entity Relationship Diagram
+The app follows a **clean, modular hexagonal architecture**:
+* REST API endpoints.
+* Some HTML files are static, while others are MVC templates.
+* Security integration is based on a separate repository.
+* ### Database✅
+* PostgreSQL database.
+* Migrations managed by **Flyway**.
+* Designed with an Entity Relationship Diagram (ERD) for reference.
+* #### ERD
 ![schema.png](documentation%2Freadme%2Fschema.png)
 ### Technologies
-1.  Backend
-- Environment - Intellij IDEA
-    - Java 17
-    - Maven
-    - Spring Boot
-- Databases
-    - Postegre SQL
-    - Hibernate
-    - FlyWay
-- Security
-    - Email login confirmation
-    - JWT - access and refresh
-    - more information ->  [my security git-hub repo](https://github.com/GitHub-BartekT/SpringBoot_Security_Module)
-4.  Frontend
-- HTML
-- CSS
-- JavaScript
-5.  Version Control
-- Git / GitHub
+#### Backend
+* **Java 17, Maven, Spring Boot** 
+* **Postegre SQL, Hibernate,FlyWay**
+* **Spring Security** with email login confirmation, JWT access, and refresh tokens.
+  * Details: [my security git-hub repo](https://github.com/GitHub-BartekT/SpringBoot_Security_Module)
+#### Frontend
+* HTML, CSS, JavaScript
+#### Version Control
+* Git / GitHub
 ### Version 1.0 - SNAPSHOT
-1. Basic functionality - ✅
+* **Basic functionality** - ✅
   1. running session
   2. increase session meter, after each session
-2. Security✅
-3. Create predefined session for each new user✅
-4. Showing big red text on white background✅
-5. Quick and easy changing texts during session✅
-6. Database of basic words✅
+* **Security**✅
+* **Predefined session** for each new user✅
+* **Big red text** on a white background during sessions✅
+* Easy text updates during sessions✅
+* Basic words database✅
 
 ## Pending features
 ### Version 1.1
 1. Module CRUD
-2. Add statistics backend
+2. Backend for statistics
 ### Version 1.2
-1. Session CRUD - merging few modules into one session
-2. Kick off🚀
+1. Session CRUD - allowing multiple modules per session.
+2. Launch🚀
 ### Version 2.0
 1. Statistic view
 2. Admin View
 ### Version 2.1
-1. PictureModule CRUD - bits of intelligence
+1. PictureModule CRUD for "bits of intelligence" feature.
 
 ## Running Application:
+To start the application:
 
 ```mvn spring-boot:run```
 
 Access via [localhost:8080](http://localhost:8080)
 
 ## Documentation
-1. How to teach your baby to read. Glenn Doman, Janet Doman
+For reference: *How to Teach Your Baby to Read* by Glenn Doman and Janet Doman.
+
+
