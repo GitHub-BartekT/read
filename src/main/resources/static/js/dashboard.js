@@ -44,6 +44,9 @@ function getAllUserSessions() {
                         console.log(`Session ID: ${userSession.id} was clicked.`);
                         // Add further action like redirecting or loading session details
                     });
+                    newSessionBtn.addEventListener('click', () => {
+                        redirectToSessionPage(userSession.id);
+                    });
 
                     tempParent.appendChild(newSessionBtn);
                 });
@@ -54,6 +57,10 @@ function getAllUserSessions() {
         });
 }
 
+function redirectToSessionPage(sessionId) {
+    // Redirect to the session.html page with the sessionId in the URL
+    window.location.href = `session.html?sessionId=${sessionId}`;
+}
 
 function createStartSessionButtons() {
     fetch(`${API_URL}`)

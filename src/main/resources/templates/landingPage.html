@@ -11,7 +11,6 @@
 <div class="container">
     <h1>do read</h1>
 
-    <!-- Formularze email i hasło wspólne dla obu akcji -->
     <form id="authForm">
         <label for="email">Email</label>
         <input type="email" id="email" name="email" placeholder="Wprowadź email" required>
@@ -19,17 +18,15 @@
         <label for="password">Hasło</label>
         <input type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
 
-        <!-- Przyciski logowania i rejestracji -->
         <button type="button" id="loginBtn" class="login">Zaloguj się</button>
         <button type="button" id="registerBtn" class="register">Załóż konto</button>
     </form>
 
-    <!-- Miejsce na komunikat o błędzie -->
     <div id="errorMessage" class="error-message"></div>
 </div>
 
 <script>
-    // Funkcja obsługi przycisku logowania
+    // Login button
     document.getElementById('loginBtn').addEventListener('click', function () {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -42,8 +39,8 @@
             body: JSON.stringify({email, password})
         })
             .then(response => {
-                if (response.ok) {  // Sprawdź status HTTP (np. 200 OK)
-                    return response.json();  // Jeśli status 200-299, przetwarzaj odpowiedź JSON
+                if (response.ok) {
+                    return response.json();
                 } else {
                     return response.json().then(data => {
                         throw new Error(data.message || 'Wystąpił błąd podczas logowania.');
@@ -59,13 +56,13 @@
                 // Zapis tokenów w localStorage
                 localStorage.setItem('accessToken', accessToken);
                 localStorage.setItem('refreshToken', refreshToken);
-                accessDashboard();
+                window.location.href = '/dashboard.html';
             }
         })
             .catch(error => showError('Wystąpił błąd podczas logowania.'));
     });
 
-    // Funkcja obsługi przycisku rejestracji
+    // Registration button
     document.getElementById('registerBtn').addEventListener('click', function () {
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
@@ -90,44 +87,10 @@
             .catch(error => showError('Wystąpił błąd podczas rejestracji.'));
     });
 
-    // Funkcja wyświetlająca komunikat o błędzie
     function showError(message) {
         const errorMessageElement = document.getElementById('errorMessage');
         errorMessageElement.textContent = message;
     }
-
-    function accessDashboard() {
-        console.log('Wywołanie funkcji accessDashboard')
-        const token = localStorage.getItem('accessToken');
-
-        if (!token) {
-            showError('Brak tokenu autoryzacyjnego. Zaloguj się ponownie.');
-            return;
-        }
-
-        fetch('/api/dashboard', {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
-                } else {
-                    throw new Error('Brak dostępu do dashboardu, problem z autoryzacją.');
-                }
-            })
-            .then(data => {
-                window.location.href = '/dashboard.html';
-
-        /*        document.body.innerHTML = data;  // Zastąp treść strony danymi z dashboardu
-                window.history.pushState({}, '', '/dashboard.html');  // Zaktualizuj adres URL*/
-            })
-            .catch(error => showError(error.message));
-    }
 </script>
-
 </body>
 </html>
