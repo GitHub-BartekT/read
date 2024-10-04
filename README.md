@@ -75,4 +75,7 @@ Access via [localhost:8080](http://localhost:8080)
 ## Documentation
 For reference: *How to Teach Your Baby to Read* by Glenn Doman and Janet Doman.
 
+## Contact:
+https://www.linkedin.com/in/bartlomiejtucholski/
+https://iseebugs.pl/
 
