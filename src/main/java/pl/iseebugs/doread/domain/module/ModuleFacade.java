@@ -20,7 +20,6 @@ public class ModuleFacade {
     private final AppUserFacade appUserFacade;
     private final ModuleRepository moduleRepository;
 
-
     public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
         if (moduleName == null || moduleName.isEmpty()) {
             moduleName = "New module";
@@ -62,6 +61,8 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
+
+
     public ModuleReadModel findByIdAndUserId(Long userId, Long id) throws ModuleNotFoundException {
         return moduleRepository.findByIdAndUserId(id, userId)
                 .map(ModuleMapper::toReadModel).orElseThrow(ModuleNotFoundException::new);
@@ -79,6 +80,7 @@ public class ModuleFacade {
         }
         moduleRepository.save(module);
     }
+
 
     public void deleteByIdAndUserId(Long id, Long userId) {
         moduleRepository.deleteByIdAndUserId(id, userId);
