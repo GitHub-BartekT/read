@@ -19,7 +19,7 @@ public class ModuleFacade {
     private final ModuleRepository moduleRepository;
     private final ModuleValidator moduleValidator;
 
-    public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
+    public ModuleReadModel create(Long userId, String moduleName) throws AppUserNotFoundException {
         if (!moduleValidator.stringValidator(moduleName)) {
             moduleName = "New module";
         }

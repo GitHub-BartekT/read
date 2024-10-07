@@ -22,7 +22,7 @@ public class PredefinedModuleFacade {
     private final SessionFacade sessionFacade;
 
     public void creatingPredefinedModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
-        ModuleReadModel module = moduleFacade.createModule(userId, MODULE_NAME);
+        ModuleReadModel module = moduleFacade.create(userId, MODULE_NAME);
         sentenceFacade.createSentencesFromProperties(userId, module.getId());
         SessionWriteModel session = sessionFacade.createSession(userId, MODULE_NAME);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());

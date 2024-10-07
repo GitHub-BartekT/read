@@ -37,7 +37,8 @@ class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
                                 "/dashboard.html",
-                                "/session.html").permitAll()
+                                "/session.html",
+                                "/modules.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
