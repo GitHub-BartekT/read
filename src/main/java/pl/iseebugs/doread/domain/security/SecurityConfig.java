@@ -64,6 +64,7 @@ class SecurityConfig {
                                 "/api/auth/refresh",
                                 "/api/dashboard",
                                 "/api/session",
+                                "/api/module",
                                 "/dashboard"
                                 )
                         .hasAnyAuthority("USER")

@@ -1,7 +1,9 @@
 package pl.iseebugs.doread.domain.module;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
@@ -11,6 +13,7 @@ import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Log4j2
 @AllArgsConstructor
 @Service
 public class ModuleFacade {
@@ -117,8 +120,11 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
-    public void deleteByIdAndUserId(Long id, Long userId) {
-        moduleRepository.deleteByIdAndUserId(id, userId);
+    @Transactional
+    public void deleteByIdAndUserId(Long moduleId, Long userId) {
+        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        moduleRepository.deleteByIdAndUserId(moduleId, userId);
     }
 
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {

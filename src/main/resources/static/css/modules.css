@@ -1,4 +1,3 @@
-
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
@@ -13,12 +12,10 @@ body {
 .container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: flex-start; /* Aligns both columns at the top */
     width: 90%;
     max-width: 1200px;
     gap: 20px;
-    position: relative;
-    top: -50px;
 }
 
 .column {
@@ -31,12 +28,12 @@ body {
 }
 
 .left-column {
-    flex: 2;
     align-self: flex-start;
+    /* Ensure the left column takes more space */
 }
 
 .right-column {
-    align-self: flex-end;
+    align-self: flex-start; /* Align the right column with the left at the top */
 }
 
 h1 {
@@ -45,23 +42,26 @@ h1 {
     margin-bottom: 20px;
 }
 
-.button {
-    display: block;
+
+/*BUTTONS*/
+.button, .yellow-button, .blue-button, .red-button{
     width: 100%;
-    padding: 30px 20px;
-    margin: 10px 0;
-    background-color: #4CAF50;
+    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 25px;
-    font-size: 24px;
+    font-size: 20px;
     cursor: pointer;
-    text-align: center;
-    transition: background-color 0.3s ease;
 }
 
-.button:hover {
-    background-color: #45a049;
+.red-button {
+    background-color: #ff0000; /* Red background */
+}
+
+.red-button:hover {
+    background-color: #cc0000; /* Darker red on hover */
 }
 
 .yellow-button {
@@ -74,23 +74,68 @@ h1 {
 }
 
 .blue-button {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 15px;
     background-color: #007bff;
     color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 20px;
-    cursor: pointer;
 }
 
 .blue-button:hover {
     background-color: #0056b3;
 }
 
-.right-column .blue-button {
-    margin: 10px 0;
+
+/*CHECKBOXES*/
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.checkbox {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #4CAF50;
+    border-radius: 25px; /* Makes it round */
+    cursor: pointer;
+    position: relative;
+    margin-left: 15px;
+}
+
+.checkbox input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox input:checked + .checkmark {
+    background-color: #45a049;
+}
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #4CAF50;
+    transition: background-color 0.3s ease;
+}
+
+.checkbox:hover .checkmark {
+    background-color: #45a049;
+}
+
+.checkbox input:checked + .checkmark::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
 
 @media (max-width: 768px) {
@@ -107,12 +152,8 @@ h1 {
         font-size: 30px;
     }
 
-    .button {
+    .button, .yellow-button, .blue-button, .red-button{
         font-size: 18px;
         padding: 20px 15px;
-    }
-
-    .blue-button {
-        font-size: 18px;
     }
 }
