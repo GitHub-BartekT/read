@@ -100,3 +100,14 @@ function resetSelectedModule() {
     selectedModuleBtn.textContent = 'Nie wybrano żadnego modułu';
     selectedModuleBtn.removeAttribute('data-module-id');
 }
+
+document.getElementById("change-module").addEventListener("click", function() {
+    this.classList.remove("yellow-button");
+    this.classList.add("red-button");
+    this.textContent = "odrzuć zmiany";
+
+    const acceptButton = document.getElementById("accept-changes");
+    acceptButton.disabled = false;
+    acceptButton.classList.remove("grey-button");
+    acceptButton.classList.add("green-button");
+});

@@ -27,7 +27,44 @@
             <h2>Ustawienia</h2>
             <div class="settings-content">
                 <!-- Placeholder for future settings -->
-                <p>Ustawienia modułu...</p>
+                <table id = "module-properties-table" class="pure-table pure-table-bordered pure-table-striped" style="text-align: center">
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+                        <td>id</td>
+                    </tr>
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+
+                        <td>Sessions per day</td>
+                    </tr>
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+
+                        <td>Presentations per session</td>
+                    </tr>
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+                        <td>new sentences per day</td>
+                    </tr>
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+                        <td>actual day</td>
+                    </tr>
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
+                        <td>next session</td>
+                    </tr>
+                </table>
+                <table class="change-buttons-table">
+                    <tr>
+                        <td>
+                            <button id="change-module" class="button yellow-button change-buttons">zmień</button>
+                        </td>
+                        <td>
+                            <button id="accept-changes" class="button grey-button change-buttons" disabled>zapisz zmiany</button>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div class="scrollable-words">
@@ -41,9 +78,9 @@
 
     <!-- Right column (Module 3) -->
     <div class="column right-column">
-        <button class="button green-button">Konto</button>
+        <button class="button grey-button">Konto</button>
         <button class="button red-button" id="delete-module-button">Usuń moduł</button>
-        <button class="button green-button">Powrót</button>
+        <a href="dashboard.html" class="full-width-link"><button class="button green-button">Powrót</button></a>
     </div>
 </div>
 

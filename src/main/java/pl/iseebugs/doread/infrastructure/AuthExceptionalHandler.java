@@ -1,5 +1,6 @@
 package pl.iseebugs.doread.infrastructure;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,5 +74,11 @@ class AuthExceptionalHandler {
                         "Invalid JWT signature: " + e.getMessage()));
     }
 
-
+    @ExceptionHandler(ExpiredJwtException.class)
+    ResponseEntity<ApiResponse<Void>> handlerExpiredJwtException(ExpiredJwtException  e){
+        return ResponseEntity.ok().body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        "Invalid JWT signature: " + e.getMessage()));
+    }
 }
