@@ -1,31 +1,49 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>do read - Dashboard</title>
+    <title>do read - Modules</title>
     <link rel="stylesheet" href="/css/modules.css">
 </head>
 
 <body>
-
 <div class="container">
-    <!-- Left column -->
+    <!-- Left column (Module 1) -->
     <div class="column left-column">
-        <h1>Twoje moduły</h1>
-        <div>
-            <button class="button yellow-button">Stwórz nowy moduł</button>
+        <h2>Twoje moduły</h2>
+        <div class="module-list">
+            <button class="button yellow-button">Nowy moduł</button>
+            <div id="new-session-buttons"></div>
         </div>
-        <div id="new-session-buttons"></div>
     </div>
 
-    <!-- Right column -->
-    <div class="column right-column">
-        <h1>Wybrany moduł</h1>
-        <div>
-            <button class="yellow-button">Nie wybrano żadnego modułu</button>
+    <!-- Center column (Module 2) -->
+    <div class="column center-column">
+        <div id="module-info">
+            <button class="button yellow-button" id="selected-module">Nie wybrano żadnego modułu</button>
         </div>
-        <button class="red-button" id="delete-module-button">Usuń moduł</button>
+        <div class="module-settings">
+            <h2>Ustawienia</h2>
+            <div class="settings-content">
+                <!-- Placeholder for future settings -->
+                <p>Ustawienia modułu...</p>
+            </div>
+        </div>
+        <div class="scrollable-words">
+            <h2>Słowa</h2>
+            <div class="words-content">
+                <!-- Placeholder for future word list -->
+                <p>Lista słów...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right column (Module 3) -->
+    <div class="column right-column">
+        <button class="button green-button">Konto</button>
+        <button class="button red-button" id="delete-module-button">Usuń moduł</button>
+        <button class="button green-button">Powrót</button>
     </div>
 </div>
 
