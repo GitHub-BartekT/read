@@ -10,6 +10,7 @@ import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.create.InvalidEmailTypException;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
+import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
@@ -64,4 +65,13 @@ class GlobalExceptionalHandler {
                         HttpStatus.NOT_FOUND.value(),
                         e.getMessage()));
     }
+
+    @ExceptionHandler(ModuleNotFoundException.class)
+    ResponseEntity<ApiResponse<Void>> handlerModuleNotFoundException(ModuleNotFoundException e) {
+        return ResponseEntity.ok().body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.NOT_FOUND.value(),
+                        e.getMessage()));
+    }
+
 }
