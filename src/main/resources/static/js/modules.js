@@ -100,14 +100,39 @@ function resetSelectedModule() {
     selectedModuleBtn.textContent = 'Nie wybrano żadnego modułu';
     selectedModuleBtn.removeAttribute('data-module-id');
 }
-
 document.getElementById("change-module").addEventListener("click", function() {
-    this.classList.remove("yellow-button");
-    this.classList.add("red-button");
-    this.textContent = "odrzuć zmiany";
-
+    const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
-    acceptButton.disabled = false;
-    acceptButton.classList.remove("grey-button");
-    acceptButton.classList.add("green-button");
+
+    changeButtons(changeModuleButton, acceptButton);
 });
+
+document.getElementById("accept-changes").addEventListener("click", function() {
+    const changeModuleButton = document.getElementById("change-module");
+    const acceptButton = this;  // Here, this refers to "accept-changes"
+
+    changeButtons(changeModuleButton, acceptButton);
+});
+
+function changeButtons(changeModuleButton, acceptButton) {
+    if(document.getElementById("selected-module").classList.contains("yellow-button")){
+    } else if (changeModuleButton.classList.contains("red-button") || acceptButton.classList.contains("green-button")) {
+        // Przywracanie do początkowego stanu (żółty i szary przycisk)
+        changeModuleButton.classList.remove("red-button");
+        changeModuleButton.classList.add("yellow-button");
+        changeModuleButton.textContent = "zmień";
+
+        acceptButton.disabled = true;
+        acceptButton.classList.remove("green-button");
+        acceptButton.classList.add("grey-button");
+    } else {
+        // Zmiana przycisków (czerwony i zielony)
+        changeModuleButton.classList.remove("yellow-button");
+        changeModuleButton.classList.add("red-button");
+        changeModuleButton.textContent = "odrzuć zmiany";
+
+        acceptButton.disabled = false;
+        acceptButton.classList.remove("grey-button");
+        acceptButton.classList.add("green-button");
+    }
+}
