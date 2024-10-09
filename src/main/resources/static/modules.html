@@ -24,35 +24,36 @@
             <button class="button yellow-button" id="selected-module">Nie wybrano żadnego modułu</button>
         </div>
         <div class="module-settings">
-            <h2>Ustawienia</h2>
+            <div class="area-info">
+                <h2>Ustawienia</h2>
+            </div>
+
             <div class="settings-content">
                 <!-- Placeholder for future settings -->
-                <table id = "module-properties-table" class="pure-table pure-table-bordered pure-table-striped" style="text-align: center">
+                <table id="module-properties-table" class="pure-table pure-table-bordered pure-table-striped">
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-                        <td>id</td>
+                        <td><label for="module-name"></label><input id="module-name" size=15/></td>
+                        <td><p>nazwa modułu</p></td>
                     </tr>
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-
-                        <td>Sessions per day</td>
+                        <td><label for="sessions-per-day"></label><input id="sessions-per-day" size=15/></td>
+                        <td>liczba sesji dziennie</td>
                     </tr>
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-
-                        <td>Presentations per session</td>
+                        <td><label for="presentations-per-session"></label><input id="presentations-per-session" size=15/></td>
+                        <td>ilość prezentacji na sesję</td>
                     </tr>
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-                        <td>new sentences per day</td>
+                        <td><label for="new-sentences-per-day"></label><input id="new-sentences-per-day" size=15/></td>
+                        <td>liczba nowych kart na dzień</td>
                     </tr>
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-                        <td>actual day</td>
+                        <td><label for="actual-module-day"></label><input id="actual-module-day" size=15/></td>
+                        <td>dzień modułu</td>
                     </tr>
                     <tr>
-                        <td><label for="module-name"></label><input id="module-name" size=3/></td>
-                        <td>next session</td>
+                        <td><label for="next-session"></label><input id="next-session" size=15/></td>
+                        <td>numer następnej sesji w ciągu dnia</td>
                     </tr>
                 </table>
                 <table class="change-buttons-table">
@@ -76,7 +77,6 @@
         </div>
     </div>
 
-    <!-- Right column (Module 3) -->
     <div class="column right-column">
         <button class="button grey-button">Konto</button>
         <button class="button red-button" id="delete-module-button">Usuń moduł</button>

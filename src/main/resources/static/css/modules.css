@@ -42,6 +42,7 @@
     padding-left: 20px;
     margin-left: 20px;
     border-left: 3px solid rgb(128, 128, 128);
+
 }
 
 .full-width-link {
@@ -60,6 +61,19 @@
 
 .change-buttons-table {
     margin-top: 15px;
+    padding: 10px;
+}
+
+.change-buttons {
+    margin-right: 25px;
+}
+
+.module-properties-table td{
+    padding: 10px;
+}
+
+.area-info {
+    padding: 10px;
 }
 
 #module-info {
@@ -71,6 +85,7 @@
 .module-settings, .scrollable-words {
     width: 100%;
     border: 2px solid black;
+    border-radius: 12px;
     margin: 20px 0;
     padding: 20px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
@@ -111,54 +126,67 @@ h2 {
 }
 
 .green-button:hover(:disabled) {
-    background-color: #999;
+    background-color: #99a3a5;
 }
 
 .grey-button {
-    background-color: grey;
+    background-color: #f2f5fa;
     color: black;
 }
 
 .grey-button:hover {
-    background-color: #656464;
-}
-
-.green-button:hover:not(:disabled) {
-    background-color: #0c6510;
+    background-color: #bec1c6;
 }
 
 .red-button {
-    background-color: red;
-    color: white;
+    background-color: #eb4a3b;
+    color: black;
 }
 
 .red-button:hover {
-    background-color: #cc0000; /* Darker red on hover */
+    background-color: #bd3c2e; /* Darker red on hover */
 }
 
 .green-button {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #40d17e;
+    color: black;
 }
 
 .green-button:hover {
-    background-color: #0c6510;
+    background-color: #2ca961;
 }
 
 .yellow-button {
-    background-color: #ffcc00;
-    color: #1a237e;
+    background-color: #faca0c;
+    color: black;
 }
 
 .yellow-button:hover {
-    background-color: #e6b800;
+    background-color: #fd9f12;
 }
 
 .blue-button {
-    background-color: #007bff;
-    color: white;
+    background-color: #3395d8;
+    color: black;
 }
 
 .blue-button:hover {
-    background-color: #0056b3;
+    background-color: #2d7eb8;
+}
+
+#module-properties-table {
+    text-align: left;
+}
+
+#module-properties-table td{
+    padding: 10px;
+}
+
+td {
+    font-size: 20px;
+}
+
+input {
+    font-size: 17px;
+    padding: 10px;
 }
