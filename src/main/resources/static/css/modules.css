@@ -114,9 +114,6 @@ h2 {
     border-style: solid;
     border-color: #000000;
 }
-.change-buttons {
-    width: 250px;
-}
 
 .button:disabled {
     background-color: #ccc;
@@ -124,6 +121,10 @@ h2 {
     border-color: #999;
     cursor: not-allowed;
     opacity: 0.6;
+}
+
+.change-buttons {
+    width: 250px;
 }
 
 .green-button:hover(:disabled) {
@@ -185,6 +186,10 @@ h2 {
 
 td {
     font-size: 20px;
+}
+
+input:disabled {
+    cursor: not-allowed;
 }
 
 input {

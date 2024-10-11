@@ -87,6 +87,20 @@ function fillInElementByText(id, text){
     document.getElementById(id).value = text;
 }
 
+function setAllModuleInputDisabled(param){
+    setInputDisabled('module-name', param);
+    setInputDisabled('sessions-per-day', param);
+    setInputDisabled('presentations-per-session', param);
+    setInputDisabled('new-sentences-per-day', param);
+    setInputDisabled('actual-module-day', param);
+    setInputDisabled('next-session', param);
+}
+
+function setInputDisabled(id, param){
+    const input = document.getElementById(id);
+    input.disabled = param;
+}
+
 // Handle the delete module button
 document.getElementById('delete-module-button').addEventListener('click', () => {
     const selectedModuleBtn = document.getElementById('selected-module');
@@ -141,27 +155,28 @@ document.getElementById("change-module").addEventListener("click", function() {
 
 document.getElementById("accept-changes").addEventListener("click", function() {
     const changeModuleButton = document.getElementById("change-module");
-    const acceptButton = this;  // Here, this refers to "accept-changes"
-
+    const acceptButton = this;
+    setAllModuleInputDisabled(true);
     changeButtons(changeModuleButton, acceptButton);
 });
 
 function changeButtons(changeModuleButton, acceptButton) {
     if(document.getElementById("selected-module").classList.contains("yellow-button")){
     } else if (changeModuleButton.classList.contains("red-button") || acceptButton.classList.contains("green-button")) {
-        // Przywracanie do początkowego stanu (żółty i szary przycisk)
+
         changeModuleButton.classList.remove("red-button");
         changeModuleButton.classList.add("yellow-button");
         changeModuleButton.textContent = "zmień";
+        setAllModuleInputDisabled(true);
 
         acceptButton.disabled = true;
         acceptButton.classList.remove("green-button");
         acceptButton.classList.add("grey-button");
     } else {
-        // Zmiana przycisków (czerwony i zielony)
         changeModuleButton.classList.remove("yellow-button");
         changeModuleButton.classList.add("red-button");
         changeModuleButton.textContent = "odrzuć zmiany";
+        setAllModuleInputDisabled(false);
 
         acceptButton.disabled = false;
         acceptButton.classList.remove("grey-button");
