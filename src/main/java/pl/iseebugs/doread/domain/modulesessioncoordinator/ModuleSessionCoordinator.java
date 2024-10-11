@@ -1,4 +1,4 @@
-package pl.iseebugs.doread.domain.creatingmodule;
+package pl.iseebugs.doread.domain.modulesessioncoordinator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CreatingModuleFacade {
+public class ModuleSessionCoordinator {
 
     private final String MODULE_NAME = "Język polski";
     private final String NEW_MODULE = "Nowy moduł";
@@ -37,5 +37,13 @@ public class CreatingModuleFacade {
         SessionWriteModel session = sessionFacade.createSession(userId, NEW_MODULE);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
         return moduleFacade.findAllByUserId(userId);
+    }
+
+    public void deleteModule(Long userId, Long moduleId){
+        List<SessionWriteModel> sessions = sessionFacade.getSessionsForUserAndModule(userId, moduleId);
+        for (SessionWriteModel session: sessions) {
+            sessionFacade.deleteSession(userId, session.getId());
+        }
+        moduleFacade.deleteByIdAndUserId(moduleId, userId);
     }
 }

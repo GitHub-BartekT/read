@@ -25,22 +25,4 @@ class SessionMapper {
                 .sessionModules(moduleDtos)
                 .build();
     }
-
-    public static Session toEntity(SessionWriteModel sessionWriteModel) {
-        List<SessionModule> modules = sessionWriteModel.getSessionModules().stream()
-                .map(SessionModuleMapper::toEntity)
-                .collect(Collectors.toList());
-
-        Session session = Session.builder()
-                .id(sessionWriteModel.getId())
-                .userId(sessionWriteModel.getUserId())
-                .name(sessionWriteModel.getName())
-                .ordinalType(sessionWriteModel.getOrdinalType())
-                .ordinalSchema(sessionWriteModel.getOrdinalSchema())
-                .build();
-
-        session.setSessionModules(modules);
-        modules.forEach(module -> module.setSessionId(session.getId()));
-        return session;
-    }
 }

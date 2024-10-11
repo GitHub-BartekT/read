@@ -17,8 +17,9 @@ class SessionModule {
     @SequenceGenerator(name = "sessions_modules_sequence", sequenceName = "sessions_modules_sequence", allocationSize = 1)
     private Long id;
 
-    @Column(name = "sessions_id", nullable = false)
-    private Long sessionId;
+    @ManyToOne
+    @JoinColumn(name = "sessions_id", nullable = false)
+    private Session session;
 
     @Column(name = "module_id", nullable = false)
     private Long moduleId;

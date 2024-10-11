@@ -33,8 +33,7 @@ class Session {
     @Column(name = "ordinal_schema")
     private String ordinalSchema;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "sessions_id")
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordinalPosition ASC")
     private List<SessionModule> sessionModules = new ArrayList<>();;
 }
