@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(value = "auth")
 public class AuthorizationProperties{
         private String secret;
-        private int expirationRefreshTokenTime;
-        private int expirationAccessTokenTime;
-        private int expirationConfirmationTokenTime;
-        private int expirationDeleteTokenTime;
+        private long expirationRefreshTokenTime;
+        private long expirationAccessTokenTime;
+        private long expirationConfirmationTokenTime;
+        private long expirationDeleteTokenTime;
 }
