@@ -41,8 +41,8 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        log.info("Start deleting module: userId: {}, moduleId: {}", user.id(), moduleId);
-        moduleFacade.deleteByIdAndUserId(moduleId, user.id());
+        moduleSessionCoordinator.deleteModule(user.id(), moduleId);
+        log.info("Deleted module: userId: {}, moduleId: {}", user.id(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Moduł usunięty pomyślnie."));
     }
 

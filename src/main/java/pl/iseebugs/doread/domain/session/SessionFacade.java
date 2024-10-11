@@ -2,6 +2,7 @@ package pl.iseebugs.doread.domain.session;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
@@ -62,7 +63,7 @@ public class SessionFacade {
 
         SessionModule newSession = SessionModule.builder()
                 .moduleId(moduleId)
-                .sessionId(sessionId)
+                .session(userSession)
                 .ordinalPosition(maxOrdinalPosition + 1L)
                 .build();
 
@@ -73,6 +74,12 @@ public class SessionFacade {
 
     public List<SessionWriteModel> findAllSessionsByUserId(Long userId) {
         return sessionRepository.findAllByUserId(userId).stream()
+                .map(SessionMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<SessionWriteModel> getSessionsForUserAndModule(Long userId, Long moduleId) {
+            return sessionRepository.findSessionsByUserIdAndModuleIdWithSingleModule(userId, moduleId).stream()
                 .map(SessionMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -128,7 +135,7 @@ public class SessionFacade {
         }
     }
 
-
+@Transactional
     public void deleteSession(Long userId, Long sessionId) {
         sessionRepository.deleteByUserIdAndId(userId, sessionId);
     }

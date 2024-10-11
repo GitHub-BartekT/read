@@ -38,4 +38,12 @@ public class ModuleSessionCoordinator {
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
         return moduleFacade.findAllByUserId(userId);
     }
+
+    public void deleteModule(Long userId, Long moduleId){
+        List<SessionWriteModel> sessions = sessionFacade.getSessionsForUserAndModule(userId, moduleId);
+        for (SessionWriteModel session: sessions) {
+            sessionFacade.deleteSession(userId, session.getId());
+        }
+        moduleFacade.deleteByIdAndUserId(moduleId, userId);
+    }
 }
