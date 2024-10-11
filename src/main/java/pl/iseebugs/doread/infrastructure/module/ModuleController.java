@@ -15,6 +15,7 @@ import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
+import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
@@ -70,6 +71,19 @@ class ModuleController {
         ModuleReadModel data = moduleFacade.findByIdAndUserId(user.id(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
     }
+
+    @PutMapping()
+    public ResponseEntity<ApiResponse<ModuleReadModel>> putModule(@RequestHeader("Authorization") String authHeader, @RequestBody ModuleWriteModel toWrite) throws EmailNotFoundException, ModuleNotFoundException {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String accessToken = authHeader.substring(7);
+        String userEmail = securityFacade.extractEmail(accessToken);
+        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
+        ModuleReadModel data = moduleFacade.updateModule(user.id(), toWrite);
+        return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
+    }
+
 }
 
 
