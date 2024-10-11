@@ -49,7 +49,7 @@ class ModuleController {
     }
 
     @GetMapping()
-    public ResponseEntity<ApiResponse<List<ModuleReadModel>>> getAllUserModules(@RequestHeader("Authorization") String authHeader) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, EmailNotFoundException {
+    public ResponseEntity<ApiResponse<List<ModuleReadModel>>> getAllUserModules(@RequestHeader("Authorization") String authHeader) throws EmailNotFoundException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -57,6 +57,18 @@ class ModuleController {
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
         List<ModuleReadModel> data = moduleFacade.findAllByUserId(user.id());
+        return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
+    }
+
+    @PostMapping()
+    public ResponseEntity<ApiResponse<ModuleReadModel>> createNewModule(@RequestHeader("Authorization") String authHeader) throws EmailNotFoundException, AppUserNotFoundException {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String accessToken = authHeader.substring(7);
+        String userEmail = securityFacade.extractEmail(accessToken);
+        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
+        ModuleReadModel data = moduleFacade.create(user.id(), "Nowy moduł");
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
