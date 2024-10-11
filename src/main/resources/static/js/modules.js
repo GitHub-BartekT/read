@@ -392,7 +392,7 @@ function getAllSentences(moduleId) {
                 data.data.forEach((sentence, index) => {
                     const option = document.createElement('option');
                     option.value = index;
-                    option.textContent = sentence;
+                    option.textContent = `${index + 1}. ${sentence}`;
                     removeSentenceSelect.appendChild(option);
                 });
 
