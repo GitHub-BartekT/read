@@ -75,12 +75,16 @@ function selectModule(moduleId, module) {
     // Store the selected module ID for future use (like deletion)
     selectedModuleBtn.setAttribute('data-module-id', moduleId);
 
-    document.getElementById('module-name').value = module.moduleName;
-    document.getElementById('sessions-per-day').value = module.sessionsPerDay;
-    document.getElementById('presentations-per-session').value = module.presentationsPerSession;
-    document.getElementById('new-sentences-per-day').value = module.newSentencesPerDay;
-    document.getElementById('actual-module-day').value = module.actualDay;
-    document.getElementById('next-session').value = module.nextSession;
+    fillInElementByText('module-name', module.moduleName);
+    fillInElementByText('sessions-per-day', module.sessionsPerDay);
+    fillInElementByText('presentations-per-session', module.presentationsPerSession);
+    fillInElementByText('new-sentences-per-day', module.newSentencesPerDay);
+    fillInElementByText('actual-module-day', module.actualDay);
+    fillInElementByText('next-session', module.nextSession);
+}
+
+function fillInElementByText(id, text){
+    document.getElementById(id).value = text;
 }
 
 // Handle the delete module button
