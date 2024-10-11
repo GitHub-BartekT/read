@@ -2,9 +2,11 @@ package pl.iseebugs.doread.domain.modulesessioncoordinator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
+import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.session.SessionFacade;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
@@ -44,5 +46,11 @@ public class ModuleSessionCoordinator {
             sessionFacade.deleteSession(userId, session.getId());
         }
         moduleFacade.deleteByIdAndUserId(moduleId, userId);
+    }
+
+    @Transactional
+    public ModuleReadModel updateModuleWithSessionName(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+        sessionFacade.updateSessionName(userId, toUpdate);
+        return moduleFacade.updateModule(userId, toUpdate);
     }
 }

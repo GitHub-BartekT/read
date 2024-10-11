@@ -90,7 +90,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        ModuleReadModel data = moduleFacade.updateModule(user.id(), toWrite);
+        ModuleReadModel data = moduleSessionCoordinator.updateModuleWithSessionName(user.id(), toWrite);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
     }
 

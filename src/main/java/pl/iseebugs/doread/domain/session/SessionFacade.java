@@ -1,11 +1,14 @@
 package pl.iseebugs.doread.domain.session;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
+import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 public class SessionFacade {
@@ -79,7 +83,7 @@ public class SessionFacade {
     }
 
     public List<SessionWriteModel> getSessionsForUserAndModule(Long userId, Long moduleId) {
-            return sessionRepository.findSessionsByUserIdAndModuleIdWithSingleModule(userId, moduleId).stream()
+        return sessionRepository.findSessionsByUserIdAndModuleIdWithSingleModule(userId, moduleId).stream()
                 .map(SessionMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -97,7 +101,7 @@ public class SessionFacade {
         for (SessionModule sessionModule : modules) {
             ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, sessionModule.getModuleId());
             long firstSentence = module.getActualDay();
-            long lastSentence = module.getPresentationsPerSession() + firstSentence -1L;
+            long lastSentence = module.getPresentationsPerSession() + firstSentence - 1L;
             List<SentenceReadModel> sentences = sentenceFacade.findAllByModuleIdAndBetween(
                     userId,
                     module.getId(),
@@ -135,8 +139,33 @@ public class SessionFacade {
         }
     }
 
-@Transactional
+    @Transactional
     public void deleteSession(Long userId, Long sessionId) {
         sessionRepository.deleteByUserIdAndId(userId, sessionId);
     }
+
+    @Transactional
+    public void updateSessionName(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+        List<Session> userSessions = sessionRepository.findSessionsByUserIdAndModuleIdWithSingleModule(userId, toUpdate.getId());
+        log.info("Session size: {}", userSessions.size());
+
+        if(userSessions.size() == 1) {
+            Session entity = sessionRepository.findByIdAndUserId(userSessions.get(0).getId(), userId)
+                    .orElseThrow(ModuleNotFoundException::new);
+            log.info("Session id: {}", entity.getId());
+
+            if (stringValidator(toUpdate.getModuleName())) {
+                entity.setName(toUpdate.getModuleName());
+                log.info("Name valid: {}", toUpdate.getModuleName());
+            }
+            Session updated = sessionRepository.save(entity);
+            log.info("Session updated id: {}, name: {}", updated.getId(), updated.getName());
+
+        }
+    }
+
+    boolean stringValidator(String argument) {
+        return argument != null && !argument.isBlank();
+    }
 }
+
