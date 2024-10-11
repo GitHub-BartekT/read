@@ -12,10 +12,10 @@ public class ModuleWriteModel {
     private Long id;
     private Long userId;
     private String moduleName;
-    private int sessionsPerDay;
-    private int presentationsPerSession;
-    private int newSentencesPerDay;
-    private int actualDay;
-    private int nextSession;
-    private boolean isPrivate;
+    private Integer sessionsPerDay;
+    private Integer presentationsPerSession;
+    private Integer newSentencesPerDay;
+    private Integer actualDay;
+    private Integer nextSession;
+    private Boolean isPrivate;
 }

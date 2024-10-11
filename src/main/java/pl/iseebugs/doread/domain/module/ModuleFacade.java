@@ -1,8 +1,9 @@
 package pl.iseebugs.doread.domain.module;
 
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
@@ -10,25 +11,23 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Log4j2
 @AllArgsConstructor
 @Service
 public class ModuleFacade {
 
     private final AppUserFacade appUserFacade;
     private final ModuleRepository moduleRepository;
+    private final ModuleValidator moduleValidator;
 
-
-    public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
-        if (moduleName == null || moduleName.isEmpty()) {
+    public ModuleReadModel create(Long userId, String moduleName) throws AppUserNotFoundException {
+        if (!moduleValidator.stringValidator(moduleName)) {
             moduleName = "New module";
         }
 
-        if (userId < 1) {
-            throw new IllegalArgumentException("User id is negative.");
-        }
+        moduleValidator.longValidator(userId, "User id is invalid.");
 
         AppUserReadModel user = appUserFacade.findUserById(userId);
 
@@ -49,6 +48,8 @@ public class ModuleFacade {
     }
 
     public List<ModuleReadModel> findAllByUserId(Long userId) {
+        moduleValidator.longValidator(userId, "User id is invalid.");
+        
         return moduleRepository.findAllByUserId(userId)
                 .stream()
                 .map(ModuleMapper::toReadModel)
@@ -62,13 +63,18 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public ModuleReadModel findByIdAndUserId(Long userId, Long id) throws ModuleNotFoundException {
-        return moduleRepository.findByIdAndUserId(id, userId)
+
+    public ModuleReadModel findByIdAndUserId(Long userId, Long moduleId) throws ModuleNotFoundException {
+        userAndModuleIdsValidator(userId, moduleId);
+
+        return moduleRepository.findByIdAndUserId(moduleId, userId)
                 .map(ModuleMapper::toReadModel).orElseThrow(ModuleNotFoundException::new);
     }
 
-    public void setNextSession(Long userId, Long id) throws ModuleNotFoundException {
-        Module module = moduleRepository.findByIdAndUserId(id, userId)
+    public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
+        userAndModuleIdsValidator(userId, moduleId);
+
+        Module module = moduleRepository.findByIdAndUserId(moduleId, userId)
                 .orElseThrow(ModuleNotFoundException::new);
 
         if (module.getNextSession() == module.getSessionsPerDay()) {
@@ -80,7 +86,49 @@ public class ModuleFacade {
         moduleRepository.save(module);
     }
 
-    public void deleteByIdAndUserId(Long id, Long userId) {
-        moduleRepository.deleteByIdAndUserId(id, userId);
+    public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+        log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
+        userAndModuleIdsValidator(userId, toUpdate.getId());
+
+        Module entity = moduleRepository.findByIdAndUserId(toUpdate.getId(), userId)
+                .orElseThrow(ModuleNotFoundException::new);
+
+        if(moduleValidator.stringValidator(toUpdate.getModuleName())){
+            entity.setModuleName(toUpdate.getModuleName());
+        }
+        if(moduleValidator.integerValidator(toUpdate.getSessionsPerDay())){
+            entity.setSessionsPerDay(toUpdate.getSessionsPerDay());
+        }
+        if(moduleValidator.integerValidator(toUpdate.getPresentationsPerSession())){
+            entity.setPresentationsPerSession(toUpdate.getPresentationsPerSession());
+        }
+        if(moduleValidator.integerValidator(toUpdate.getNewSentencesPerDay())){
+            entity.setNewSentencesPerDay(toUpdate.getNewSentencesPerDay());
+        }
+        if(moduleValidator.integerValidator(toUpdate.getActualDay())){
+            entity.setActualDay(toUpdate.getActualDay());
+        }
+        if(moduleValidator.integerValidator(toUpdate.getNextSession())){
+            entity.setNextSession(toUpdate.getNextSession());
+        }
+        if(toUpdate.getIsPrivate() != null){
+            entity.setPrivate(!toUpdate.getIsPrivate());
+        }
+
+        Module saved = moduleRepository.save(entity);
+
+        return ModuleMapper.toReadModel(saved);
+    }
+
+    @Transactional
+    public void deleteByIdAndUserId(Long moduleId, Long userId) {
+        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        moduleRepository.deleteByIdAndUserId(moduleId, userId);
+    }
+
+    private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
+        moduleValidator.longValidator(userId, "User id is invalid.");
+        moduleValidator.longValidator(moduleId, "Module id is invalid.");
     }
 }

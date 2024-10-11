@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>do read - Modules</title>
+    <link rel="stylesheet" href="/css/modules.css">
+</head>
+
+<body>
+<div class="container">
+    <!-- Left column (Module 1) -->
+    <div class="column left-column">
+        <h2>Twoje moduły</h2>
+        <div class="module-list">
+            <button id="new-module-button" class="button yellow-button">Nowy moduł</button>
+            <div id="new-session-buttons"></div>
+        </div>
+    </div>
+
+    <!-- Center column (Module 2) -->
+    <div class="column center-column">
+        <div id="module-info">
+            <button class="button yellow-button" id="selected-module">Nie wybrano żadnego modułu</button>
+        </div>
+        <div class="module-settings">
+            <div class="area-info">
+                <h2>Ustawienia</h2>
+            </div>
+
+            <div class="settings-content">
+                <!-- Placeholder for future settings -->
+                <table id="module-properties-table" class="pure-table pure-table-bordered pure-table-striped">
+                    <tr>
+                        <td><label for="module-name"></label><input id="module-name" disabled size=15/></td>
+                        <td>nazwa modułu</td>
+                    </tr>
+                    <tr>
+                        <td><label for="sessions-per-day"></label><input id="sessions-per-day" disabled size=15/></td>
+                        <td>liczba sesji dziennie</td>
+                    </tr>
+                    <tr>
+                        <td><label for="presentations-per-session"></label><input id="presentations-per-session" disabled size=15/></td>
+                        <td>ilość prezentacji na sesję</td>
+                    </tr>
+                    <tr>
+                        <td><label for="new-sentences-per-day"></label><input id="new-sentences-per-day" disabled size=15/></td>
+                        <td>liczba nowych kart na dzień</td>
+                    </tr>
+                    <tr>
+                        <td><label for="actual-module-day"></label><input id="actual-module-day" disabled size=15/></td>
+                        <td>numer dnia następnej sesji</td>
+                    </tr>
+                    <tr>
+                        <td><label for="next-session"></label><input id="next-session" disabled size=15/></td>
+                        <td>numer następnej sesji w ciągu dnia</td>
+                    </tr>
+                </table>
+                <table class="change-buttons-table">
+                    <tr>
+                        <td>
+                            <button id="change-module" class="button yellow-button change-buttons">zmień</button>
+                        </td>
+                        <td>
+                            <button id="accept-changes" class="button grey-button change-buttons" disabled>zapisz zmiany</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="scrollable-words">
+            <h2>Słowa</h2>
+            <div class="words-content">
+                <!-- Placeholder for future word list -->
+                <p>Lista słów...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="column right-column">
+        <button class="button grey-button">Konto</button>
+        <button class="button red-button" id="delete-module-button">Usuń moduł</button>
+        <a href="dashboard.html" class="full-width-link"><button class="button green-button">Powrót</button></a>
+    </div>
+</div>
+
+<script src="/js/modules.js"></script>
+<script src="/js/master.js"></script>
+</body>
+</html>

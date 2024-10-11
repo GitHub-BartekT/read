@@ -9,11 +9,7 @@ CREATE TABLE modules (
                          new_sentences_per_day INT DEFAULT 1,
                          actual_day INT DEFAULT 1,
                          next_session INT DEFAULT 1,
-                         is_private BOOLEAN DEFAULT TRUE,
-                         CONSTRAINT fk_user_module
-                             FOREIGN KEY (user_id)
-                                 REFERENCES app_user (id)
-                                 ON DELETE CASCADE
+                         is_private BOOLEAN DEFAULT TRUE
 );
 
 
@@ -28,9 +24,5 @@ CREATE TABLE sentences (
                            CONSTRAINT fk_module
                                FOREIGN KEY (module_id)
                                    REFERENCES modules (id)
-                                   ON DELETE CASCADE,
-                           CONSTRAINT fk_user_sentence
-                               FOREIGN KEY (user_id)
-                                   REFERENCES app_user (id)
                                    ON DELETE CASCADE
 );

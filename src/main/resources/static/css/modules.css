@@ -1,0 +1,198 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100vh;
+    gap: 20px;
+}
+
+.left-column {
+    flex: 1;
+    max-width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border-right: 3px solid rgb(128, 128, 128);
+    padding-right: 20px;
+    margin-right: 20px;
+}
+
+.vertical-separator {
+    width: 3px;
+    background-color: rgb(128, 128, 128);
+    margin: 0 20px;
+}
+/* Center column */
+
+.center-column {
+    flex: 2; /* This makes it wider */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.right-column {
+    flex: 1;
+    max-width: 15%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 20px;
+    margin-left: 20px;
+    border-left: 3px solid rgb(128, 128, 128);
+
+}
+
+.full-width-link {
+    width: 100%;
+    text-align: center;
+    display: block;
+}
+
+.module-list {
+    width: 100%;
+}
+
+#new-session-buttons {
+    margin-top: 20px;
+}
+
+.change-buttons-table {
+    margin-top: 15px;
+    padding: 10px;
+}
+
+.change-buttons {
+    margin-right: 25px;
+}
+
+.module-properties-table td{
+    padding: 10px;
+}
+
+.area-info {
+    padding-left: 10px;
+}
+
+#module-info {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+}
+
+.module-settings, .scrollable-words {
+    width: 100%;
+    border: 2px solid black;
+    border-radius: 12px;
+    margin: 20px 0;
+    padding-left: 20px;
+    padding-right: 20px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scrollable-words {
+    height: 200px;
+    overflow-y: auto;
+}
+
+h2 {
+    font-size: 30px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.button {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    text-align: center;
+    font-size: 20px;
+    border-radius: 12px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #000000;
+}
+
+.button:disabled {
+    background-color: #ccc;
+    color: #999;
+    border-color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.change-buttons {
+    width: 250px;
+}
+
+.green-button:hover(:disabled) {
+    background-color: #99a3a5;
+}
+
+.grey-button {
+    background-color: #f2f5fa;
+    color: black;
+}
+
+.grey-button:hover {
+    background-color: #bec1c6;
+}
+
+.red-button {
+    background-color: #eb4a3b;
+    color: black;
+}
+
+.red-button:hover {
+    background-color: #bd3c2e; /* Darker red on hover */
+}
+
+.green-button {
+    background-color: #40d17e;
+    color: black;
+}
+
+.green-button:hover {
+    background-color: #2ca961;
+}
+
+.yellow-button {
+    background-color: #faca0c;
+    color: black;
+}
+
+.yellow-button:hover {
+    background-color: #fd9f12;
+}
+
+.blue-button {
+    background-color: #73bef5;
+    color: black;
+}
+
+.blue-button:hover {
+    background-color: #53a9ec;
+}
+
+#module-properties-table {
+    text-align: left;
+}
+
+#module-properties-table td{
+    padding: 7px;
+}
+
+td {
+    font-size: 20px;
+}
+
+input:disabled {
+    cursor: not-allowed;
+}
+
+input {
+    font-size: 17px;
+    padding: 10px;
+}
