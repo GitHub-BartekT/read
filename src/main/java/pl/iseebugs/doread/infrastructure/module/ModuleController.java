@@ -1,5 +1,6 @@
 package pl.iseebugs.doread.infrastructure.module;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -58,7 +59,17 @@ class ModuleController {
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<ModuleReadModel>> getUserModule(@RequestHeader("Authorization") String authHeader, @PathVariable("id") @Valid Long moduleId) throws EmailNotFoundException, ModuleNotFoundException {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String accessToken = authHeader.substring(7);
+        String userEmail = securityFacade.extractEmail(accessToken);
+        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
+        ModuleReadModel data = moduleFacade.findByIdAndUserId(user.id(), moduleId);
+        return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
+    }
 }
 
 

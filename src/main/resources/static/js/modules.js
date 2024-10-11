@@ -33,7 +33,7 @@ function getAllUserModules() {
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
-                        selectModule(module.id, module.moduleName);
+                        fetchModuleDetails(module.id);
                     });
 
                     tempParent.appendChild(newModuleBtn);
@@ -45,14 +45,42 @@ function getAllUserModules() {
         });
 }
 
-function selectModule(moduleId, moduleName) {
+// Fetch the selected module's details
+function fetchModuleDetails(moduleId) {
+    const token = localStorage.getItem('accessToken');
+
+    fetch(`${API_URL}/${moduleId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const module = data.data;
+            selectModule(module.id, module);
+        })
+        .catch(error => {
+            console.error('Error fetching module details:', error.message);
+        });
+}
+
+function selectModule(moduleId, module) {
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
     selectedModuleBtn.classList.add('blue-button');
-    selectedModuleBtn.textContent = "Moduł: " + moduleName;
+    selectedModuleBtn.textContent = `Moduł: ${module.moduleName}`;
 
     // Store the selected module ID for future use (like deletion)
     selectedModuleBtn.setAttribute('data-module-id', moduleId);
+
+    document.getElementById('module-name').value = module.moduleName;
+    document.getElementById('sessions-per-day').value = module.sessionsPerDay;
+    document.getElementById('presentations-per-session').value = module.presentationsPerSession;
+    document.getElementById('new-sentences-per-day').value = module.newSentencesPerDay;
+    document.getElementById('actual-module-day').value = module.actualDay;
+    document.getElementById('next-session').value = module.nextSession;
 }
 
 // Handle the delete module button
