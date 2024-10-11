@@ -215,6 +215,7 @@ function deleteModule(moduleId) {
             console.log('Module deleted:', data.message);
             getAllUserModules(); // Refresh the module list and reset the selected module
             resetSelectedModule();
+            clearLabels();
         })
         .catch(error => {
             console.error('Error deleting module:', error.message);
@@ -232,6 +233,15 @@ function resetSelectedModule() {
     selectedModuleBtn.classList.add('yellow-button');
     selectedModuleBtn.textContent = 'Nie wybrano żadnego modułu';
     selectedModuleBtn.removeAttribute('data-module-id');
+}
+
+function clearLabels() {
+    fillInElementByText('module-name', "");
+    fillInElementByText('sessions-per-day', "");
+    fillInElementByText('presentations-per-session', "");
+    fillInElementByText('new-sentences-per-day', "");
+    fillInElementByText('actual-module-day', "");
+    fillInElementByText('next-session', "");
 }
 
 document.getElementById("new-module-button").addEventListener("click", function() {
