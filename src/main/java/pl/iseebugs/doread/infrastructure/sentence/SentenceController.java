@@ -38,8 +38,8 @@ class SentenceController {
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
         sentenceFacade.deleteByUserIdAndModuleIdAndId(user.id(), moduleId, ordinalNumber);
-        log.info("Deleted module: userId: {}, moduleId: {}", user.id(), moduleId);
-        return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Moduł usunięty pomyślnie."));
+        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", user.id(), moduleId, ordinalNumber);
+        return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Zdanie usunięte pomyślnie."));
     }
 
     @GetMapping("/{id}")

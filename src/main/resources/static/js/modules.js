@@ -475,10 +475,24 @@ document.getElementById("add-sentence-btn").addEventListener("click", function (
     fillInElementByText('add-sentence', "");
 });
 
+document.getElementById('remove-sentence-btn').addEventListener('click', function() {
+    fetchDeleteSentence('sentence-select');
+});
+
 function fetchDeleteSentence(sentence) {
+    const selectedSentenceIndex = document.getElementById(sentence).value;
+    const adjustedIndex = Number(selectedSentenceIndex) + 1;
+    console.log("selected object: " + adjustedIndex);
+    const moduleId = getModuleId();
+
+    if (!selectedSentenceIndex) {
+        alert('Nie wybrano żadnego zdania.');
+        return;
+    }
+
     const token = localStorage.getItem('accessToken');
 
-    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}`, {
+    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}&ordinalNumber=${adjustedIndex}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -487,25 +501,15 @@ function fetchDeleteSentence(sentence) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Module deleted:', data.message);
-            getAllUserModules(); // Refresh the module list and reset the selected module
-            resetSelectedModule();
-            clearLabels();
-            const showButton = document.getElementById('add-sentence-btn');
-            showButton.disabled = true;
-            showButton.classList.remove("green-button");
-            showButton.classList.add("grey-button");
+            console.log('Response:', data);
 
-            const removeSentenceButton = document.getElementById('remove-sentence-btn');
-            removeSentenceButton.disabled = true;
-            removeSentenceButton.classList.remove("red-button");
-            removeSentenceButton.classList.add("grey-button");
-
-            clearObject('sentence-list');
-            clearObject('sentence-select');
-
+            if (data.statusCode === 201) {
+                getAllSentences(moduleId);
+            } else {
+                console.error('Nie udało się usunąć zdania:', data.message);
+            }
         })
         .catch(error => {
-            console.error('Error deleting module:', error.message);
+            console.error('Error while deleting sentence:', error.message);
         });
 }

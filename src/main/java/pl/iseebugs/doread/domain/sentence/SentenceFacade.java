@@ -24,13 +24,13 @@ public class SentenceFacade {
     ModuleFacade moduleFacade;
 
     public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByUserIdAndModuleId(userId, moduleId).stream()
+        return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
     }
 
     public List<String> findAllSentenceByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByUserIdAndModuleId(userId, moduleId).stream()
+        return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
                 .map(Sentence::getSentence)
                 .toList();
     }
@@ -57,15 +57,24 @@ public class SentenceFacade {
 
     @Transactional
     public SentenceReadModel create(Long userId, Long moduleId, String sentenceText) {
+        Long size = (long) findAllByModuleId(userId, moduleId).size();
+
         if (sentenceText == null || sentenceText.isEmpty()) {
             throw new IllegalArgumentException("Sentence text must not be null or empty");
         }
         Sentence sentence = Sentence.builder()
                 .moduleId(moduleId)
                 .sentence(sentenceText)
+                .ordinalNumber(size + 1)
                 .userId(userId)
                 .build();
         Sentence result = sentenceRepository.save(sentence);
+
+        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
+                .map(SentenceMapper::toWriteModelFromReadModel)
+                .toList();
+        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
+
         return SentenceMapper.toReadModel(result);
     }
 
@@ -101,7 +110,7 @@ public class SentenceFacade {
 
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
-        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleId(moduleId, userId);
+        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
 
         List<Long> newIds = inserts.stream()
                 .map(SentenceWriteModel::getId)
@@ -142,6 +151,11 @@ public class SentenceFacade {
     public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long id) throws ModuleNotFoundException {
         ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, moduleId);
         sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
+
+        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
+                .map(SentenceMapper::toWriteModelFromReadModel)
+                .toList();
+        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
     }
 
     @Transactional

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
-    List<Sentence> findByUserIdAndModuleId(Long userId, Long moduleId);
+    List<Sentence> findByUserIdAndModuleIdOrderByOrdinalNumberAsc(Long userId, Long moduleId);
     Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
     List<Sentence> findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
             Long userId,
