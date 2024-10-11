@@ -33,7 +33,6 @@ public class ModuleSessionCoordinator {
 
     public List<ModuleReadModel> createNewModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
         ModuleReadModel module = moduleFacade.create(userId, NEW_MODULE);
-        sentenceFacade.createSentencesFromProperties(userId, module.getId());
         SessionWriteModel session = sessionFacade.createSession(userId, NEW_MODULE);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
         return moduleFacade.findAllByUserId(userId);

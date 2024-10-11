@@ -359,6 +359,11 @@ function getAllSentences(moduleId) {
 function fetchPostModuleDetails(moduleId) {
     const token = localStorage.getItem('accessToken');
     const sentence = document.getElementById(`add-sentence`).value;
+    const sentenceListElement = document.getElementById('sentence-list');
+
+    if (sentenceListElement.children.length > 0 && sentenceListElement.children[0].textContent === "Brak słów do wyświetlenia") {
+        sentenceListElement.innerHTML = '';
+    }
 
     fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}&sentence=${sentence}`, {
         method: 'Post',
@@ -373,7 +378,7 @@ function fetchPostModuleDetails(moduleId) {
             console.log('Response data:', data);
             if (data && data.data) {
                 const newSentenceText = data.data;
-                document.getElementById('sentence-list').innerHTML += `<li>${newSentenceText}</li>`
+                document.getElementById('sentence-list').innerHTML += `<li>${newSentenceText}</li>`;
             } else {
                 console.error('No data found in the response:', data);
             }
@@ -390,4 +395,5 @@ function clearSentenceList() {
 
 document.getElementById("add-sentence-btn").addEventListener("click", function () {
     fetchPostModuleDetails(getModuleId());
+    fillInElementByText('add-sentence', "");
 });
