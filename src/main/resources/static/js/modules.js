@@ -152,6 +152,7 @@ function selectModule(moduleId, module) {
     showSentencesBtn.disabled = false;
     showSentencesBtn.classList.remove('grey-button');
     showSentencesBtn.classList.add('yellow-button');
+    setInputDisabled("add-sentence", false);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
@@ -167,13 +168,21 @@ function selectModule(moduleId, module) {
     fillInElementByText('new-sentences-per-day', module.newSentencesPerDay);
     fillInElementByText('actual-module-day', module.actualDay);
     fillInElementByText('next-session', module.nextSession);
+
+    const showButton = document.getElementById('add-sentence-btn');
+    showButton.disabled = true;
+    showButton.classList.remove("green-button");
+    showButton.classList.add("grey-button");
+    fillInElementByText('add-sentence', "");
+    setInputDisabled("add-sentence", true);
+    clearSentenceList();
 }
 
-function fillInElementByText(id, text){
+function fillInElementByText(id, text) {
     document.getElementById(id).value = text;
 }
 
-function setAllModuleInputDisabled(param){
+function setAllModuleInputDisabled(param) {
     setInputDisabled('module-name', param);
     setInputDisabled('sessions-per-day', param);
     setInputDisabled('presentations-per-session', param);
@@ -182,7 +191,7 @@ function setAllModuleInputDisabled(param){
     setInputDisabled('next-session', param);
 }
 
-function setInputDisabled(id, param){
+function setInputDisabled(id, param) {
     const input = document.getElementById(id);
     input.disabled = param;
 }
@@ -218,6 +227,11 @@ function deleteModule(moduleId) {
             getAllUserModules(); // Refresh the module list and reset the selected module
             resetSelectedModule();
             clearLabels();
+            const showButton = document.getElementById('add-sentence-btn');
+            showButton.disabled = true;
+            showButton.classList.remove("green-button");
+            showButton.classList.add("grey-button");
+            clearSentenceList();
         })
         .catch(error => {
             console.error('Error deleting module:', error.message);
@@ -229,6 +243,7 @@ function resetSelectedModule() {
     showSentencesBtn.disabled = true;
     showSentencesBtn.classList.remove('yellow-button');
     showSentencesBtn.classList.add('grey-button');
+    setInputDisabled("add-sentence", true);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('blue-button');
@@ -244,20 +259,23 @@ function clearLabels() {
     fillInElementByText('new-sentences-per-day', "");
     fillInElementByText('actual-module-day', "");
     fillInElementByText('next-session', "");
+    fillInElementByText('add-sentence', "");
 }
 
-document.getElementById("new-module-button").addEventListener("click", function() {
-createNewModule();
+document.getElementById("new-module-button").addEventListener("click", function () {
+    createNewModule();
+    resetSelectedModule();
+    clearLabels();
 });
 
-document.getElementById("change-module").addEventListener("click", function() {
+document.getElementById("change-module").addEventListener("click", function () {
     const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
 
     changeButtons(changeModuleButton, acceptButton);
 });
 
-document.getElementById("accept-changes").addEventListener("click", function() {
+document.getElementById("accept-changes").addEventListener("click", function () {
     const changeModuleButton = document.getElementById("change-module");
     const acceptButton = this;
 
@@ -267,7 +285,7 @@ document.getElementById("accept-changes").addEventListener("click", function() {
 });
 
 function changeButtons(changeModuleButton, acceptButton) {
-    if(document.getElementById("selected-module").classList.contains("yellow-button")){
+    if (document.getElementById("selected-module").classList.contains("yellow-button")) {
     } else if (changeModuleButton.classList.contains("red-button") || acceptButton.classList.contains("green-button")) {
 
         changeModuleButton.classList.remove("red-button");
@@ -292,13 +310,19 @@ function changeButtons(changeModuleButton, acceptButton) {
     }
 }
 
-function getModuleId(){
+function getModuleId() {
     const selectedModuleBtn = document.getElementById('selected-module');
     return moduleId = selectedModuleBtn.getAttribute('data-module-id');
 }
 
-document.getElementById("show-sentences").addEventListener("click", function() {
+document.getElementById("show-sentences").addEventListener("click", function () {
     getAllSentences(getModuleId());
+
+    const showButton = document.getElementById('add-sentence-btn');
+    showButton.disabled = false;
+    showButton.classList.remove("grey-button");
+    showButton.classList.add("green-button");
+    setInputDisabled("add-sentence", false);
 });
 
 function getAllSentences(moduleId) {
@@ -317,16 +341,21 @@ function getAllSentences(moduleId) {
     })
         .then(response => response.json())
         .then(data => {
+            const sentenceListElement = document.getElementById('sentence-list');
             if (data && data.data && data.data.length > 0) {
-                const sentenceList = data.data;  // This is the array of sentences
-                document.getElementById('sentence-list').innerHTML = sentenceList.map(sentence =>
+                sentenceListElement.innerHTML = data.data.map(sentence =>
                     `<li>${sentence}</li>`
-                ).join('\n');  // Insert sentences into the <ol> as list items
+                ).join('\n');  // Insert sentences as list items into the <ol>
             } else {
-                document.getElementById('sentence-list').innerHTML = `<li>Brak słów do wyświetlenia</li>`;
+                sentenceListElement.innerHTML = `<li>Brak słów do wyświetlenia</li>`;
             }
         })
         .catch(error => {
             console.error('Error fetching modules:', error.message);
         });
+}
+
+function clearSentenceList() {
+    const sentenceListElement = document.getElementById('sentence-list');
+    sentenceListElement.innerHTML = '';  // This clears all the contents of the <ol>
 }

@@ -2,7 +2,6 @@
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    height: 100vh;
     gap: 20px;
 }
 
@@ -30,6 +29,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    padding-bottom: 50px;
 }
 
 .right-column {
@@ -93,9 +93,22 @@
 }
 
 .scrollable-words {
-    height: 200px;
-    overflow-y: auto;
     padding: 20px;
+    min-height: 300px;
+    max-height: 590px;
+    margin-bottom: 20px; /* Space between words list and the next element */
+}
+
+.scrollable-words ol {
+    padding: 20px;  /* Remove default list padding */
+    overflow-y: auto;
+    max-height:320px;
+    list-style-position: inside; /* Ensure list items are inside the container */
+}
+
+.scrollable-words li {
+    font-size: 20px;
+    margin-bottom: 15px; /* Add space between each list item */
 }
 
 h2 {
@@ -196,4 +209,13 @@ input:disabled {
 input {
     font-size: 17px;
     padding: 10px;
+}
+
+.add-sentence-table {
+    margin-bottom: 20px;
+}
+
+.add-sentence-table td {
+    padding: 20px;
+    text-align: center;
 }
