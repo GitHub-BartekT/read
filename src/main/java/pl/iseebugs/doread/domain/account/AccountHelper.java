@@ -15,8 +15,8 @@ import java.util.UUID;
 @Component
 public class AccountHelper {
 
-    public static int CONFIRMATION_ACCOUNT_TOKEN_EXPIRATION_TIME;
-    public static int DELETE_ACCOUNT_TOKEN_EXPIRATION_TIME;
+    public static long CONFIRMATION_ACCOUNT_TOKEN_EXPIRATION_TIME;
+    public static long DELETE_ACCOUNT_TOKEN_EXPIRATION_TIME;
 
     private final AppProperties appProperties;
     private final EmailFacade emailFacade;

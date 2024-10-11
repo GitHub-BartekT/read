@@ -25,7 +25,7 @@ spring:
 
 auth:
   secret: rk1aAhLGxQqOQ64WfnWP340qzQ0h9zX4QpC/5fR6GY4=
-  expiration-refresh-token-time: 86400000 # 24 hours or 86400 000 milliseconds
+  expiration-refresh-token-time: 2592000000 # 24 hours (86.400.000 milliseconds) x 30 days 2.592.000.000 milliseconds
   expiration-access-token-time: 3600000 # 60 minutes or 3600 000 milliseconds
 
 app:
