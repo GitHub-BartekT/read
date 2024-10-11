@@ -69,11 +69,31 @@
             </div>
         </div>
         <div class="scrollable-words">
-            <h2>Słowa</h2>
-            <div class="words-content">
-                <!-- Placeholder for future word list -->
-                <p>Lista słów...</p>
-            </div>
+            <button id="show-sentences" class="button grey-button" disabled>Pokaż słowa</button>
+            <h2>Prezentacje:</h2>
+            <ol id="sentence-list">
+            </ol>
+            <table class="add-sentence-table">
+                <tr>
+                    <td>
+                        <label for="add-sentence"></label><input id="add-sentence" disabled size=15/>
+                    </td>
+                    <td>
+                        <button id="add-sentence-btn" class="button grey-button change-buttons" disabled>Dodaj nowe słowa</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Wybierz pozycje do usunięcia:</td>
+                    <td rowspan="2">
+                        <button id="remove-sentence-btn" class="button grey-button change-buttons" disabled>Usuń pozycję</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="sentence-select"></label><select id="sentence-select" disabled></select>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 

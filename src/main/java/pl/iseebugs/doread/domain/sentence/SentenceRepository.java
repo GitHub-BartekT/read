@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
-    List<Sentence> findByModuleIdAndUserId(Long userId, Long moduleId);
+    List<Sentence> findByUserIdAndModuleIdOrderByOrdinalNumberAsc(Long userId, Long moduleId);
     Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
     List<Sentence> findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
             Long userId,
@@ -17,4 +17,6 @@ interface SentenceRepository extends JpaRepository<Sentence, Long> {
             Long startOrdinalNumber,
             Long endOrdinalNumber
     );
+
+    void deleteByUserIdAndModuleIdAndOrdinalNumber(Long userid, Long moduleId, Long id);
 }

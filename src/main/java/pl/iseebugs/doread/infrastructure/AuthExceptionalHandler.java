@@ -76,7 +76,7 @@ class AuthExceptionalHandler {
 
     @ExceptionHandler(ExpiredJwtException.class)
     ResponseEntity<ApiResponse<Void>> handlerExpiredJwtException(ExpiredJwtException  e){
-        return ResponseEntity.ok().body(
+        return ResponseEntity.status(401).body(
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.UNAUTHORIZED.value(),
                         "Invalid JWT signature: " + e.getMessage()));

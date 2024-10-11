@@ -74,4 +74,12 @@ class GlobalExceptionalHandler {
                         e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<ApiResponse<Void>> handlerIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.ok().body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.BAD_REQUEST.value(),
+                        e.getMessage()));
+    }
+
 }

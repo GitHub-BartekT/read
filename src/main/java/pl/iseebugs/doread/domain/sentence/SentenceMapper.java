@@ -15,6 +15,16 @@ class SentenceMapper {
                 .build();
     }
 
+    public static SentenceWriteModel toWriteModelFromReadModel(SentenceReadModel sentence){
+        return SentenceWriteModel.builder()
+                .id(sentence.getId())
+                .ordinalNumber(sentence.getOrdinalNumber())
+                .moduleId(sentence.getModuleId())
+                .userId(sentence.getUserId())
+                .sentence(sentence.getSentence())
+                .build();
+    }
+
     public static Sentence toEntity(SentenceWriteModel sentence){
         return Sentence.builder()
                 .id(sentence.getId())

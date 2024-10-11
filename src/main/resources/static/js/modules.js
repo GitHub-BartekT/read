@@ -1,4 +1,6 @@
 const API_URL = 'http://localhost:8080/api/module';
+const API_URL_SENTENCES = 'http://localhost:8080/api/sentence';
+
 
 getAllUserModules();
 
@@ -76,11 +78,28 @@ function createNewModule() {
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
+                        clearLabels();
                         fetchModuleDetails(module.id);
                     });
 
                     tempParent.appendChild(newModuleBtn);
+
                 });
+
+                resetSelectedModule();
+                clearLabels();
+                const showButton = document.getElementById('add-sentence-btn');
+                showButton.disabled = true;
+                showButton.classList.remove("green-button");
+                showButton.classList.add("grey-button");
+
+                const removeSentenceButton = document.getElementById('remove-sentence-btn');
+                removeSentenceButton.disabled = true;
+                removeSentenceButton.classList.remove("red-button");
+                removeSentenceButton.classList.add("grey-button");
+
+                clearObject('sentence-list');
+                clearObject('sentence-select');
             }
         })
         .catch(error => {
@@ -146,6 +165,13 @@ function fetchPutModuleDetails(moduleId) {
 }
 
 function selectModule(moduleId, module) {
+    const showSentencesBtn = document.getElementById('show-sentences')
+    showSentencesBtn.disabled = false;
+    showSentencesBtn.classList.remove('grey-button');
+    showSentencesBtn.classList.add('yellow-button');
+    setInputDisabled("add-sentence", false);
+    setInputDisabled("sentence-select", false);
+
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
     selectedModuleBtn.classList.add('blue-button');
@@ -160,13 +186,29 @@ function selectModule(moduleId, module) {
     fillInElementByText('new-sentences-per-day', module.newSentencesPerDay);
     fillInElementByText('actual-module-day', module.actualDay);
     fillInElementByText('next-session', module.nextSession);
+
+    const showButton = document.getElementById('add-sentence-btn');
+    showButton.disabled = true;
+    showButton.classList.remove("green-button");
+    showButton.classList.add("grey-button");
+
+    const removeSentenceButton = document.getElementById('remove-sentence-btn');
+    removeSentenceButton.disabled = true;
+    removeSentenceButton.classList.remove("red-button");
+    removeSentenceButton.classList.add("grey-button");
+
+    fillInElementByText('add-sentence', "");
+    setInputDisabled("add-sentence", true);
+    setInputDisabled("sentence-select", true);
+    clearObject('sentence-list');
+    clearObject('sentence-select');
 }
 
-function fillInElementByText(id, text){
+function fillInElementByText(id, text) {
     document.getElementById(id).value = text;
 }
 
-function setAllModuleInputDisabled(param){
+function setAllModuleInputDisabled(param) {
     setInputDisabled('module-name', param);
     setInputDisabled('sessions-per-day', param);
     setInputDisabled('presentations-per-session', param);
@@ -175,7 +217,7 @@ function setAllModuleInputDisabled(param){
     setInputDisabled('next-session', param);
 }
 
-function setInputDisabled(id, param){
+function setInputDisabled(id, param) {
     const input = document.getElementById(id);
     input.disabled = param;
 }
@@ -210,6 +252,20 @@ function deleteModule(moduleId) {
             console.log('Module deleted:', data.message);
             getAllUserModules(); // Refresh the module list and reset the selected module
             resetSelectedModule();
+            clearLabels();
+            const showButton = document.getElementById('add-sentence-btn');
+            showButton.disabled = true;
+            showButton.classList.remove("green-button");
+            showButton.classList.add("grey-button");
+
+            const removeSentenceButton = document.getElementById('remove-sentence-btn');
+            removeSentenceButton.disabled = true;
+            removeSentenceButton.classList.remove("red-button");
+            removeSentenceButton.classList.add("grey-button");
+
+            clearObject('sentence-list');
+            clearObject('sentence-select');
+
         })
         .catch(error => {
             console.error('Error deleting module:', error.message);
@@ -217,6 +273,13 @@ function deleteModule(moduleId) {
 }
 
 function resetSelectedModule() {
+    const showSentencesBtn = document.getElementById('show-sentences')
+    showSentencesBtn.disabled = true;
+    showSentencesBtn.classList.remove('yellow-button');
+    showSentencesBtn.classList.add('grey-button');
+    setInputDisabled("add-sentence", true);
+    setInputDisabled("sentence-select", true);
+
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('blue-button');
     selectedModuleBtn.classList.add('yellow-button');
@@ -224,28 +287,41 @@ function resetSelectedModule() {
     selectedModuleBtn.removeAttribute('data-module-id');
 }
 
-document.getElementById("new-module-button").addEventListener("click", function() {
-createNewModule();
+function clearLabels() {
+    fillInElementByText('module-name', "");
+    fillInElementByText('sessions-per-day', "");
+    fillInElementByText('presentations-per-session', "");
+    fillInElementByText('new-sentences-per-day', "");
+    fillInElementByText('actual-module-day', "");
+    fillInElementByText('next-session', "");
+    fillInElementByText('add-sentence', "");
+}
+
+document.getElementById("new-module-button").addEventListener("click", function () {
+    createNewModule();
+    resetSelectedModule();
+    clearLabels();
 });
 
-document.getElementById("change-module").addEventListener("click", function() {
+document.getElementById("change-module").addEventListener("click", function () {
     const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
-
     changeButtons(changeModuleButton, acceptButton);
 });
 
-document.getElementById("accept-changes").addEventListener("click", function() {
+document.getElementById("accept-changes").addEventListener("click", function () {
     const changeModuleButton = document.getElementById("change-module");
     const acceptButton = this;
 
     fetchPutModuleDetails(getModuleId());
+    let id = 'module-' + getModuleId();
+    document.getElementById(id).textContent = document.getElementById(`module-name`).value;
     setAllModuleInputDisabled(true);
     changeButtons(changeModuleButton, acceptButton);
 });
 
 function changeButtons(changeModuleButton, acceptButton) {
-    if(document.getElementById("selected-module").classList.contains("yellow-button")){
+    if (document.getElementById("selected-module").classList.contains("yellow-button")) {
     } else if (changeModuleButton.classList.contains("red-button") || acceptButton.classList.contains("green-button")) {
 
         changeModuleButton.classList.remove("red-button");
@@ -270,7 +346,170 @@ function changeButtons(changeModuleButton, acceptButton) {
     }
 }
 
-function getModuleId(){
+function getModuleId() {
     const selectedModuleBtn = document.getElementById('selected-module');
     return moduleId = selectedModuleBtn.getAttribute('data-module-id');
+}
+
+document.getElementById("show-sentences").addEventListener("click", function () {
+    getAllSentences(getModuleId());
+
+    const showButton = document.getElementById('add-sentence-btn');
+    showButton.disabled = false;
+    showButton.classList.remove("grey-button");
+    showButton.classList.add("green-button");
+    setInputDisabled("add-sentence", false);
+    setInputDisabled("sentence-select", false);
+
+
+    const removeSentenceButton = document.getElementById('remove-sentence-btn');
+    removeSentenceButton.disabled = false;
+    removeSentenceButton.classList.remove("grey-button");
+    removeSentenceButton.classList.add("red-button");
+});
+
+function getAllSentences(moduleId) {
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+        goToLoginPage();
+    }
+
+    fetch(`${API_URL_SENTENCES}/${moduleId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const sentenceListElement = document.getElementById('sentence-list');
+            const removeSentenceSelect = document.getElementById('sentence-select');
+            clearObject('sentence-select');
+
+            if (data && data.data && data.data.length > 0) {
+                sentenceListElement.innerHTML = data.data.map(sentence =>
+                    `<li>${sentence}</li>`
+                ).join('\n');  // Insert sentences as list items into the <ol>
+
+                // Populate the <select> with options
+                data.data.forEach((sentence, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${index + 1}. ${sentence}`;
+                    removeSentenceSelect.appendChild(option);
+                });
+
+                // Enable the select and button if sentences exist
+                removeSentenceSelect.disabled = false;
+                document.getElementById('remove-sentence-btn').disabled = false;
+            } else {
+                sentenceListElement.innerHTML = `<li>Brak słów do wyświetlenia</li>`;
+                removeSentenceSelect.disabled = true;
+                document.getElementById('sentence-select-btn').disabled = true;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching modules:', error.message);
+        });
+}
+
+function fetchPostModuleDetails(moduleId) {
+    const token = localStorage.getItem('accessToken');
+    const sentence = document.getElementById(`add-sentence`).value;
+    const sentenceListElement = document.getElementById('sentence-list');
+
+    if (sentenceListElement.children.length > 0 && sentenceListElement.children[0].textContent === "Brak słów do wyświetlenia") {
+        sentenceListElement.innerHTML = '';
+    }
+
+    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}&sentence=${sentence}`, {
+        method: 'Post',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            const sentenceListElement = document.getElementById('sentence-list');
+            const removeSentenceSelect = document.getElementById('sentence-select');
+            clearObject('sentence-select');
+
+            if (data && data.data && data.data.length > 0) {
+                sentenceListElement.innerHTML = data.data.map(sentence =>
+                    `<li>${sentence}</li>`
+                ).join('\n');  // Insert sentences as list items into the <ol>
+
+                // Populate the <select> with options
+                data.data.forEach((sentence, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${index + 1}. ${sentence}`;
+                    removeSentenceSelect.appendChild(option);
+                });
+
+                // Enable the select and button if sentences exist
+                removeSentenceSelect.disabled = false;
+                document.getElementById('remove-sentence-btn').disabled = false;
+            } else {
+                sentenceListElement.innerHTML = `<li>Brak słów do wyświetlenia</li>`;
+                removeSentenceSelect.disabled = true;
+                document.getElementById('sentence-select-btn').disabled = true;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching module details:', error.message);
+        });
+}
+
+function clearObject(objectIdd) {
+    const documentObject = document.getElementById(objectIdd);
+    documentObject.innerHTML = '';  // This clears all the contents of the <ol>
+}
+
+document.getElementById("add-sentence-btn").addEventListener("click", function () {
+    fetchPostModuleDetails(getModuleId());
+    fillInElementByText('add-sentence', "");
+});
+
+document.getElementById('remove-sentence-btn').addEventListener('click', function() {
+    fetchDeleteSentence('sentence-select');
+});
+
+function fetchDeleteSentence(sentence) {
+    const selectedSentenceIndex = document.getElementById(sentence).value;
+    const adjustedIndex = Number(selectedSentenceIndex) + 1;
+    console.log("selected object: " + adjustedIndex);
+    const moduleId = getModuleId();
+
+    if (!selectedSentenceIndex) {
+        alert('Nie wybrano żadnego zdania.');
+        return;
+    }
+
+    const token = localStorage.getItem('accessToken');
+
+    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}&ordinalNumber=${adjustedIndex}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response:', data);
+
+            if (data.statusCode === 201) {
+                getAllSentences(moduleId);
+            } else {
+                console.error('Nie udało się usunąć zdania:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error while deleting sentence:', error.message);
+        });
 }

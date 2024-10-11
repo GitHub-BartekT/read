@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 
 @Configuration
@@ -25,15 +26,20 @@ class SecurityConfig {
 
     JWTAuthFilter jwtAuthFilter;
     AppUserFacade appUserFacade;
+    FilterChainExceptionHandler filterChainExceptionHandler;
 
-    SecurityConfig(JWTAuthFilter jwtAuthFilter, AppUserFacade appUserFacade){
+
+    SecurityConfig(JWTAuthFilter jwtAuthFilter, AppUserFacade appUserFacade, FilterChainExceptionHandler filterChainExceptionHandler){
         this.jwtAuthFilter = jwtAuthFilter;
         this.appUserFacade = appUserFacade;
+        this.filterChainExceptionHandler = filterChainExceptionHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+        httpSecurity
+                .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
                                 "/dashboard.html",
