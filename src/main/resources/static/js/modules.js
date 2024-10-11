@@ -1,4 +1,6 @@
 const API_URL = 'http://localhost:8080/api/module';
+const API_URL_SENTENCES = 'http://localhost:8080/api/sentence';
+
 
 getAllUserModules();
 
@@ -293,4 +295,38 @@ function changeButtons(changeModuleButton, acceptButton) {
 function getModuleId(){
     const selectedModuleBtn = document.getElementById('selected-module');
     return moduleId = selectedModuleBtn.getAttribute('data-module-id');
+}
+
+document.getElementById("show-sentences").addEventListener("click", function() {
+    getAllSentences(getModuleId());
+});
+
+function getAllSentences(moduleId) {
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+        goToLoginPage();
+    }
+
+    fetch(`${API_URL_SENTENCES}/${moduleId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.data && data.data.length > 0) {
+                const sentenceList = data.data;  // This is the array of sentences
+                document.getElementById('sentence-list').innerHTML = sentenceList.map(sentence =>
+                    `<li>${sentence}</li>`
+                ).join('\n');  // Insert sentences into the <ol> as list items
+            } else {
+                document.getElementById('sentence-list').innerHTML = `<li>Brak słów do wyświetlenia</li>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching modules:', error.message);
+        });
 }

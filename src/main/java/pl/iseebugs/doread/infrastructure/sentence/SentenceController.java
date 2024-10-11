@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.infrastructure.sentence;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +15,7 @@ import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 
 import java.util.List;
 
+@Log4j2
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/sentence")
@@ -32,6 +34,7 @@ class SentenceController {
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
         List<String> data = sentenceFacade.findAllSentenceByModuleId(user.id(), moduleId);
+        log.info("Sentence list size: {}", data.size());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Sentence list.", data));
     }
 }

@@ -20,13 +20,13 @@ public class SentenceFacade {
     SentencesProperties sentencesProperties;
 
     public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByModuleIdAndUserId(userId, moduleId).stream()
+        return sentenceRepository.findByUserIdAndModuleId(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
     }
 
     public List<String> findAllSentenceByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByModuleIdAndUserId(userId, moduleId).stream()
+        return sentenceRepository.findByUserIdAndModuleId(userId, moduleId).stream()
                 .map(Sentence::getSentence)
                 .toList();
     }
@@ -97,7 +97,7 @@ public class SentenceFacade {
 
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
-        List<Sentence> existingSentences = sentenceRepository.findByModuleIdAndUserId(moduleId, userId);
+        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleId(moduleId, userId);
 
         List<Long> newIds = inserts.stream()
                 .map(SentenceWriteModel::getId)
