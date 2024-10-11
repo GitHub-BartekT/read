@@ -9,17 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
-import pl.iseebugs.doread.domain.account.TokenNotFoundException;
-import pl.iseebugs.doread.domain.creatingmodule.CreatingModuleFacade;
-import pl.iseebugs.doread.domain.email.EmailSender;
-import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
+import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinator;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
-import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -35,7 +31,7 @@ class ModuleController {
     ModuleFacade moduleFacade;
     SecurityFacade securityFacade;
     AppUserFacade appUserFacade;
-    CreatingModuleFacade creatingModuleFacade;
+    ModuleSessionCoordinator moduleSessionCoordinator;
 
     @DeleteMapping()
     public ResponseEntity<ApiResponse<Void>> deleteModule(@RequestHeader("Authorization") String authHeader, @RequestParam Long moduleId) throws EmailNotFoundException {
@@ -70,7 +66,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        List<ModuleReadModel> data = creatingModuleFacade.createNewModule(user.id());
+        List<ModuleReadModel> data = moduleSessionCoordinator.createNewModule(user.id());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 

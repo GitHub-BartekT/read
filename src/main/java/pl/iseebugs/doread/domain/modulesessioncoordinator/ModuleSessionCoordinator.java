@@ -1,4 +1,4 @@
-package pl.iseebugs.doread.domain.creatingmodule;
+package pl.iseebugs.doread.domain.modulesessioncoordinator;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class CreatingModuleFacade {
+public class ModuleSessionCoordinator {
 
     private final String MODULE_NAME = "Język polski";
     private final String NEW_MODULE = "Nowy moduł";
