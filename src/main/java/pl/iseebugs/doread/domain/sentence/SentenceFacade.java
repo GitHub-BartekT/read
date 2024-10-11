@@ -25,6 +25,12 @@ public class SentenceFacade {
                 .toList();
     }
 
+    public List<String> findAllSentenceByModuleId(Long userId, Long moduleId) {
+        return sentenceRepository.findByModuleIdAndUserId(userId, moduleId).stream()
+                .map(Sentence::getSentence)
+                .toList();
+    }
+
     public List<SentenceReadModel> findAllByModuleIdAndBetween(Long userId, Long moduleId, Long startOrdinalNumber, Long endOrdinalNumber) {
         return sentenceRepository.findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
                         userId,
