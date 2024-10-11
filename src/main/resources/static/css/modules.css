@@ -219,3 +219,8 @@ input {
     padding: 20px;
     text-align: center;
 }
+
+.add-sentence-table select {
+    font-size: 17px;
+    padding: 1px;
+}

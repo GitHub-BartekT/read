@@ -98,7 +98,8 @@ function createNewModule() {
                 removeSentenceButton.classList.remove("red-button");
                 removeSentenceButton.classList.add("grey-button");
 
-                clearSentenceList();
+                clearObject('sentence-list');
+                clearObject('sentence-select');
             }
         })
         .catch(error => {
@@ -169,7 +170,7 @@ function selectModule(moduleId, module) {
     showSentencesBtn.classList.remove('grey-button');
     showSentencesBtn.classList.add('yellow-button');
     setInputDisabled("add-sentence", false);
-    setInputDisabled("remove-sentence", false);
+    setInputDisabled("sentence-select", false);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
@@ -198,8 +199,9 @@ function selectModule(moduleId, module) {
 
     fillInElementByText('add-sentence', "");
     setInputDisabled("add-sentence", true);
-    setInputDisabled("remove-sentence", true);
-    clearSentenceList();
+    setInputDisabled("sentence-select", true);
+    clearObject('sentence-list');
+    clearObject('sentence-select');
 }
 
 function fillInElementByText(id, text) {
@@ -261,7 +263,9 @@ function deleteModule(moduleId) {
             removeSentenceButton.classList.remove("red-button");
             removeSentenceButton.classList.add("grey-button");
 
-            clearSentenceList();
+            clearObject('sentence-list');
+            clearObject('sentence-select');
+
         })
         .catch(error => {
             console.error('Error deleting module:', error.message);
@@ -274,7 +278,7 @@ function resetSelectedModule() {
     showSentencesBtn.classList.remove('yellow-button');
     showSentencesBtn.classList.add('grey-button');
     setInputDisabled("add-sentence", true);
-    setInputDisabled("remove-sentence", true);
+    setInputDisabled("sentence-select", true);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('blue-button');
@@ -355,7 +359,7 @@ document.getElementById("show-sentences").addEventListener("click", function () 
     showButton.classList.remove("grey-button");
     showButton.classList.add("green-button");
     setInputDisabled("add-sentence", false);
-    setInputDisabled("remove-sentence", false);
+    setInputDisabled("sentence-select", false);
 
 
     const removeSentenceButton = document.getElementById('remove-sentence-btn');
@@ -381,7 +385,8 @@ function getAllSentences(moduleId) {
         .then(response => response.json())
         .then(data => {
             const sentenceListElement = document.getElementById('sentence-list');
-            const removeSentenceSelect = document.getElementById('remove-sentence');
+            const removeSentenceSelect = document.getElementById('sentence-select');
+            clearObject('sentence-select');
 
             if (data && data.data && data.data.length > 0) {
                 sentenceListElement.innerHTML = data.data.map(sentence =>
@@ -402,7 +407,7 @@ function getAllSentences(moduleId) {
             } else {
                 sentenceListElement.innerHTML = `<li>Brak słów do wyświetlenia</li>`;
                 removeSentenceSelect.disabled = true;
-                document.getElementById('remove-sentence-btn').disabled = true;
+                document.getElementById('sentence-select-btn').disabled = true;
             }
         })
         .catch(error => {
@@ -442,9 +447,9 @@ function fetchPostModuleDetails(moduleId) {
         });
 }
 
-function clearSentenceList() {
-    const sentenceListElement = document.getElementById('sentence-list');
-    sentenceListElement.innerHTML = '';  // This clears all the contents of the <ol>
+function clearObject(objectIdd) {
+    const documentObject = document.getElementById(objectIdd);
+    documentObject.innerHTML = '';  // This clears all the contents of the <ol>
 }
 
 document.getElementById("add-sentence-btn").addEventListener("click", function () {
