@@ -153,6 +153,7 @@ function selectModule(moduleId, module) {
     showSentencesBtn.classList.remove('grey-button');
     showSentencesBtn.classList.add('yellow-button');
     setInputDisabled("add-sentence", false);
+    setInputDisabled("remove-sentence", false);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
@@ -173,8 +174,15 @@ function selectModule(moduleId, module) {
     showButton.disabled = true;
     showButton.classList.remove("green-button");
     showButton.classList.add("grey-button");
+
+    const removeSentenceButton = document.getElementById('remove-sentence-btn');
+    removeSentenceButton.disabled = true;
+    removeSentenceButton.classList.remove("green-button");
+    removeSentenceButton.classList.add("grey-button");
+
     fillInElementByText('add-sentence', "");
     setInputDisabled("add-sentence", true);
+    setInputDisabled("remove-sentence", true);
     clearSentenceList();
 }
 
@@ -231,6 +239,12 @@ function deleteModule(moduleId) {
             showButton.disabled = true;
             showButton.classList.remove("green-button");
             showButton.classList.add("grey-button");
+
+            const removeSentenceButton = document.getElementById('remove-sentence-btn');
+            removeSentenceButton.disabled = true;
+            removeSentenceButton.classList.remove("green-button");
+            removeSentenceButton.classList.add("grey-button");
+
             clearSentenceList();
         })
         .catch(error => {
@@ -244,6 +258,7 @@ function resetSelectedModule() {
     showSentencesBtn.classList.remove('yellow-button');
     showSentencesBtn.classList.add('grey-button');
     setInputDisabled("add-sentence", true);
+    setInputDisabled("remove-sentence", true);
 
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('blue-button');
@@ -324,6 +339,13 @@ document.getElementById("show-sentences").addEventListener("click", function () 
     showButton.classList.remove("grey-button");
     showButton.classList.add("green-button");
     setInputDisabled("add-sentence", false);
+    setInputDisabled("remove-sentence", false);
+
+
+    const removeSentenceButton = document.getElementById('remove-sentence-btn');
+    removeSentenceButton.disabled = false;
+    removeSentenceButton.classList.remove("grey-button");
+    removeSentenceButton.classList.add("green-button");
 });
 
 function getAllSentences(moduleId) {
