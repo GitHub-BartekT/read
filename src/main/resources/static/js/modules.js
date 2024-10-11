@@ -271,7 +271,6 @@ document.getElementById("new-module-button").addEventListener("click", function 
 document.getElementById("change-module").addEventListener("click", function () {
     const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
-
     changeButtons(changeModuleButton, acceptButton);
 });
 
@@ -280,6 +279,8 @@ document.getElementById("accept-changes").addEventListener("click", function () 
     const acceptButton = this;
 
     fetchPutModuleDetails(getModuleId());
+    let id = 'module-' + getModuleId();
+    document.getElementById(id).textContent = document.getElementById(`module-name`).value;
     setAllModuleInputDisabled(true);
     changeButtons(changeModuleButton, acceptButton);
 });
@@ -355,7 +356,38 @@ function getAllSentences(moduleId) {
         });
 }
 
+function fetchPostModuleDetails(moduleId) {
+    const token = localStorage.getItem('accessToken');
+    const sentence = document.getElementById(`add-sentence`).value;
+
+    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}&sentence=${sentence}`, {
+        method: 'Post',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Response data:', data);
+            if (data && data.data) {
+                const newSentenceText = data.data;
+                document.getElementById('sentence-list').innerHTML += `<li>${newSentenceText}</li>`
+            } else {
+                console.error('No data found in the response:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching module details:', error.message);
+        });
+}
+
 function clearSentenceList() {
     const sentenceListElement = document.getElementById('sentence-list');
     sentenceListElement.innerHTML = '';  // This clears all the contents of the <ol>
 }
+
+document.getElementById("add-sentence-btn").addEventListener("click", function () {
+    fetchPostModuleDetails(getModuleId());
+});
