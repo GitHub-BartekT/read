@@ -87,9 +87,10 @@ public class ModuleFacade {
     }
 
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+        log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
         userAndModuleIdsValidator(userId, toUpdate.getId());
 
-        Module entity = moduleRepository.findByIdAndUserId(userId, toUpdate.getId())
+        Module entity = moduleRepository.findByIdAndUserId(toUpdate.getId(), userId)
                 .orElseThrow(ModuleNotFoundException::new);
 
         if(moduleValidator.stringValidator(toUpdate.getModuleName())){

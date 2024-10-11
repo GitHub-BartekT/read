@@ -1,5 +1,4 @@
 const API_URL = 'http://localhost:8080/api/module';
-let moduleId;
 
 getAllUserModules();
 
@@ -34,7 +33,49 @@ function getAllUserModules() {
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
-                        moduleId = module.id;
+                        fetchModuleDetails(module.id);
+                    });
+
+                    tempParent.appendChild(newModuleBtn);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching modules:', error.message);
+        });
+}
+
+function createNewModule() {
+    console.log('Fetching all modules...');
+    const token = localStorage.getItem('accessToken');
+
+    if (!token) {
+        goToLoginPage();
+    }
+
+    fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            let tempParent = document.getElementById("new-session-buttons");
+            tempParent.innerHTML = ''; // Clear any existing buttons
+
+            if (data.data.length !== 0) {
+                // Loop through the modules and create buttons
+                data.data.forEach((module) => {
+                    const newModuleBtn = document.createElement("button");
+                    newModuleBtn.className = "button";
+                    newModuleBtn.classList.add("left-button", "blue-button")
+                    newModuleBtn.textContent = module.moduleName;
+                    newModuleBtn.id = 'module-' + module.id;
+
+                    // Add event listener to select the module
+                    newModuleBtn.addEventListener('click', () => {
                         fetchModuleDetails(module.id);
                     });
 
@@ -91,8 +132,13 @@ function fetchPutModuleDetails(moduleId) {
     })
         .then(response => response.json())
         .then(data => {
-            const module = data.data;
-            selectModule(module.id, module);
+            console.log('Response data:', data);
+            if (data && data.data) {
+                const module = data.data;
+                selectModule(module.id, module);
+            } else {
+                console.error('No data found in the response:', data);
+            }
         })
         .catch(error => {
             console.error('Error fetching module details:', error.message);
@@ -137,12 +183,10 @@ function setInputDisabled(id, param){
 // Handle the delete module button
 document.getElementById('delete-module-button').addEventListener('click', () => {
     const selectedModuleBtn = document.getElementById('selected-module');
-
     if (!selectedModuleBtn || !selectedModuleBtn.hasAttribute('data-module-id')) {
         alert('Nie wybrano modułu.');
         return;
     }
-
     const moduleId = selectedModuleBtn.getAttribute('data-module-id');
 
     const confirmDelete = confirm('Czy na pewno chcesz usunąć ten moduł?');
@@ -180,6 +224,10 @@ function resetSelectedModule() {
     selectedModuleBtn.removeAttribute('data-module-id');
 }
 
+document.getElementById("new-module-button").addEventListener("click", function() {
+createNewModule();
+});
+
 document.getElementById("change-module").addEventListener("click", function() {
     const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
@@ -190,7 +238,8 @@ document.getElementById("change-module").addEventListener("click", function() {
 document.getElementById("accept-changes").addEventListener("click", function() {
     const changeModuleButton = document.getElementById("change-module");
     const acceptButton = this;
-    fetchPutModuleDetails(moduleId);
+
+    fetchPutModuleDetails(getModuleId());
     setAllModuleInputDisabled(true);
     changeButtons(changeModuleButton, acceptButton);
 });
@@ -202,7 +251,8 @@ function changeButtons(changeModuleButton, acceptButton) {
         changeModuleButton.classList.remove("red-button");
         changeModuleButton.classList.add("yellow-button");
         changeModuleButton.textContent = "zmień";
-        fetchModuleDetails(moduleId);
+
+        fetchModuleDetails(getModuleId());
         setAllModuleInputDisabled(true);
 
         acceptButton.disabled = true;
@@ -218,4 +268,9 @@ function changeButtons(changeModuleButton, acceptButton) {
         acceptButton.classList.remove("grey-button");
         acceptButton.classList.add("green-button");
     }
+}
+
+function getModuleId(){
+    const selectedModuleBtn = document.getElementById('selected-module');
+    return moduleId = selectedModuleBtn.getAttribute('data-module-id');
 }

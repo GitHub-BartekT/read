@@ -10,6 +10,7 @@ import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
+import pl.iseebugs.doread.domain.creatingmodule.CreatingModuleFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
@@ -34,6 +35,7 @@ class ModuleController {
     ModuleFacade moduleFacade;
     SecurityFacade securityFacade;
     AppUserFacade appUserFacade;
+    CreatingModuleFacade creatingModuleFacade;
 
     @DeleteMapping()
     public ResponseEntity<ApiResponse<Void>> deleteModule(@RequestHeader("Authorization") String authHeader, @RequestParam Long moduleId) throws EmailNotFoundException {
@@ -61,14 +63,14 @@ class ModuleController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<ModuleReadModel>> createNewModule(@RequestHeader("Authorization") String authHeader) throws EmailNotFoundException, AppUserNotFoundException {
+    public ResponseEntity<ApiResponse<List<ModuleReadModel>>> createNewModule(@RequestHeader("Authorization") String authHeader) throws EmailNotFoundException, AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        ModuleReadModel data = moduleFacade.create(user.id(), "Nowy moduł");
+        List<ModuleReadModel> data = creatingModuleFacade.createNewModule(user.id());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
