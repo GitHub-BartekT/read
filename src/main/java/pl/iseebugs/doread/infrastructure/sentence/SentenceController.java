@@ -41,14 +41,15 @@ class SentenceController {
     }
 
     @PostMapping()
-    public ResponseEntity<ApiResponse<String>> createSentence(@RequestHeader("Authorization") String authHeader, @RequestParam @Valid Long moduleId, @RequestParam @Valid String sentence) throws EmailNotFoundException {
+    public ResponseEntity<ApiResponse<List<String>>> createSentence(@RequestHeader("Authorization") String authHeader, @RequestParam @Valid Long moduleId, @RequestParam @Valid String sentence) throws EmailNotFoundException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
-        SentenceReadModel data = sentenceFacade.create(user.id(), moduleId, sentence);
-        return ResponseEntity.ok(ApiResponseFactory.createResponseWithStatus(201, "Created new sentence: " + data.getSentence(), data.getSentence()));
+        sentenceFacade.create(user.id(), moduleId, sentence);
+        List<String> data = sentenceFacade.findAllSentenceByModuleId(user.id(), moduleId);
+        return ResponseEntity.ok(ApiResponseFactory.createResponseWithStatus(201, "Created new sentence.", data));
     }
 }

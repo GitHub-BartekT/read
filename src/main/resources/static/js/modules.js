@@ -434,12 +434,30 @@ function fetchPostModuleDetails(moduleId) {
     })
         .then(response => response.json())
         .then(data => {
-            console.log('Response data:', data);
-            if (data && data.data) {
-                const newSentenceText = data.data;
-                document.getElementById('sentence-list').innerHTML += `<li>${newSentenceText}</li>`;
+            const sentenceListElement = document.getElementById('sentence-list');
+            const removeSentenceSelect = document.getElementById('sentence-select');
+            clearObject('sentence-select');
+
+            if (data && data.data && data.data.length > 0) {
+                sentenceListElement.innerHTML = data.data.map(sentence =>
+                    `<li>${sentence}</li>`
+                ).join('\n');  // Insert sentences as list items into the <ol>
+
+                // Populate the <select> with options
+                data.data.forEach((sentence, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${index + 1}. ${sentence}`;
+                    removeSentenceSelect.appendChild(option);
+                });
+
+                // Enable the select and button if sentences exist
+                removeSentenceSelect.disabled = false;
+                document.getElementById('remove-sentence-btn').disabled = false;
             } else {
-                console.error('No data found in the response:', data);
+                sentenceListElement.innerHTML = `<li>Brak słów do wyświetlenia</li>`;
+                removeSentenceSelect.disabled = true;
+                document.getElementById('sentence-select-btn').disabled = true;
             }
         })
         .catch(error => {
