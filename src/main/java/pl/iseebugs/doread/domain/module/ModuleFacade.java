@@ -62,8 +62,7 @@ public class ModuleFacade {
                 .map(ModuleMapper::toReadModel)
                 .collect(Collectors.toList());
     }
-    
-    
+
 
     public ModuleReadModel findByIdAndUserId(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);

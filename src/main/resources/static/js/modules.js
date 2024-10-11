@@ -66,6 +66,37 @@ function fetchModuleDetails(moduleId) {
         });
 }
 
+function fetchPutModuleDetails(moduleId) {
+    const token = localStorage.getItem('accessToken');
+    const paramUpdateProperties = {
+        id: moduleId,
+        moduleName: document.getElementById(`module-name`).value,
+        sessionsPerDay: document.getElementById(`sessions-per-day`).value,
+        presentationsPerSession: document.getElementById(`presentations-per-session`).value,
+        newSentencesPerDay: document.getElementById(`new-sentences-per-day`).value,
+        actualDay: document.getElementById(`actual-module-day`).value,
+        nextSession: document.getElementById('next-session').value
+    };
+
+    fetch(`${API_URL}/${moduleId}`, {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paramUpdateProperties)
+    })
+        .then(response => response.json())
+        .then(data => {
+            const module = data.data;
+            selectModule(module.id, module);
+        })
+        .catch(error => {
+            console.error('Error fetching module details:', error.message);
+        });
+}
+
 function selectModule(moduleId, module) {
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
@@ -146,6 +177,7 @@ function resetSelectedModule() {
     selectedModuleBtn.textContent = 'Nie wybrano żadnego modułu';
     selectedModuleBtn.removeAttribute('data-module-id');
 }
+
 document.getElementById("change-module").addEventListener("click", function() {
     const changeModuleButton = this;
     const acceptButton = document.getElementById("accept-changes");
