@@ -474,3 +474,38 @@ document.getElementById("add-sentence-btn").addEventListener("click", function (
     fetchPostModuleDetails(getModuleId());
     fillInElementByText('add-sentence', "");
 });
+
+function fetchDeleteSentence(sentence) {
+    const token = localStorage.getItem('accessToken');
+
+    fetch(`${API_URL_SENTENCES}?moduleId=${moduleId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Module deleted:', data.message);
+            getAllUserModules(); // Refresh the module list and reset the selected module
+            resetSelectedModule();
+            clearLabels();
+            const showButton = document.getElementById('add-sentence-btn');
+            showButton.disabled = true;
+            showButton.classList.remove("green-button");
+            showButton.classList.add("grey-button");
+
+            const removeSentenceButton = document.getElementById('remove-sentence-btn');
+            removeSentenceButton.disabled = true;
+            removeSentenceButton.classList.remove("red-button");
+            removeSentenceButton.classList.add("grey-button");
+
+            clearObject('sentence-list');
+            clearObject('sentence-select');
+
+        })
+        .catch(error => {
+            console.error('Error deleting module:', error.message);
+        });
+}

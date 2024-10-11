@@ -5,6 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.iseebugs.doread.domain.module.ModuleFacade;
+import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
+import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
@@ -18,6 +21,7 @@ public class SentenceFacade {
 
     SentenceRepository sentenceRepository;
     SentencesProperties sentencesProperties;
+    ModuleFacade moduleFacade;
 
     public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
         return sentenceRepository.findByUserIdAndModuleId(userId, moduleId).stream()
@@ -132,6 +136,12 @@ public class SentenceFacade {
     @Transactional
     public void deleteById(Long id) {
         sentenceRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long id) throws ModuleNotFoundException {
+        ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, moduleId);
+        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
     }
 
     @Transactional

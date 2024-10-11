@@ -17,4 +17,6 @@ interface SentenceRepository extends JpaRepository<Sentence, Long> {
             Long startOrdinalNumber,
             Long endOrdinalNumber
     );
+
+    void deleteByUserIdAndModuleIdAndOrdinalNumber(Long userid, Long moduleId, Long id);
 }
