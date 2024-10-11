@@ -146,6 +146,11 @@ function fetchPutModuleDetails(moduleId) {
 }
 
 function selectModule(moduleId, module) {
+    const showSentencesBtn = document.getElementById('show-sentences')
+    showSentencesBtn.disabled = false;
+    showSentencesBtn.classList.remove('grey-button');
+    showSentencesBtn.classList.add('yellow-button');
+
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('yellow-button');
     selectedModuleBtn.classList.add('blue-button');
@@ -217,6 +222,11 @@ function deleteModule(moduleId) {
 }
 
 function resetSelectedModule() {
+    const showSentencesBtn = document.getElementById('show-sentences')
+    showSentencesBtn.disabled = true;
+    showSentencesBtn.classList.remove('yellow-button');
+    showSentencesBtn.classList.add('grey-button');
+
     const selectedModuleBtn = document.getElementById('selected-module');
     selectedModuleBtn.classList.remove('blue-button');
     selectedModuleBtn.classList.add('yellow-button');

@@ -9,7 +9,6 @@ import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.sentence.SentenceFacade;
-import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 
@@ -33,6 +32,6 @@ class SentenceController {
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
         List<String> data = sentenceFacade.findAllSentenceByModuleId(user.id(), moduleId);
-        return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Lista sesji.", data));
+        return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Sentence list.", data));
     }
 }
