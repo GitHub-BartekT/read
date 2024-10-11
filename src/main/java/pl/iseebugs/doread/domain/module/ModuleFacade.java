@@ -92,7 +92,7 @@ public class ModuleFacade {
         Module entity = moduleRepository.findByIdAndUserId(userId, toUpdate.getId())
                 .orElseThrow(ModuleNotFoundException::new);
 
-        if(!moduleValidator.stringValidator(toUpdate.getModuleName())){
+        if(moduleValidator.stringValidator(toUpdate.getModuleName())){
             entity.setModuleName(toUpdate.getModuleName());
         }
         if(moduleValidator.integerValidator(toUpdate.getSessionsPerDay())){

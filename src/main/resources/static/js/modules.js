@@ -1,4 +1,5 @@
 const API_URL = 'http://localhost:8080/api/module';
+let moduleId;
 
 getAllUserModules();
 
@@ -33,6 +34,7 @@ function getAllUserModules() {
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
+                        moduleId = module.id;
                         fetchModuleDetails(module.id);
                     });
 
@@ -78,7 +80,7 @@ function fetchPutModuleDetails(moduleId) {
         nextSession: document.getElementById('next-session').value
     };
 
-    fetch(`${API_URL}/${moduleId}`, {
+    fetch(`${API_URL}`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -188,6 +190,7 @@ document.getElementById("change-module").addEventListener("click", function() {
 document.getElementById("accept-changes").addEventListener("click", function() {
     const changeModuleButton = document.getElementById("change-module");
     const acceptButton = this;
+    fetchPutModuleDetails(moduleId);
     setAllModuleInputDisabled(true);
     changeButtons(changeModuleButton, acceptButton);
 });
@@ -199,6 +202,7 @@ function changeButtons(changeModuleButton, acceptButton) {
         changeModuleButton.classList.remove("red-button");
         changeModuleButton.classList.add("yellow-button");
         changeModuleButton.textContent = "zmień";
+        fetchModuleDetails(moduleId);
         setAllModuleInputDisabled(true);
 
         acceptButton.disabled = true;
