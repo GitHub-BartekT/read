@@ -37,7 +37,7 @@ public class ModuleSessionCoordinator {
         ModuleReadModel module = moduleFacade.createModule(userId, NEW_MODULE);
         SessionWriteModel session = sessionFacade.createSession(userId, NEW_MODULE);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
-        return moduleFacade.findAllByUserId(userId);
+        return moduleFacade.getModulesByUserId(userId);
     }
 
     public void deleteModule(Long userId, Long moduleId){
@@ -45,7 +45,7 @@ public class ModuleSessionCoordinator {
         for (SessionWriteModel session: sessions) {
             sessionFacade.deleteSession(userId, session.getId());
         }
-        moduleFacade.deleteByIdAndUserId(moduleId, userId);
+        moduleFacade.deleteModule(moduleId, userId);
     }
 
     @Transactional

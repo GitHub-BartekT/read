@@ -34,7 +34,7 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
-    public List<ModuleReadModel> findAllByUserId(Long userId) {
+    public List<ModuleReadModel> getModulesByUserId(Long userId) {
         validateUserId(userId);
 
         return moduleRepository.findAllByUserId(userId)
@@ -43,19 +43,19 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<ModuleReadModel> findAllPublicModules() {
+    public List<ModuleReadModel> getPublicModules() {
         return moduleRepository.findAllByIsPrivateFalse()
                 .stream()
                 .map(ModuleMapper::toReadModel)
                 .collect(Collectors.toList());
     }
 
-
-    public ModuleReadModel findByIdAndUserId(Long userId, Long moduleId) throws ModuleNotFoundException {
+    public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
 
         return moduleRepository.findByIdAndUserId(moduleId, userId)
-                .map(ModuleMapper::toReadModel).orElseThrow(ModuleNotFoundException::new);
+                .map(ModuleMapper::toReadModel)
+                .orElseThrow(ModuleNotFoundException::new);
     }
 
     public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
@@ -108,7 +108,7 @@ public class ModuleFacade {
     }
 
     @Transactional
-    public void deleteByIdAndUserId(Long moduleId, Long userId) {
+    public void deleteModule(Long moduleId, Long userId) {
         log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
         log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
         moduleRepository.deleteByIdAndUserId(moduleId, userId);

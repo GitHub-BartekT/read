@@ -54,7 +54,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        List<ModuleReadModel> data = moduleFacade.findAllByUserId(user.id());
+        List<ModuleReadModel> data = moduleFacade.getModulesByUserId(user.id());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
@@ -78,7 +78,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        ModuleReadModel data = moduleFacade.findByIdAndUserId(user.id(), moduleId);
+        ModuleReadModel data = moduleFacade.getModuleByUserIdAndModuleId(user.id(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
     }
 
