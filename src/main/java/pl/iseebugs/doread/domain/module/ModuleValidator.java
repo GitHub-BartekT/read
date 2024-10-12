@@ -11,10 +11,6 @@ class ModuleValidator {
         }
     }
 
-    boolean longValidator(final Long id) {
-        return id != null && id >= 1;
-    }
-
     boolean integerValidator(final Integer id) {
         return id != null && id >= 1;
     }
