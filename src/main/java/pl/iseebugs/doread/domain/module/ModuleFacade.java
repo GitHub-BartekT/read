@@ -22,16 +22,12 @@ public class ModuleFacade {
     private final ModuleRepository moduleRepository;
     private final ModuleValidator moduleValidator;
 
-    public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
-        moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
-        validateUserId(userId);
+    public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
+        userAndModuleIdsValidator(userId, moduleId);
 
-        AppUserReadModel user = appUserFacade.findUserById(userId);
-
-        Module toSave = buildNewModule(moduleName, user);
-        Module saved = moduleRepository.save(toSave);
-
-        return ModuleMapper.toReadModel(saved);
+        return moduleRepository.findByIdAndUserId(moduleId, userId)
+                .map(ModuleMapper::toReadModel)
+                .orElseThrow(ModuleNotFoundException::new);
     }
 
     public List<ModuleReadModel> getModulesByUserId(Long userId) {
@@ -50,27 +46,29 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
-        userAndModuleIdsValidator(userId, moduleId);
+    public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
+        moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
+        validateUserId(userId);
 
-        return moduleRepository.findByIdAndUserId(moduleId, userId)
-                .map(ModuleMapper::toReadModel)
-                .orElseThrow(ModuleNotFoundException::new);
+        AppUserReadModel user = appUserFacade.findUserById(userId);
+
+        Module toSave = buildNewModule(moduleName, user);
+        Module saved = moduleRepository.save(toSave);
+
+        return ModuleMapper.toReadModel(saved);
     }
 
-    public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
-        userAndModuleIdsValidator(userId, moduleId);
-
-        Module module = moduleRepository.findByIdAndUserId(moduleId, userId)
-                .orElseThrow(ModuleNotFoundException::new);
-
-        if (module.getNextSession() == module.getSessionsPerDay()) {
-            module.setActualDay(module.getActualDay() + 1);
-            module.setNextSession(1);
-        } else {
-            module.setNextSession(module.getNextSession() + 1);
-        }
-        moduleRepository.save(module);
+    private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
+        return Module.builder()
+                .moduleName(moduleName)
+                .userId(user.id())
+                .sessionsPerDay(3)
+                .presentationsPerSession(5)
+                .newSentencesPerDay(1)
+                .actualDay(1)
+                .nextSession(1)
+                .isPrivate(true)
+                .build();
     }
 
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
@@ -111,6 +109,25 @@ public class ModuleFacade {
         }
     }
 
+    public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
+        userAndModuleIdsValidator(userId, moduleId);
+
+        Module module = moduleRepository.findByIdAndUserId(moduleId, userId)
+                .orElseThrow(ModuleNotFoundException::new);
+
+        updateNextSession(module);
+    }
+
+    private void updateNextSession(final Module module) {
+        if (module.getNextSession() == module.getSessionsPerDay()) {
+            module.setActualDay(module.getActualDay() + 1);
+            module.setNextSession(1);
+        } else {
+            module.setNextSession(module.getNextSession() + 1);
+        }
+        moduleRepository.save(module);
+    }
+
     @Transactional
     public void deleteModule(Long moduleId, Long userId) {
         log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
@@ -125,18 +142,5 @@ public class ModuleFacade {
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
         moduleValidator.longValidator(userId, "User id is invalid.");
         moduleValidator.longValidator(moduleId, "Module id is invalid.");
-    }
-
-    private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
-        return Module.builder()
-                .moduleName(moduleName)
-                .userId(user.id())
-                .sessionsPerDay(3)
-                .presentationsPerSession(5)
-                .newSentencesPerDay(1)
-                .actualDay(1)
-                .nextSession(1)
-                .isPrivate(true)
-                .build();
     }
 }
