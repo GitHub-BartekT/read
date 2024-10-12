@@ -54,13 +54,12 @@ function fetchWithToken(url, options = {}) {
     };
 
     return fetch(url, options)
-        .then(response => response.json().then(data => ({ status: response.status, data })))
+        .then(response => response.json()
+            .then(data => ({ status: response.status, data })))
         .then(({ status, data }) => {
             if (status === 401 && data.message.includes('JWT expired')) {
-                // If the token is expired, attempt to refresh
                 return refreshToken().then(newToken => {
                     if (newToken) {
-                        // Retry the request with the new token
                         options.headers['Authorization'] = `Bearer ${newToken}`;
                         return fetch(url, options).then(response => response.json());
                     } else {
@@ -69,11 +68,10 @@ function fetchWithToken(url, options = {}) {
                     }
                 });
             } else if (status === 401) {
-                // If the token is invalid, redirect to login
                 goToLoginPage();
                 return null;
             }
-            return data; // Return the data for non-401 responses
+            return data;
         })
         .catch(error => {
             console.error('Error during fetch:', error);

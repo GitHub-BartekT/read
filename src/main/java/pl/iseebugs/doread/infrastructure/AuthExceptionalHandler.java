@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.infrastructure;
 
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,5 +81,13 @@ class AuthExceptionalHandler {
                 ApiResponseFactory.createResponseWithoutData(
                         HttpStatus.UNAUTHORIZED.value(),
                         "Invalid JWT signature: " + e.getMessage()));
+    }
+
+    @ExceptionHandler(MalformedJwtException.class)
+    ResponseEntity<ApiResponse<Void>> handlerMalformedJwtException(MalformedJwtException  e){
+        return ResponseEntity.status(401).body(
+                ApiResponseFactory.createResponseWithoutData(
+                        HttpStatus.UNAUTHORIZED.value(),
+                        "Invalid JWT string: " + e.getMessage()));
     }
 }
