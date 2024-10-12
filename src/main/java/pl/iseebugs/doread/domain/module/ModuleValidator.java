@@ -22,4 +22,11 @@ class ModuleValidator {
     boolean stringValidator(String argument) {
         return argument != null && !argument.isBlank();
     }
+
+    String validateAndSetDefaultModuleName(String moduleName) {
+        if (!stringValidator(moduleName)) {
+            moduleName = "New module";
+        }
+        return moduleName;
+    }
 }

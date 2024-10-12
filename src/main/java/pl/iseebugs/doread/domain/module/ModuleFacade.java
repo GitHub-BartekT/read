@@ -22,34 +22,21 @@ public class ModuleFacade {
     private final ModuleRepository moduleRepository;
     private final ModuleValidator moduleValidator;
 
-    public ModuleReadModel create(Long userId, String moduleName) throws AppUserNotFoundException {
-        if (!moduleValidator.stringValidator(moduleName)) {
-            moduleName = "New module";
-        }
-
-        moduleValidator.longValidator(userId, "User id is invalid.");
+    public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
+        moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
+        validateUserId(userId);
 
         AppUserReadModel user = appUserFacade.findUserById(userId);
 
-        Module toSave = Module.builder()
-                .moduleName(moduleName)
-                .userId(user.id())
-                .sessionsPerDay(3)
-                .presentationsPerSession(5)
-                .newSentencesPerDay(1)
-                .actualDay(1)
-                .nextSession(1)
-                .isPrivate(true)
-                .build();
-
+        Module toSave = buildNewModule(moduleName, user);
         Module saved = moduleRepository.save(toSave);
 
         return ModuleMapper.toReadModel(saved);
     }
 
     public List<ModuleReadModel> findAllByUserId(Long userId) {
-        moduleValidator.longValidator(userId, "User id is invalid.");
-        
+        validateUserId(userId);
+
         return moduleRepository.findAllByUserId(userId)
                 .stream()
                 .map(ModuleMapper::toReadModel)
@@ -127,8 +114,25 @@ public class ModuleFacade {
         moduleRepository.deleteByIdAndUserId(moduleId, userId);
     }
 
+    private void validateUserId(Long userId) {
+        moduleValidator.longValidator(userId, "Invalid User ID.");
+    }
+
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
         moduleValidator.longValidator(userId, "User id is invalid.");
         moduleValidator.longValidator(moduleId, "Module id is invalid.");
+    }
+
+    private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
+        return Module.builder()
+                .moduleName(moduleName)
+                .userId(user.id())
+                .sessionsPerDay(3)
+                .presentationsPerSession(5)
+                .newSentencesPerDay(1)
+                .actualDay(1)
+                .nextSession(1)
+                .isPrivate(true)
+                .build();
     }
 }
