@@ -1,5 +1,5 @@
-const API_URL = 'http://localhost:8080';
-const REFRESH_TOKEN_URL = API_URL + '/api/auth/refresh';
+const API_URL = 'http://localhost:8080/api';
+const REFRESH_TOKEN_URL = API_URL + '/auth/refresh';
 
 function goToLoginPage() {
     window.location.href = '/';
@@ -38,34 +38,43 @@ function refreshToken() {
         });
 }
 
-function fetchWithToken(url, options) {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
+function fetchWithToken(url, options = {}) {
+    const accessToken = localStorage.getItem('accessToken');
+
+    if (!accessToken) {
         goToLoginPage();
-        return;
+        return Promise.reject('No access token available');
     }
 
+    // Set the Authorization header with the access token
     options.headers = {
-        'Authorization': `Bearer ${token}`,
+        ...options.headers, // Preserve any other headers
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': options.headers?.['Content-Type'] || 'application/json'
     };
 
     return fetch(url, options)
-        .then(response => response.json().then(data => ({status: response.status, data})))
-        .then(({status, data}) => {
+        .then(response => response.json()
+            .then(data => ({ status: response.status, data })))
+        .then(({ status, data }) => {
             if (status === 401 && data.message.includes('JWT expired')) {
                 return refreshToken().then(newToken => {
                     if (newToken) {
                         options.headers['Authorization'] = `Bearer ${newToken}`;
-                        return fetch(url, options)
-                            .then(response => response.json());
+                        return fetch(url, options).then(response => response.json());
                     } else {
                         goToLoginPage();
+                        return null;
                     }
                 });
+            } else if (status === 401) {
+                goToLoginPage();
+                return null;
             }
             return data;
         })
         .catch(error => {
-            console.error('Error:', error);
+            console.error('Error during fetch:', error);
+            return null;
         });
 }

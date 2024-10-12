@@ -46,7 +46,8 @@ class SecurityConfig {
                                 "/about.html",
                                 "/dashboard.html",
                                 "/session.html",
-                                "/modules.html").permitAll()
+                                "/modules.html",
+                                "/account.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
