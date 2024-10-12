@@ -80,6 +80,14 @@ public class ModuleFacade {
         Module entity = moduleRepository.findByIdAndUserId(toUpdate.getId(), userId)
                 .orElseThrow(ModuleNotFoundException::new);
 
+        updateModuleFields(toUpdate, entity);
+
+        Module saved = moduleRepository.save(entity);
+
+        return ModuleMapper.toReadModel(saved);
+    }
+
+    private void updateModuleFields(final ModuleWriteModel toUpdate, final Module entity) {
         if(moduleValidator.stringValidator(toUpdate.getModuleName())){
             entity.setModuleName(toUpdate.getModuleName());
         }
@@ -101,10 +109,6 @@ public class ModuleFacade {
         if(toUpdate.getIsPrivate() != null){
             entity.setPrivate(!toUpdate.getIsPrivate());
         }
-
-        Module saved = moduleRepository.save(entity);
-
-        return ModuleMapper.toReadModel(saved);
     }
 
     @Transactional
