@@ -1,6 +1,5 @@
-const API_URL = 'http://localhost:8080/api/module';
-const API_URL_SENTENCES = 'http://localhost:8080/api/sentence';
-
+const API_URL_MODULE = API_URL + '/module';
+const API_URL_SENTENCES = API_URL + '/sentence';
 
 getAllUserModules();
 
@@ -12,7 +11,7 @@ function getAllUserModules() {
         goToLoginPage();
     }
 
-    fetch(API_URL, {
+    fetch(API_URL_MODULE, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -55,7 +54,7 @@ function createNewModule() {
         goToLoginPage();
     }
 
-    fetch(API_URL, {
+    fetch(API_URL_MODULE, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -111,7 +110,7 @@ function createNewModule() {
 function fetchModuleDetails(moduleId) {
     const token = localStorage.getItem('accessToken');
 
-    fetch(`${API_URL}/${moduleId}`, {
+    fetch(`${API_URL_MODULE}/${moduleId}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -140,7 +139,7 @@ function fetchPutModuleDetails(moduleId) {
         nextSession: document.getElementById('next-session').value
     };
 
-    fetch(`${API_URL}`, {
+    fetch(`${API_URL_MODULE}`, {
         method: 'PUT',
         headers: {
             'Accept': 'application/json',
@@ -240,7 +239,7 @@ document.getElementById('delete-module-button').addEventListener('click', () => 
 function deleteModule(moduleId) {
     const token = localStorage.getItem('accessToken');
 
-    fetch(`${API_URL}?moduleId=${moduleId}`, {
+    fetch(`${API_URL_MODULE}?moduleId=${moduleId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
