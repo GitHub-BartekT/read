@@ -82,12 +82,4 @@ class AuthExceptionalHandler {
                         HttpStatus.UNAUTHORIZED.value(),
                         "Invalid JWT signature: " + e.getMessage()));
     }
-
-    @ExceptionHandler(MalformedJwtException.class)
-    ResponseEntity<ApiResponse<Void>> handlerMalformedJwtException(MalformedJwtException  e){
-        return ResponseEntity.status(401).body(
-                ApiResponseFactory.createResponseWithoutData(
-                        HttpStatus.UNAUTHORIZED.value(),
-                        "Invalid JWT string: " + e.getMessage()));
-    }
 }
