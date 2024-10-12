@@ -42,6 +42,8 @@ class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
+                                "/favicon.ico",
+                                "/about.html",
                                 "/dashboard.html",
                                 "/session.html",
                                 "/modules.html").permitAll()
