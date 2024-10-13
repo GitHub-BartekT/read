@@ -27,17 +27,17 @@ public class ModuleSessionCoordinator {
     private final SessionFacade sessionFacade;
 
     public void creatingPredefinedModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
-        ModuleReadModel module = moduleFacade.create(userId, MODULE_NAME);
+        ModuleReadModel module = moduleFacade.createModule(userId, MODULE_NAME);
         sentenceFacade.createSentencesFromProperties(userId, module.getId());
         SessionWriteModel session = sessionFacade.createSession(userId, MODULE_NAME);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
     }
 
     public List<ModuleReadModel> createNewModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
-        ModuleReadModel module = moduleFacade.create(userId, NEW_MODULE);
+        ModuleReadModel module = moduleFacade.createModule(userId, NEW_MODULE);
         SessionWriteModel session = sessionFacade.createSession(userId, NEW_MODULE);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
-        return moduleFacade.findAllByUserId(userId);
+        return moduleFacade.getModulesByUserId(userId);
     }
 
     public void deleteModule(Long userId, Long moduleId){
@@ -45,7 +45,7 @@ public class ModuleSessionCoordinator {
         for (SessionWriteModel session: sessions) {
             sessionFacade.deleteSession(userId, session.getId());
         }
-        moduleFacade.deleteByIdAndUserId(moduleId, userId);
+        moduleFacade.deleteModule(moduleId, userId);
     }
 
     @Transactional

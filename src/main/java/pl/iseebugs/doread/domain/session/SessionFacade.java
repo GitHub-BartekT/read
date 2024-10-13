@@ -1,7 +1,6 @@
 package pl.iseebugs.doread.domain.session;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,7 +57,7 @@ public class SessionFacade {
         Session userSession = sessionRepository.findByIdAndUserId(sessionId, userId)
                 .orElseThrow(SessionNotFoundException::new);
 
-        ModuleReadModel userModule = moduleFacade.findByIdAndUserId(userId, moduleId);
+        ModuleReadModel userModule = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
 
         Long maxOrdinalPosition = userSession.getSessionModules().stream()
                 .map(SessionModule::getOrdinalPosition)
@@ -99,7 +98,7 @@ public class SessionFacade {
         Map<Long, List<String>> session = new HashMap<>();
 
         for (SessionModule sessionModule : modules) {
-            ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, sessionModule.getModuleId());
+            ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, sessionModule.getModuleId());
             long firstSentence = module.getActualDay();
             long lastSentence = module.getPresentationsPerSession() + firstSentence - 1L;
             List<SentenceReadModel> sentences = sentenceFacade.findAllByModuleIdAndBetween(
@@ -134,7 +133,7 @@ public class SessionFacade {
         List<SessionModule> modules = userSession.getSessionModules();
 
         for (SessionModule sessionModule : modules) {
-            ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, sessionModule.getModuleId());
+            ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, sessionModule.getModuleId());
             moduleFacade.setNextSession(userId, module.getId());
         }
     }

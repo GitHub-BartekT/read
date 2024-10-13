@@ -149,7 +149,7 @@ public class SentenceFacade {
 
     @Transactional
     public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long id) throws ModuleNotFoundException {
-        ModuleReadModel module = moduleFacade.findByIdAndUserId(userId, moduleId);
+        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
         sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
 
         List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
