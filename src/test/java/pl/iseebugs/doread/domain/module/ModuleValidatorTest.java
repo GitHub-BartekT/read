@@ -78,7 +78,8 @@ class ModuleValidatorTest {
         // Then
         assertAll(
                 () -> assertThat(result).isFalse()
-        );    }
+        );
+    }
 
     @Test
     @DisplayName("integerValidator should returns false when argument is negative")
@@ -142,10 +143,77 @@ class ModuleValidatorTest {
 
 
     @Test
-    void stringValidator() {
+    @DisplayName("stringValidator should returns false when argument is null")
+    void stringValidator_returns_false_when_argument_is_null() {
+        //Given
+        String argument = null;
+
+        //When
+        boolean result = moduleValidator.stringValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isFalse()
+        );
     }
 
     @Test
-    void validateAndSetDefaultModuleName() {
+    @DisplayName("stringValidator should returns false when argument is blank")
+    void stringValidator_returns_false_when_argument_is_blank() {
+        //Given
+        String argument = "";
+
+        //When
+        boolean result = moduleValidator.stringValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("stringValidator should returns true when argument is valid")
+    void stringValidator_returns_true() {
+        //Given
+        String argument = "foo";
+
+        //When
+        boolean result = moduleValidator.stringValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("validateAndSetDefaultModuleName returns 'New module' when stringValidator returns false")
+    void validateAndSetDefaultModuleName_returns_New_module_when_string_validator_returns_false() {
+        //Given
+        String invalidModuleName = "";
+
+        //When
+        String result = moduleValidator.validateAndSetDefaultModuleName(invalidModuleName);
+
+        //Then
+        assertAll(
+                () -> assertThat(result).isEqualTo("New module")
+        );
+    }
+
+    @Test
+    @DisplayName("validateAndSetDefaultModuleName returns original name when stringValidator returns true")
+    void validateAndSetDefaultModuleName_returns_original_name_when_string_validator_returns_true() {
+        //Given
+        String validModuleName = "Valid Module Name";
+
+        //When
+        String result = moduleValidator.validateAndSetDefaultModuleName(validModuleName);
+
+        //Then
+        assertAll(
+                () -> assertThat(result).isEqualTo(validModuleName)
+        );
     }
 }
