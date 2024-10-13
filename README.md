@@ -72,6 +72,16 @@ To start the application:
 
 Access via [localhost:8080](http://localhost:8080)
 
+## Running Tests:
+
+* Unit Tests:
+
+```mvn test```
+
+* Unit + Integration Tests:
+
+```mvn verify```
+
 ## Documentation
 For reference: *How to Teach Your Baby to Read* by Glenn Doman and Janet Doman.
 

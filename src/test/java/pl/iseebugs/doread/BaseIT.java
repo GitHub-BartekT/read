@@ -24,7 +24,7 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @Testcontainers
-public abstract class BaseIntegrationTest {
+public abstract class BaseIT {
 
     public static final String WIRE_MOCK_HOST = "http://localhost:8080/";
 

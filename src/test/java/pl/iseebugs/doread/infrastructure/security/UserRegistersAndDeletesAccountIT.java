@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.StringUtils;
-import pl.iseebugs.doread.BaseIntegrationTest;
+import pl.iseebugs.doread.BaseIT;
 import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.AppUserDto;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginResponse;
@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Log
-class UserRegistersAndDeletesAccountIntegrationTest extends BaseIntegrationTest {
+class UserRegistersAndDeletesAccountIT extends BaseIT {
 
     @Test
     void should_user_registers_changes_data_and_deletes_account() throws Exception {
@@ -94,33 +94,16 @@ class UserRegistersAndDeletesAccountIntegrationTest extends BaseIntegrationTest 
         // given && when
         log.info("Step 4. Confirm token with invalid token");
         String badToken = "not.valid.token";
-        ResultActions badConfirmTokenRegisterRequest = mockMvc.perform(get("/api/auth/create/confirm?token=" + badToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        );
-
-        // then
-        MvcResult badConfirmTokenActionResult = badConfirmTokenRegisterRequest.andExpect(status().isOk()).andReturn();
-        String badConfirmTokenActionResultJson = badConfirmTokenActionResult.getResponse().getContentAsString();
-        ApiResponse<Void> badConfirmTokenResultDto = objectMapper.readValue(
-                badConfirmTokenActionResultJson, new TypeReference<>() {});
-        assertAll(
-                () -> assertThat(badConfirmTokenResultDto.getStatusCode()).isEqualTo(401),
-                () -> assertThat(badConfirmTokenResultDto.getMessage()).isEqualTo("Token not found.")
-        );
-
+        mockMvc.perform(get("/api/auth/confirm?token=" + badToken))
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"));
 
     //Step 5: user made POST /api/auth/confirm with token="someToken" and system responses with status OK(200)
         // given && when
         log.info("Step 5. Confirm token successfully");
-        ResultActions confirmRegisterRequest = mockMvc.perform(get("/api/auth/create/confirm?token=" + registrationToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        );
-
-        // then
-        MvcResult confirmActionResult = confirmRegisterRequest
+        ResultActions confirmRegisterRequest = mockMvc.perform(get("/api/auth/confirm?token=" + registrationToken))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("Account successfully confirmed")) // Sprawdzenie treści odpowiedzi
-                .andReturn();
+                .andExpect(view().name("registrationSuccess"));
 
 
     //Step 6: user tried to get JWT by requesting POST /api/auth/signin with username="someTestUser", password="someTestPassword"

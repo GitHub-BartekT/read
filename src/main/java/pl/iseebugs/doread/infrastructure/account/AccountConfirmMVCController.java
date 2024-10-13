@@ -17,7 +17,10 @@ class AccountConfirmMVCController {
 
     @GetMapping("/api/auth/confirm")
     public String confirm(@RequestParam("token") String token) throws RegistrationTokenConflictException, AppUserNotFoundException, TokenNotFoundException {
-        accountCreateFacade.confirmToken(token);
+        try {accountCreateFacade.confirmToken(token);}
+        catch (Exception e){
+            return "error";
+        }
         return "registrationSuccess";
     }
 }
