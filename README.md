@@ -42,7 +42,7 @@ The app follows a **clean, modular hexagonal architecture**:
 * HTML, CSS, JavaScript
 #### Version Control
 * Git / GitHub
-### Version 1.0 - SNAPSHOT
+### Version 0.1 - SNAPSHOT
 * **Basic functionality** - ✅
   1. running session
   2. increase session meter, after each session
@@ -53,16 +53,23 @@ The app follows a **clean, modular hexagonal architecture**:
 * Basic words database✅
 
 ## Pending features
-### Version 1.1
+### Version 1.0
 1. Module CRUD
 2. Backend for statistics
-### Version 1.2
-1. Session CRUD - allowing multiple modules per session.
-2. Launch🚀
+3. Launch🚀
+### Version 1.1
+1. Add password management
+2. Redraw pages:
+   1. about
+   2. account
+   3. landing page
+3. Auto login
 ### Version 2.0
-1. Statistic view
-2. Admin View
+1. Session CRUD - allowing multiple modules per session.
+2. Statistic view
 ### Version 2.1
+1. Admin View
+### Version 3.0
 1. PictureModule CRUD for "bits of intelligence" feature.
 
 ## Running Application:
