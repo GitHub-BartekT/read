@@ -67,8 +67,79 @@ class ModuleValidatorTest {
     }
 
     @Test
-    void integerValidator() {
+    @DisplayName("integerValidator should returns false when argument is null")
+    void integerValidator_returns_false_when_argument_is_null() {
+        //Given
+        Integer argument = null;
+
+        //When
+        boolean result = moduleValidator.integerValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isFalse()
+        );    }
+
+    @Test
+    @DisplayName("integerValidator should returns false when argument is negative")
+    void integerValidator_returns_false_when_argument_is_equals_minus_one() {
+        //Given
+        Integer argument = -1;
+
+        //When
+        boolean result = moduleValidator.integerValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isFalse()
+        );
     }
+
+    @Test
+    @DisplayName("integerValidator should returns false when argument is zero")
+    void integerValidator_returns_false_when_argument_is_equals_zero() {
+        //Given
+        Integer argument = 0;
+
+        //When
+        boolean result = moduleValidator.integerValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isFalse()
+        );
+    }
+
+    @Test
+    @DisplayName("integerValidator should returns true when argument is zero")
+    void integerValidator_returns_true_when_argument_is_equals_one() {
+        //Given
+        Integer argument = 1;
+
+        //When
+        boolean result = moduleValidator.integerValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("integerValidator should returns true when argument is positive")
+    void integerValidator_returns_true_when_argument_is_equals_five() {
+        //Given
+        Integer argument = 5;
+
+        //When
+        boolean result = moduleValidator.integerValidator(argument);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isTrue()
+        );
+    }
+
 
     @Test
     void stringValidator() {
