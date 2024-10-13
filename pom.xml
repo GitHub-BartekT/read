@@ -184,6 +184,38 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<!-- Plugin Surefire for unit tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.1.2</version>
+				<configuration>
+					<includes>
+						<include>**/*Test.java</include> <!-- Uruchamia testy jednostkowe -->
+					</includes>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin Failsafe for integration tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.1.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>  <!-- Uruchamiany w fazie integration-test -->
+							<goal>verify</goal> <!-- Uruchamiany w fazie verify -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includes>
+						<include>**/*IT.java</include> <!-- Uruchamia testy integracyjne -->
+					</includes>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
