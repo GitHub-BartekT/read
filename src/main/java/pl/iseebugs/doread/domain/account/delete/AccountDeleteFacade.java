@@ -57,7 +57,7 @@ public class AccountDeleteFacade {
         return deleteToken.getToken();
     }
 
-    public ApiResponse<Void> confirmDeleteToken(final String token) throws TokenNotFoundException, AppUserNotFoundException, EmailNotFoundException {
+    public void confirmDeleteToken(final String token) throws TokenNotFoundException, AppUserNotFoundException, EmailNotFoundException {
         DeleteToken deleteToken = deleteTokenService.getToken(token)
                 .orElseThrow(TokenNotFoundException::new);
 
@@ -70,8 +70,6 @@ public class AccountDeleteFacade {
         deleteTokenService.setConfirmedAt(token);
 
         anonymization(deleteToken.getAppUserId());
-
-        return ApiResponseFactory.createResponseWithoutData(HttpStatus.NO_CONTENT.value(), "User account successfully deleted.");
     }
 
     private void anonymization(final Long id) throws AppUserNotFoundException, EmailNotFoundException {
