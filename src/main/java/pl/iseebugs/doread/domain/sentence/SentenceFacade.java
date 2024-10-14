@@ -19,11 +19,21 @@ import java.util.stream.IntStream;
 @AllArgsConstructor
 public class SentenceFacade {
 
-    SentenceRepository sentenceRepository;
-    SentencesProperties sentencesProperties;
-    ModuleFacade moduleFacade;
+    private final SentenceRepository sentenceRepository;
+    private final SentencesProperties sentencesProperties;
+    private final ModuleFacade moduleFacade;
+    private final SentenceValidator sentenceValidator;
 
-    public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
+
+    /**
+     * Get all sentences by module id and user id.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<SentenceReadModel> getAllByUserIdAndModuleId(Long userId, Long moduleId) {
+        userIdAndModuleIdValidator(userId, moduleId);
         return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
@@ -50,14 +60,9 @@ public class SentenceFacade {
                 .orElseThrow(() -> new IllegalArgumentException("Sentence with id " + id + " not found"));
     }
 
-    public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
-        return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
-                .map(SentenceMapper::toReadModel);
-    }
-
     @Transactional
     public SentenceReadModel create(Long userId, Long moduleId, String sentenceText) {
-        Long size = (long) findAllByModuleId(userId, moduleId).size();
+        Long size = (long) getAllByUserIdAndModuleId(userId, moduleId).size();
 
         if (sentenceText == null || sentenceText.isEmpty()) {
             throw new IllegalArgumentException("Sentence text must not be null or empty");
@@ -70,7 +75,7 @@ public class SentenceFacade {
                 .build();
         Sentence result = sentenceRepository.save(sentence);
 
-        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
+        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
                 .map(SentenceMapper::toWriteModelFromReadModel)
                 .toList();
         rearrangeSetByModuleId(userId, moduleId, moduleSentences);
@@ -139,7 +144,7 @@ public class SentenceFacade {
             sentence.setOrdinalNumber((long) (i + 1));
             sentenceRepository.save(sentence);
         }
-        return findAllByModuleId(userId, moduleId);
+        return getAllByUserIdAndModuleId(userId, moduleId);
     }
 
     @Transactional
@@ -152,7 +157,7 @@ public class SentenceFacade {
         ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
         sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
 
-        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
+        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
                 .map(SentenceMapper::toWriteModelFromReadModel)
                 .toList();
         rearrangeSetByModuleId(userId, moduleId, moduleSentences);
@@ -165,6 +170,20 @@ public class SentenceFacade {
         toUpdate.setSentence(newSentence);
         Sentence result = sentenceRepository.save(toUpdate);
         return SentenceMapper.toReadModel(result);
+    }
+
+    public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
+        return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
+                .map(SentenceMapper::toReadModel);
+    }
+
+    private void validateUserId(Long userId) {
+        sentenceValidator.longValidator(userId, "Invalid user id.");
+    }
+
+    private void userIdAndModuleIdValidator(final Long userId, final Long moduleId) {
+        sentenceValidator.longValidator(userId, "Invalid user id.");
+        sentenceValidator.longValidator(moduleId, "Invalid module id.");
     }
 }
 

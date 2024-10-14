@@ -47,7 +47,6 @@ public class ModuleFacade {
      */
     public List<ModuleReadModel> getModulesByUserId(Long userId) {
         validateUserId(userId);
-
         return moduleRepository.findAllByUserId(userId)
                 .stream()
                 .map(ModuleMapper::toReadModel)
@@ -62,7 +61,6 @@ public class ModuleFacade {
      * @since 1.0
      */
     public List<ModuleReadModel> getAllModules() {
-
         return moduleRepository.findAll()
                 .stream()
                 .map(ModuleMapper::toReadModel)
