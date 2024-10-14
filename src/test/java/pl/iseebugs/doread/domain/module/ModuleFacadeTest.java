@@ -674,8 +674,7 @@ class ModuleFacadeTest extends BaseIT {
 
     private void deleteTestUser(Long userId) throws Exception {
         AppUserReadModel user = appUserFacade.findUserById(userId);
-        LoginTokenDto deleteToken = accountDeleteFacade.deleteUser(user);
-        accountDeleteFacade.confirmDeleteToken(deleteToken.token());
+        appUserFacade.anonymization(user.id());
     }
 
     private void createTestModules(Long userId, int modulesQuantity) throws AppUserNotFoundException {

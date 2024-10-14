@@ -69,20 +69,6 @@ public class AccountDeleteFacade {
 
         deleteTokenService.setConfirmedAt(token);
 
-        anonymization(deleteToken.getAppUserId());
-    }
-
-    private void anonymization(final Long id) throws AppUserNotFoundException, EmailNotFoundException {
-        AppUserReadModel user = appUserFacade.findUserById(id);
-        AppUserWriteModel toAnonymization = AppUserWriteModel.builder()
-                .id(user.id())
-                .role("DELETED")
-                .firstName(UUID.randomUUID().toString())
-                .lastName(UUID.randomUUID().toString())
-                .password(UUID.randomUUID().toString())
-                .email(UUID.randomUUID().toString())
-                .locked(true)
-                .build();
-        appUserFacade.update(toAnonymization);
+        appUserFacade.anonymization(deleteToken.getAppUserId());
     }
 }
