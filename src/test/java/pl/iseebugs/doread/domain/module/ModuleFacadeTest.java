@@ -243,13 +243,6 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
-
-
-    /*----------------------*/
-
-
-
-
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
     void updateModule_throws_IllegalArgumentException_when_invalid_user_id() {
@@ -453,6 +446,11 @@ class ModuleFacadeTest extends BaseIT {
         deleteAllUserModules(userId);
         deleteTestUser(userId);
     }
+
+
+    /*----------------------*/
+
+
 
 
 

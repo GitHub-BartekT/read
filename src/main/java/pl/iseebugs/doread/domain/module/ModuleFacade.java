@@ -26,9 +26,9 @@ public class ModuleFacade {
     /**
      * Get user module by module id and user id.
      *
-     * @throws ModuleNotFoundException
-     * @Author: Bartlomiej Tucholski
-     * @Contact: iseebugs.pl
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
      */
     public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
@@ -41,8 +41,9 @@ public class ModuleFacade {
     /**
      * Get all user modules.
      *
-     * @Author: Bartlomiej Tucholski
-     * @Contact: iseebugs.pl
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
      */
     public List<ModuleReadModel> getModulesByUserId(Long userId) {
         validateUserId(userId);
@@ -57,9 +58,9 @@ public class ModuleFacade {
     /**
      * Save new module with given name to database
      *
-     * @throws AppUserNotFoundException
-     * @Author: Bartlomiej Tucholski
-     * @Contact: iseebugs.pl
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
      */
     public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
         moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
@@ -75,6 +76,10 @@ public class ModuleFacade {
 
     /**
      * Creates new module with default parameters.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
      */
     private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
         return Module.builder()
@@ -92,9 +97,9 @@ public class ModuleFacade {
     /**
      * Update module non-null given fields.
      *
-     * @throws ModuleNotFoundException
-     * @Author: Bartlomiej Tucholski
-     * @Contact: iseebugs.pl
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
      */
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
         log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
@@ -110,6 +115,12 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
+    /**
+     * Set fields to update.
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     private void updateModuleFields(final ModuleWriteModel toUpdate, final Module entity) {
         if(moduleValidator.stringValidator(toUpdate.getModuleName())){
             entity.setModuleName(toUpdate.getModuleName());
@@ -134,6 +145,19 @@ public class ModuleFacade {
         }
     }
 
+
+    /**
+     * Increment next session.
+     * If next session is equal to SessionsPerDay than:
+     * <ul>
+     * <li>increment actual module session day</i>
+     * <li>set next session to 1</i>
+     * </ul>
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
 
