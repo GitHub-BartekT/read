@@ -161,23 +161,88 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
-/*----------------------*/
+    /*----------------------*/
 
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
-    void createModule_throws_IllegalArgumentException(){}
+    void createModule_throws_IllegalArgumentException() {
+        // Given + When
+        Throwable e = catchThrowable(() -> moduleFacade.createModule(-1L, "foo"));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
+        );
+    }
 
     @Test
     @DisplayName("createModule should throws AppUserNotFoundException when no user")
-    void createModule_throws_AppUserNotFoundException(){}
+    void createModule_throws_AppUserNotFoundException() {
+        // Given + When
+        Throwable e = catchThrowable(() -> moduleFacade.createModule(1L, "foo"));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(AppUserNotFoundException.class)
+        );
+    }
 
     @Test
     @DisplayName("createModule should creates module with default name")
-    void createModule_create_module_with_default_name(){}
+    void createModule_create_module_with_default_name() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = null;
+
+        // + When
+        ModuleReadModel result = moduleFacade.createModule(userId, moduleName);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo("New module"),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(3),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(5),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(1),
+                () -> assertThat(result.getActualDay()).isEqualTo(1),
+                () -> assertThat(result.getNextSession()).isEqualTo(1),
+                () -> assertThat(result.isPrivate()).isTrue()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
     @Test
     @DisplayName("createModule should creates module with default specific name")
-    void createModule_create_module_with_specific_name(){}
+    void createModule_create_module_with_specific_name() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = "foo module";
+
+        // + When
+        ModuleReadModel result = moduleFacade.createModule(userId, moduleName);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo(moduleName),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(3),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(5),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(1),
+                () -> assertThat(result.getActualDay()).isEqualTo(1),
+                () -> assertThat(result.getNextSession()).isEqualTo(1),
+                () -> assertThat(result.isPrivate()).isTrue()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
 
 

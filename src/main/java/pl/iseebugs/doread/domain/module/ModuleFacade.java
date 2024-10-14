@@ -73,6 +73,9 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
+    /**
+     * Set default module parameters.
+     */
     private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
         return Module.builder()
                 .moduleName(moduleName)
