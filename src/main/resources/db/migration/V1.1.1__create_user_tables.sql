@@ -6,7 +6,7 @@ CREATE TABLE app_user (
                           last_name VARCHAR(255),
                           email VARCHAR(255) UNIQUE NOT NULL,
                           password VARCHAR(255) NOT NULL,
-                          role VARCHAR(255) NOT NULL,
+                          role VARCHAR(255),
                           locked BOOLEAN DEFAULT FALSE,
                           enabled BOOLEAN DEFAULT FALSE
 );

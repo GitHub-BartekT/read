@@ -2,6 +2,7 @@ package pl.iseebugs.doread.domain.module;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.mapping.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
@@ -22,6 +23,13 @@ public class ModuleFacade {
     private final ModuleRepository moduleRepository;
     private final ModuleValidator moduleValidator;
 
+    /**
+     * Get user module by module id and user id.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
 
@@ -30,6 +38,13 @@ public class ModuleFacade {
                 .orElseThrow(ModuleNotFoundException::new);
     }
 
+    /**
+     * Get all user modules.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public List<ModuleReadModel> getModulesByUserId(Long userId) {
         validateUserId(userId);
 
@@ -39,13 +54,28 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<ModuleReadModel> getPublicModules() {
-        return moduleRepository.findAllByIsPrivateFalse()
+    /**
+     * Get all modules.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<ModuleReadModel> getAllModules() {
+
+        return moduleRepository.findAll()
                 .stream()
                 .map(ModuleMapper::toReadModel)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Save new module with given name to database. If the name provided is null or empty, set the "New Module" option.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
         moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
         validateUserId(userId);
@@ -58,6 +88,13 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
+    /**
+     * Creates new module with default parameters.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
         return Module.builder()
                 .moduleName(moduleName)
@@ -71,6 +108,13 @@ public class ModuleFacade {
                 .build();
     }
 
+    /**
+     * Update module non-null given fields.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
         log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
         userAndModuleIdsValidator(userId, toUpdate.getId());
@@ -85,30 +129,49 @@ public class ModuleFacade {
         return ModuleMapper.toReadModel(saved);
     }
 
+    /**
+     * Set fields to update.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     private void updateModuleFields(final ModuleWriteModel toUpdate, final Module entity) {
-        if(moduleValidator.stringValidator(toUpdate.getModuleName())){
+        if (moduleValidator.stringValidator(toUpdate.getModuleName())) {
             entity.setModuleName(toUpdate.getModuleName());
         }
-        if(moduleValidator.integerValidator(toUpdate.getSessionsPerDay())){
+        if (moduleValidator.integerValidator(toUpdate.getSessionsPerDay())) {
             entity.setSessionsPerDay(toUpdate.getSessionsPerDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getPresentationsPerSession())){
+        if (moduleValidator.integerValidator(toUpdate.getPresentationsPerSession())) {
             entity.setPresentationsPerSession(toUpdate.getPresentationsPerSession());
         }
-        if(moduleValidator.integerValidator(toUpdate.getNewSentencesPerDay())){
+        if (moduleValidator.integerValidator(toUpdate.getNewSentencesPerDay())) {
             entity.setNewSentencesPerDay(toUpdate.getNewSentencesPerDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getActualDay())){
+        if (moduleValidator.integerValidator(toUpdate.getActualDay())) {
             entity.setActualDay(toUpdate.getActualDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getNextSession())){
+        if (moduleValidator.integerValidator(toUpdate.getNextSession())) {
             entity.setNextSession(toUpdate.getNextSession());
         }
-        if(toUpdate.getIsPrivate() != null){
-            entity.setPrivate(!toUpdate.getIsPrivate());
+        if (toUpdate.getIsPrivate() != null) {
+            entity.setPrivate(toUpdate.getIsPrivate());
         }
     }
 
+    /**
+     * Increment next session.
+     * If next session is equal to SessionsPerDay than:
+     * <ul>
+     * <li>increment actual module session day</i>
+     * <li>set next session to 1</i>
+     * </ul>
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public void setNextSession(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
 
@@ -128,10 +191,21 @@ public class ModuleFacade {
         moduleRepository.save(module);
     }
 
+    /**
+     * Delete module.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     @Transactional
     public void deleteModule(Long moduleId, Long userId) {
-        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
-        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        log.info(
+                "Class.method: {}{}(moduleId {}, userId {});",
+                this.getClass().getSimpleName(),
+                "deleteByIdAndUserId",
+                moduleId,
+                userId);
         moduleRepository.deleteByIdAndUserId(moduleId, userId);
     }
 
@@ -140,7 +214,7 @@ public class ModuleFacade {
     }
 
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
-        moduleValidator.longValidator(userId, "User id is invalid.");
-        moduleValidator.longValidator(moduleId, "Module id is invalid.");
+        moduleValidator.longValidator(userId, "Invalid User ID.");
+        moduleValidator.longValidator(moduleId, "Invalid module id.");
     }
 }

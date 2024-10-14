@@ -85,6 +85,10 @@ Access via [localhost:8080](http://localhost:8080)
 
 ```mvn test```
 
+* Integration Tests:
+
+```mvn failsafe:integration-test```
+
 * Unit + Integration Tests:
 
 ```mvn verify```
