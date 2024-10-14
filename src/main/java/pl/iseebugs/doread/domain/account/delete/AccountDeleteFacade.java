@@ -34,15 +34,14 @@ public class AccountDeleteFacade {
     private final AppUserFacade appUserFacade;
     private final AccountHelper accountHelper;
 
-    public ApiResponse<LoginTokenDto> deleteUser(String accessToken) throws Exception {
-        AppUserReadModel user = accountHelper.getAppUserReadModelFromToken(accessToken);
+    public LoginTokenDto deleteUser(AppUserReadModel user) throws Exception {
         String token = generateDeleteToken(user);
 
         accountHelper.sendMailWithDeleteToken(user.email(), DELETE_CONFIRMATION_ENDPOINT, token);
 
         Date tokenExpiresAt = deleteTokenService.calculateTokenExpiration(token);
         LoginTokenDto deleteTokenDto = new LoginTokenDto(token, tokenExpiresAt);
-        return ApiResponseFactory.createResponseWithStatus(HttpStatus.CREATED.value(), "Delete confirmation mail created successfully.", deleteTokenDto);
+        return deleteTokenDto;
     }
 
     private String generateDeleteToken(final AppUserReadModel user){
