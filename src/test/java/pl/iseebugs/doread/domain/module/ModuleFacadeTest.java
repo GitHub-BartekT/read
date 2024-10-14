@@ -447,18 +447,107 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
+    @Test
+    @DisplayName("setNextSession should throws IllegalArgumentException \"Invalid User ID.\"")
+    void setNextSession_throws_IllegalArgumentException_when_invalid_user_id() {
+        // Given
+        Long userId = -1L;
+        Long moduleId = 1L;
+
+        //When
+        Throwable e = catchThrowable(() -> moduleFacade.setNextSession(userId, moduleId));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
+        );
+    }
+
+    @Test
+    @DisplayName("setNextSession should throws IllegalArgumentException \"Invalid module id.\"")
+    void setNextSession_throws_IllegalArgumentException_when_invalid_module_id() {
+        // Given
+        Long userId = 1L;
+        Long moduleId = -1L;
+
+        //When
+        Throwable e = catchThrowable(() -> moduleFacade.setNextSession(userId, moduleId));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
+        );
+    }
+
+    @Test
+    @DisplayName("setNextSession should increment next session when nextSession is less then sessionsPerDay")
+    void setNextSession_increments_next_session() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel userModule = moduleFacade.createModule(userId, null);
+        Long moduleId = userModule.getId();
+
+        // When
+        moduleFacade.setNextSession(userId, moduleId);
+
+        // Then
+        ModuleReadModel updatedSession = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
+
+        assertAll(
+                () -> assertThat(updatedSession.getActualDay()).isEqualTo(userModule.getActualDay()),
+                () -> assertThat(updatedSession.getNextSession()).isEqualTo(userModule.getNextSession() + 1)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("setNextSession should increment actualDay and set nextSession to one when nextSession equal sessionsPerDay")
+    void setNextSession_increments_actual_day_and_set_next_session() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel userModule = moduleFacade.createModule(userId, null);
+        Long moduleId = userModule.getId();
+
+        ModuleWriteModel toUpdate = ModuleWriteModel.builder()
+                .id(userModule.getId())
+                .nextSession(userModule.getSessionsPerDay())
+                .build();
+        moduleFacade.updateModule(userId, toUpdate);
+
+        // When
+        moduleFacade.setNextSession(userId, moduleId);
+
+        // Then
+        ModuleReadModel updatedSession = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
+
+        assertAll(
+                () -> assertThat(updatedSession.getActualDay()).isEqualTo(userModule.getActualDay() + 1),
+                () -> assertThat(updatedSession.getNextSession()).isEqualTo(1)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+
+
 
     /*----------------------*/
 
 
 
 
-
-
-
     /*-----------------------------*/
-
-
 
 
     private AppUserReadModel createTestUser() throws AppUserNotFoundException {
