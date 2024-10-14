@@ -1,6 +1,8 @@
 package pl.iseebugs.doread.domain.module;
 
+import lombok.extern.log4j.Log4j2;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Log4j2
 @Transactional
 class ModuleFacadeTest extends BaseIT {
 
@@ -53,7 +56,7 @@ class ModuleFacadeTest extends BaseIT {
         ModuleReadModel savedModule = moduleFacade.createModule(userId, moduleName);
 
         // + When
-        ModuleReadModel result = moduleFacade.getModuleByUserIdAndModuleId(userId, 1L);
+        ModuleReadModel result = moduleFacade.getModuleByUserIdAndModuleId(userId, savedModule.getId());
 
         // Then
         assertAll(
@@ -61,15 +64,106 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        moduleFacade.deleteModule(savedModule.getId(), savedUser.id());
-        deleteTestUser(savedUser.id());
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("getModulesByUserId should returns empty list when argument is non-exist user id")
+    void getModulesByUserId_returns_Empty_List_when_no_user() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+        createTestModules(userId, 10);
+
+        Long nonExistUserId = 10000000L;
+
+        // + When
+        List<ModuleReadModel> result = moduleFacade.getModulesByUserId(nonExistUserId);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("getModulesByUserId should returns empty list when no modules in database")
+    void getModulesByUserId_returns_Empty_List_when_no_modules() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        Long moduleId = 1L;
+
+        // + When
+        List<ModuleReadModel> result = moduleFacade.getModulesByUserId(moduleId);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("getModulesByUserId should returns empty list when module id is deletedModuleId")
+    void getModulesByUserId_returns_Empty_List_when_module_was_deleted() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel savedModule = moduleFacade.createModule(userId, "foo");
+        Long moduleId = savedModule.getId();
+        deleteAllUserModules(userId);
+
+        // + When
+        List<ModuleReadModel> result = moduleFacade.getModulesByUserId(moduleId);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("getModulesByUserId should returns list of modules")
+    void getModulesByUserId_returns_List_of_modules() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        createTestModules(userId, 5);
+
+        // + When
+        List<ModuleReadModel> result = moduleFacade.getModulesByUserId(userId);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(5)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
     }
 
     private AppUserReadModel createTestUser() throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
                 .email("foo@email.com")
                 .password("fooPassword")
-        .build();
+                .build();
 
         return appUserFacade.create(newUser);
     }
@@ -81,16 +175,17 @@ class ModuleFacadeTest extends BaseIT {
     }
 
     private void createTestModules(Long userId, int modulesQuantity) throws AppUserNotFoundException {
-        for(int i = 1; i< modulesQuantity; i++){
-            moduleFacade.createModule(userId, "testModule_" + i);
+        for (int i = 0; i < modulesQuantity; i++) {
+            String moduleName = "testModule_" + (i + 1);
+            moduleFacade.createModule(userId, moduleName);
+            log.info("Created module: {}, for user: {}", moduleName, userId);
         }
     }
 
     private void deleteAllUserModules(Long userId) throws AppUserNotFoundException {
         List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
-        for (ModuleReadModel module: userModules) {
+        for (ModuleReadModel module : userModules) {
             moduleFacade.deleteModule(module.getId(), userId);
         }
     }
-
 }

@@ -53,12 +53,6 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
-    public List<ModuleReadModel> getPublicModules() {
-        return moduleRepository.findAllByIsPrivateFalse()
-                .stream()
-                .map(ModuleMapper::toReadModel)
-                .collect(Collectors.toList());
-    }
 
     /**
      *
@@ -151,8 +145,12 @@ public class ModuleFacade {
 
     @Transactional
     public void deleteModule(Long moduleId, Long userId) {
-        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
-        log.info("Class: {}, method: {}", this.getClass().getSimpleName(), "deleteByIdAndUserId");
+        log.info(
+                "Class.method: {}{}(moduleId {}, userId {});",
+                this.getClass().getSimpleName(),
+                "deleteByIdAndUserId",
+                moduleId,
+                userId);
         moduleRepository.deleteByIdAndUserId(moduleId, userId);
     }
 
@@ -163,5 +161,12 @@ public class ModuleFacade {
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
         moduleValidator.longValidator(userId, "User id is invalid.");
         moduleValidator.longValidator(moduleId, "Module id is invalid.");
+    }
+
+    public List<ModuleReadModel> getPublicModules() {
+        return moduleRepository.findAllByIsPrivateFalse()
+                .stream()
+                .map(ModuleMapper::toReadModel)
+                .collect(Collectors.toList());
     }
 }
