@@ -540,11 +540,88 @@ class ModuleFacadeTest extends BaseIT {
     }
 
 
-
-
     /*----------------------*/
+    @Test
+    @DisplayName("deleteModule should do nothing when no user id in db")
+    void deleteModule_do_nothing_when_no_user_in_db() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
 
+        ModuleReadModel userModule = moduleFacade.createModule(userId, null);
+        Long moduleId = userModule.getId();
 
+        int dataSizeBefore = moduleFacade.getAllModules().size();
+
+        // When
+        moduleFacade.deleteModule(moduleId, userId + 1L);
+
+        // Then
+        int dataSizeAfter = moduleFacade.getAllModules().size();
+
+        assertAll(
+                () -> assertThat(dataSizeBefore).isEqualTo(dataSizeAfter)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("deleteModule should do nothing when no module id in db")
+    void deleteModule_do_nothing_when_no_module_in_db() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel userModule = moduleFacade.createModule(userId, null);
+        Long moduleId = userModule.getId();
+
+        int dataSizeBefore = moduleFacade.getAllModules().size();
+
+        // When
+        moduleFacade.deleteModule(moduleId + 1, userId);
+
+        // Then
+        int dataSizeAfter = moduleFacade.getAllModules().size();
+
+        assertAll(
+                () -> assertThat(dataSizeBefore).isEqualTo(dataSizeAfter)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("deleteModule should do nothing when no data")
+    void deleteModule_deleted_when_not_found_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel userModule = moduleFacade.createModule(userId, null);
+        Long moduleId = userModule.getId();
+
+        int dataSizeBefore = moduleFacade.getAllModules().size();
+        log.info("database before deleting: {}", dataSizeBefore);
+        // When
+        moduleFacade.deleteModule(moduleId, userId);
+
+        // Then
+        int dataSizeAfter = moduleFacade.getAllModules().size();
+        log.info("database after deleting: {}", dataSizeAfter);
+
+        assertAll(
+                () -> assertThat(dataSizeBefore).isEqualTo(dataSizeAfter + 1)
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
 
     /*-----------------------------*/

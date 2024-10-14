@@ -54,9 +54,23 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Get all modules.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<ModuleReadModel> getAllModules() {
+
+        return moduleRepository.findAll()
+                .stream()
+                .map(ModuleMapper::toReadModel)
+                .collect(Collectors.toList());
+    }
 
     /**
-     * Save new module with given name to database
+     * Save new module with given name to database. If the name provided is null or empty, set the "New Module" option.
      *
      * @author Bartlomiej Tucholski
      * @contact iseebugs.pl
@@ -145,7 +159,6 @@ public class ModuleFacade {
         }
     }
 
-
     /**
      * Increment next session.
      * If next session is equal to SessionsPerDay than:
@@ -177,6 +190,13 @@ public class ModuleFacade {
         moduleRepository.save(module);
     }
 
+    /**
+     * Delete module.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     @Transactional
     public void deleteModule(Long moduleId, Long userId) {
         log.info(
