@@ -131,30 +131,31 @@ public class ModuleFacade {
 
     /**
      * Set fields to update.
+     *
      * @author Bartlomiej Tucholski
      * @contact iseebugs.pl
      * @since 1.0
      */
     private void updateModuleFields(final ModuleWriteModel toUpdate, final Module entity) {
-        if(moduleValidator.stringValidator(toUpdate.getModuleName())){
+        if (moduleValidator.stringValidator(toUpdate.getModuleName())) {
             entity.setModuleName(toUpdate.getModuleName());
         }
-        if(moduleValidator.integerValidator(toUpdate.getSessionsPerDay())){
+        if (moduleValidator.integerValidator(toUpdate.getSessionsPerDay())) {
             entity.setSessionsPerDay(toUpdate.getSessionsPerDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getPresentationsPerSession())){
+        if (moduleValidator.integerValidator(toUpdate.getPresentationsPerSession())) {
             entity.setPresentationsPerSession(toUpdate.getPresentationsPerSession());
         }
-        if(moduleValidator.integerValidator(toUpdate.getNewSentencesPerDay())){
+        if (moduleValidator.integerValidator(toUpdate.getNewSentencesPerDay())) {
             entity.setNewSentencesPerDay(toUpdate.getNewSentencesPerDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getActualDay())){
+        if (moduleValidator.integerValidator(toUpdate.getActualDay())) {
             entity.setActualDay(toUpdate.getActualDay());
         }
-        if(moduleValidator.integerValidator(toUpdate.getNextSession())){
+        if (moduleValidator.integerValidator(toUpdate.getNextSession())) {
             entity.setNextSession(toUpdate.getNextSession());
         }
-        if(toUpdate.getIsPrivate() != null){
+        if (toUpdate.getIsPrivate() != null) {
             entity.setPrivate(toUpdate.getIsPrivate());
         }
     }

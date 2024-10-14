@@ -17,6 +17,7 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
+import javax.annotation.meta.When;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,7 +59,7 @@ class ModuleFacadeTest extends BaseIT {
         String moduleName = "fooModule";
         ModuleReadModel savedModule = moduleFacade.createModule(userId, moduleName);
 
-        // + When
+        // When
         ModuleReadModel result = moduleFacade.getModuleByUserIdAndModuleId(userId, savedModule.getId());
 
         // Then
@@ -67,8 +68,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -81,17 +81,17 @@ class ModuleFacadeTest extends BaseIT {
 
         Long nonExistUserId = 10000000L;
 
-        // + When
+        // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(nonExistUserId);
 
         // Then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(0)
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -103,17 +103,17 @@ class ModuleFacadeTest extends BaseIT {
 
         Long moduleId = 1L;
 
-        // + When
+        // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(moduleId);
 
         // Then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(0)
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -127,17 +127,17 @@ class ModuleFacadeTest extends BaseIT {
         Long moduleId = savedModule.getId();
         deleteAllUserModules(userId);
 
-        // + When
+        // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(moduleId);
 
         // Then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(0)
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -149,17 +149,66 @@ class ModuleFacadeTest extends BaseIT {
 
         createTestModules(userId, 5);
 
-        // + When
+        // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(userId);
 
         // Then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(5)
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result).isNotNull()
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
+    }
+    
+    @Test
+    @DisplayName("getAllModules should returns empty list")
+    void getAllModules_return_Empty_List(){
+        // When
+        List<ModuleReadModel> result = moduleFacade.getAllModules();
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
+        );
+    }
+
+    @Test
+    @DisplayName("getAllModules should returns list with data")
+    void getAllModules_returns_All_modules() throws Exception {
+        // Given
+        AppUserReadModel savedUser_1 = createTestUser();
+        Long userId_1 = savedUser_1.id();
+        createTestModules(userId_1, 5);
+
+        AppUserReadModel savedUser_2 = createTestUser("foo@mail.com");
+        Long userId_2 = savedUser_2.id();
+        createTestModules(userId_2, 10);
+
+        AppUserReadModel savedUser_3 = createTestUser("bat@mail.com");
+        Long userId_3 = savedUser_3.id();
+        createTestModules(userId_3, 3);
+        
+        // When
+        List<ModuleReadModel> result = moduleFacade.getAllModules();
+        
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(18),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId_1);
+        clearUserData(userId_2);
+        clearUserData(userId_3);
+    }
+
+    private void clearUserData(final Long userId_1) throws Exception {
+        deleteAllUserModules(userId_1);
+        deleteTestUser(userId_1);
     }
 
     @Test
@@ -196,7 +245,7 @@ class ModuleFacadeTest extends BaseIT {
 
         String moduleName = null;
 
-        // + When
+        // When
         ModuleReadModel result = moduleFacade.createModule(userId, moduleName);
 
         // Then
@@ -211,8 +260,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -224,7 +272,7 @@ class ModuleFacadeTest extends BaseIT {
 
         String moduleName = "foo module";
 
-        // + When
+        // When
         ModuleReadModel result = moduleFacade.createModule(userId, moduleName);
 
         // Then
@@ -239,8 +287,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -251,7 +298,7 @@ class ModuleFacadeTest extends BaseIT {
         ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
         moduleToUpdate.setId(1L);
 
-        //When
+        // When
         Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
 
         // Then
@@ -333,8 +380,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -374,8 +420,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -410,8 +455,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -443,8 +487,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -503,8 +546,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -535,12 +577,9 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
-
-    /*----------------------*/
     @Test
     @DisplayName("deleteModule should do nothing when no user id in db")
     void deleteModule_do_nothing_when_no_user_in_db() throws Exception {
@@ -564,8 +603,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -591,8 +629,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
     @Test
@@ -619,21 +656,20 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        clearUserData(userId);
     }
 
-
-    /*-----------------------------*/
-
-
-    private AppUserReadModel createTestUser() throws AppUserNotFoundException {
+    private AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
-                .email("foo@email.com")
+                .email(email)
                 .password("fooPassword")
                 .build();
 
         return appUserFacade.create(newUser);
+    }
+    
+    private AppUserReadModel createTestUser() throws AppUserNotFoundException {
+        return createTestUser("some.foo.bar@email.com");
     }
 
     private void deleteTestUser(Long userId) throws Exception {
