@@ -271,11 +271,13 @@ class ModuleFacadeTest extends BaseIT {
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid module id.\"")
     void updateModule_throws_IllegalArgumentException_when_invalid_module_id() {
+        // Given
         Long userId = 1L;
 
         ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
         moduleToUpdate.setId(-1L);
-        // Given + When
+
+        // When
         Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
 
         // Then
@@ -288,11 +290,12 @@ class ModuleFacadeTest extends BaseIT {
     @Test
     @DisplayName("createModule should throws ModuleNotFoundException when no user")
     void updateModule_throws_ModuleNotFoundException() {
+        // Given
         Long userId = 1L;
 
         ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
         moduleToUpdate.setId(1L);
-        // Given + When
+        // When
         Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
 
         // Then
@@ -303,15 +306,153 @@ class ModuleFacadeTest extends BaseIT {
 
     @Test
     @DisplayName("createModule should updates all fields")
-    void updateModule_updates_all_fields() {}
+    void updateModule_updates_all_fields() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = "foo module";
+        ModuleReadModel userModule = moduleFacade.createModule(userId, moduleName);
+
+        ModuleWriteModel toUpdate = ModuleWriteModel.builder()
+                .moduleName("bar module")
+                .id(userModule.getId())
+                .sessionsPerDay(11)
+                .presentationsPerSession(12)
+                .newSentencesPerDay(13)
+                .actualDay(14)
+                .nextSession(15)
+                .isPrivate(false)
+                .build();
+
+        // When
+        ModuleReadModel result = moduleFacade.updateModule(userId, toUpdate);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo(toUpdate.getModuleName()),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(toUpdate.getSessionsPerDay()),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(toUpdate.getPresentationsPerSession()),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(toUpdate.getNewSentencesPerDay()),
+                () -> assertThat(result.getActualDay()).isEqualTo(toUpdate.getActualDay()),
+                () -> assertThat(result.getNextSession()).isEqualTo(toUpdate.getNextSession()),
+                () -> assertThat(result.isPrivate()).isFalse()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
+
+    @Test
+    @DisplayName("createModule should updates all fields when given userId in ModuleWriteModel is different than userId")
+    void updateModule_updates_all_fields_when_wrong_userId_in_write_model() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = "foo module";
+        ModuleReadModel userModule = moduleFacade.createModule(userId, moduleName);
+
+        ModuleWriteModel toUpdate = ModuleWriteModel.builder()
+                .id(userModule.getId())
+                .userId(userId + 16)
+                .moduleName("bar module")
+                .sessionsPerDay(11)
+                .presentationsPerSession(12)
+                .newSentencesPerDay(13)
+                .actualDay(14)
+                .nextSession(15)
+                .isPrivate(false)
+                .build();
+
+        // When
+        ModuleReadModel result = moduleFacade.updateModule(userId, toUpdate);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo(toUpdate.getModuleName()),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(toUpdate.getSessionsPerDay()),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(toUpdate.getPresentationsPerSession()),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(toUpdate.getNewSentencesPerDay()),
+                () -> assertThat(result.getActualDay()).isEqualTo(toUpdate.getActualDay()),
+                () -> assertThat(result.getNextSession()).isEqualTo(toUpdate.getNextSession()),
+                () -> assertThat(result.isPrivate()).isFalse()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
     @Test
     @DisplayName("createModule should updates chosen fields")
-    void updateModule_updates_chosen_fields() {}
+    void updateModule_updates_chosen_fields() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = "foo module";
+        ModuleReadModel userModule = moduleFacade.createModule(userId, moduleName);
+
+        ModuleWriteModel toUpdate = ModuleWriteModel.builder()
+                .id(userModule.getId())
+                .sessionsPerDay(11)
+                .actualDay(14)
+                .nextSession(15)
+                .build();
+
+        // When
+        ModuleReadModel result = moduleFacade.updateModule(userId, toUpdate);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo(moduleName),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(toUpdate.getSessionsPerDay()),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(userModule.getPresentationsPerSession()),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(userModule.getNewSentencesPerDay()),
+                () -> assertThat(result.getActualDay()).isEqualTo(toUpdate.getActualDay()),
+                () -> assertThat(result.getNextSession()).isEqualTo(toUpdate.getNextSession()),
+                () -> assertThat(result.isPrivate()).isTrue()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
     @Test
     @DisplayName("createModule should do nothing when all argument fields are null")
-    void updateModule_do_nothing() {}
+    void updateModule_do_nothing() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        String moduleName = "foo module";
+        ModuleReadModel userModule = moduleFacade.createModule(userId, moduleName);
+
+        ModuleWriteModel toUpdate = ModuleWriteModel.builder()
+                .id(userModule.getId())
+                .build();
+
+        // When
+        ModuleReadModel result = moduleFacade.updateModule(userId, toUpdate);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getModuleName()).isEqualTo(moduleName),
+                () -> assertThat(result.getSessionsPerDay()).isEqualTo(userModule.getSessionsPerDay()),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(userModule.getPresentationsPerSession()),
+                () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(userModule.getNewSentencesPerDay()),
+                () -> assertThat(result.getActualDay()).isEqualTo(userModule.getActualDay()),
+                () -> assertThat(result.getNextSession()).isEqualTo(userModule.getNextSession()),
+                () -> assertThat(result.isPrivate()).isTrue()
+        );
+
+        // Clear Test Environment
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
+    }
 
 
 

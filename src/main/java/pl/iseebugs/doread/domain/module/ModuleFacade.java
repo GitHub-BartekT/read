@@ -130,7 +130,7 @@ public class ModuleFacade {
             entity.setNextSession(toUpdate.getNextSession());
         }
         if(toUpdate.getIsPrivate() != null){
-            entity.setPrivate(!toUpdate.getIsPrivate());
+            entity.setPrivate(toUpdate.getIsPrivate());
         }
     }
 
