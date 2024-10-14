@@ -161,8 +161,6 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
-    /*----------------------*/
-
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
     void createModule_throws_IllegalArgumentException() {
@@ -244,7 +242,30 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
+    /*----------------------*/
+    @Test
+    @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
+    void updateModule_throws_IllegalArgumentException_when_invalid_user_id() {}
 
+    @Test
+    @DisplayName("createModule should throws IllegalArgumentException \"Module id is invalid.\"")
+    void updateModule_throws_IllegalArgumentException_when_invalid_module_id() {}
+
+    @Test
+    @DisplayName("createModule should throws AppUserNotFoundException when no user")
+    void updateModule_throws_AppUserNotFoundException() {}
+
+    @Test
+    @DisplayName("createModule should updates all fields")
+    void updateModule_updates_all_fields() {}
+
+    @Test
+    @DisplayName("createModule should updates chosen fields")
+    void updateModule_updates_chosen_fields() {}
+
+    @Test
+    @DisplayName("createModule should do nothing when all argument fields are null")
+    void updateModule_do_nothing() {}
 
     /*-----------------------------*/
 

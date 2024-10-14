@@ -55,7 +55,7 @@ public class ModuleFacade {
 
 
     /**
-     * Creat new module with given name
+     * Save new module with given name to database
      *
      * @throws AppUserNotFoundException
      * @Author: Bartlomiej Tucholski
@@ -74,7 +74,7 @@ public class ModuleFacade {
     }
 
     /**
-     * Set default module parameters.
+     * Creates new module with default parameters.
      */
     private static Module buildNewModule(final String moduleName, final AppUserReadModel user) {
         return Module.builder()
@@ -89,6 +89,13 @@ public class ModuleFacade {
                 .build();
     }
 
+    /**
+     * Update module non-null given fields.
+     *
+     * @throws ModuleNotFoundException
+     * @Author: Bartlomiej Tucholski
+     * @Contact: iseebugs.pl
+     */
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
         log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
         userAndModuleIdsValidator(userId, toUpdate.getId());
