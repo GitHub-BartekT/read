@@ -14,6 +14,8 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +44,7 @@ class ModuleFacadeTest extends BaseIT {
     }
 
     @Test
-    void getModuleByUserIdAndModuleId() throws Exception {
+    void getModuleByUserIdAndModuleId_returns_ModuleReadModel() throws Exception {
         // Given
         AppUserReadModel savedUser = createTestUser();
         Long userId = savedUser.id();
@@ -63,7 +65,6 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(savedUser.id());
     }
 
-    @NotNull
     private AppUserReadModel createTestUser() throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
                 .email("foo@email.com")
@@ -77,6 +78,19 @@ class ModuleFacadeTest extends BaseIT {
         AppUserReadModel user = appUserFacade.findUserById(userId);
         LoginTokenDto deleteToken = accountDeleteFacade.deleteUser(user);
         accountDeleteFacade.confirmDeleteToken(deleteToken.token());
+    }
+
+    private void createTestModules(Long userId, int modulesQuantity) throws AppUserNotFoundException {
+        for(int i = 1; i< modulesQuantity; i++){
+            moduleFacade.createModule(userId, "testModule_" + i);
+        }
+    }
+
+    private void deleteAllUserModules(Long userId) throws AppUserNotFoundException {
+        List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
+        for (ModuleReadModel module: userModules) {
+            moduleFacade.deleteModule(module.getId(), userId);
+        }
     }
 
 }

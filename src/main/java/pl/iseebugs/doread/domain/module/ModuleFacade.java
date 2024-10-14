@@ -2,6 +2,7 @@ package pl.iseebugs.doread.domain.module;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.mapping.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
@@ -22,6 +23,13 @@ public class ModuleFacade {
     private final ModuleRepository moduleRepository;
     private final ModuleValidator moduleValidator;
 
+    /**
+     * Get user module by module id and user id.
+     *
+     * @throws ModuleNotFoundException
+     * @Author: Bartlomiej Tucholski
+     * @Contact: iseebugs.pl
+     */
     public ModuleReadModel getModuleByUserIdAndModuleId(Long userId, Long moduleId) throws ModuleNotFoundException {
         userAndModuleIdsValidator(userId, moduleId);
 
@@ -30,6 +38,12 @@ public class ModuleFacade {
                 .orElseThrow(ModuleNotFoundException::new);
     }
 
+    /**
+     * Get all user modules.
+     *
+     * @Author: Bartlomiej Tucholski
+     * @Contact: iseebugs.pl
+     */
     public List<ModuleReadModel> getModulesByUserId(Long userId) {
         validateUserId(userId);
 
@@ -46,6 +60,13 @@ public class ModuleFacade {
                 .collect(Collectors.toList());
     }
 
+    /**
+     *
+     * @param userId
+     * @param moduleName
+     * @return
+     * @throws AppUserNotFoundException
+     */
     public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
         moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
         validateUserId(userId);
