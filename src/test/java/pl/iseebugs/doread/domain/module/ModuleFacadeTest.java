@@ -36,6 +36,7 @@ class ModuleFacadeTest extends BaseIT {
     AccountDeleteFacade accountDeleteFacade;
 
     @Test
+    @DisplayName("getModuleByUserIdAndModuleId should throws ModuleNotFoundException")
     void getModuleByUserIdAndModuleId_throws_ModuleNotFoundException() {
         // Given + When
         Throwable e = catchThrowable(() -> moduleFacade.getModuleByUserIdAndModuleId(1L, 1L));
@@ -47,6 +48,7 @@ class ModuleFacadeTest extends BaseIT {
     }
 
     @Test
+    @DisplayName("getModuleByUserIdAndModuleId should returns data")
     void getModuleByUserIdAndModuleId_returns_ModuleReadModel() throws Exception {
         // Given
         AppUserReadModel savedUser = createTestUser();
@@ -159,6 +161,28 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
+/*----------------------*/
+
+    @Test
+    @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
+    void createModule_throws_IllegalArgumentException(){}
+
+    @Test
+    @DisplayName("createModule should throws AppUserNotFoundException when no user")
+    void createModule_throws_AppUserNotFoundException(){}
+
+    @Test
+    @DisplayName("createModule should creates module with default name")
+    void createModule_create_module_with_default_name(){}
+
+    @Test
+    @DisplayName("createModule should creates module with default specific name")
+    void createModule_create_module_with_specific_name(){}
+
+
+
+    /*-----------------------------*/
+
     private AppUserReadModel createTestUser() throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
                 .email("foo@email.com")
@@ -182,7 +206,7 @@ class ModuleFacadeTest extends BaseIT {
         }
     }
 
-    private void deleteAllUserModules(Long userId) throws AppUserNotFoundException {
+    private void deleteAllUserModules(Long userId) {
         List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
         for (ModuleReadModel module : userModules) {
             moduleFacade.deleteModule(module.getId(), userId);

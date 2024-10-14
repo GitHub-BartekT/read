@@ -55,11 +55,11 @@ public class ModuleFacade {
 
 
     /**
+     * Creat new module with given name
      *
-     * @param userId
-     * @param moduleName
-     * @return
      * @throws AppUserNotFoundException
+     * @Author: Bartlomiej Tucholski
+     * @Contact: iseebugs.pl
      */
     public ModuleReadModel createModule(Long userId, String moduleName) throws AppUserNotFoundException {
         moduleName = moduleValidator.validateAndSetDefaultModuleName(moduleName);
@@ -161,12 +161,5 @@ public class ModuleFacade {
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
         moduleValidator.longValidator(userId, "User id is invalid.");
         moduleValidator.longValidator(moduleId, "Module id is invalid.");
-    }
-
-    public List<ModuleReadModel> getPublicModules() {
-        return moduleRepository.findAllByIsPrivateFalse()
-                .stream()
-                .map(ModuleMapper::toReadModel)
-                .collect(Collectors.toList());
     }
 }
