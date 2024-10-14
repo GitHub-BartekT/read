@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.BaseIT;
 import pl.iseebugs.doread.domain.account.delete.AccountDeleteFacade;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
+import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.security.projection.LoginTokenDto;
 import pl.iseebugs.doread.domain.user.AppUser;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
@@ -242,18 +243,63 @@ class ModuleFacadeTest extends BaseIT {
         deleteTestUser(userId);
     }
 
+
+
     /*----------------------*/
+
+
+
+
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
-    void updateModule_throws_IllegalArgumentException_when_invalid_user_id() {}
+    void updateModule_throws_IllegalArgumentException_when_invalid_user_id() {
+        // Given
+        Long userId = -1L;
+        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
+        moduleToUpdate.setId(1L);
+
+        //When
+        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
+        );
+    }
 
     @Test
-    @DisplayName("createModule should throws IllegalArgumentException \"Module id is invalid.\"")
-    void updateModule_throws_IllegalArgumentException_when_invalid_module_id() {}
+    @DisplayName("createModule should throws IllegalArgumentException \"Invalid module id.\"")
+    void updateModule_throws_IllegalArgumentException_when_invalid_module_id() {
+        Long userId = 1L;
+
+        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
+        moduleToUpdate.setId(-1L);
+        // Given + When
+        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
+        );
+    }
 
     @Test
-    @DisplayName("createModule should throws AppUserNotFoundException when no user")
-    void updateModule_throws_AppUserNotFoundException() {}
+    @DisplayName("createModule should throws ModuleNotFoundException when no user")
+    void updateModule_throws_ModuleNotFoundException() {
+        Long userId = 1L;
+
+        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
+        moduleToUpdate.setId(1L);
+        // Given + When
+        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(ModuleNotFoundException.class)
+        );
+    }
 
     @Test
     @DisplayName("createModule should updates all fields")
@@ -267,7 +313,14 @@ class ModuleFacadeTest extends BaseIT {
     @DisplayName("createModule should do nothing when all argument fields are null")
     void updateModule_do_nothing() {}
 
+
+
+
+
     /*-----------------------------*/
+
+
+
 
     private AppUserReadModel createTestUser() throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()

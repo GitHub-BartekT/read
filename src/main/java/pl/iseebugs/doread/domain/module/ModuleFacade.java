@@ -169,7 +169,7 @@ public class ModuleFacade {
     }
 
     private void userAndModuleIdsValidator(final Long userId, final Long moduleId) {
-        moduleValidator.longValidator(userId, "User id is invalid.");
-        moduleValidator.longValidator(moduleId, "Module id is invalid.");
+        moduleValidator.longValidator(userId, "Invalid User ID.");
+        moduleValidator.longValidator(moduleId, "Invalid module id.");
     }
 }
