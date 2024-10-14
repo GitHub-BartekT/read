@@ -12,6 +12,8 @@ import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
+import java.util.UUID;
+
 @Service
 @AllArgsConstructor
 public class AppUserFacade {
@@ -100,5 +102,19 @@ public class AppUserFacade {
         AppUser created = appUserRepository.save(toCreate);
 
         return AppUserMapper.toAppUserReadModel(created);
+    }
+
+    public void anonymization(final Long id) throws AppUserNotFoundException, EmailNotFoundException {
+        AppUser user = appUserRepository.findById(id).orElseThrow(AppUserNotFoundException::new);
+        AppUserWriteModel toAnonymization = AppUserWriteModel.builder()
+                .id(user.getId())
+                .role("DELETED")
+                .firstName(UUID.randomUUID().toString())
+                .lastName(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .email(UUID.randomUUID().toString())
+                .locked(true)
+                .build();
+        update(toAnonymization);
     }
 }
