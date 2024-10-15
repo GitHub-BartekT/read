@@ -101,11 +101,6 @@ public class SentenceFacade {
         Sentence toSave = buildSentence(userId, moduleId, sentenceText, size);
         Sentence result = sentenceRepository.save(toSave);
 
-/*        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);*/
-
         return SentenceMapper.toReadModel(result);
     }
 

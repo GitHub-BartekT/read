@@ -41,7 +41,7 @@ class SentenceFacadeTest extends BaseIT {
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should throws IllegalArgumentException \"Invalid user id.\"")
-    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_userId(){
+    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_userId() {
         // Given + When
         Throwable e = catchThrowable(() -> sentenceFacade.getAllByUserIdAndModuleId(-1L, 1L));
 
@@ -54,7 +54,7 @@ class SentenceFacadeTest extends BaseIT {
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should throws IllegalArgumentException \"Invalid module id.\"")
-    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_moduleId(){
+    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_moduleId() {
         // Given + When
         Throwable e = catchThrowable(() -> sentenceFacade.getAllByUserIdAndModuleId(1L, -1L));
 
@@ -675,8 +675,174 @@ class SentenceFacadeTest extends BaseIT {
 
 
 
+
     /*---------------------------*/
 
+
+
+
+    @Test
+    @DisplayName("create should throws IllegalArgumentException \"Invalid user id.\"")
+    void create_throws_IllegalArgumentException_when_invalid_userId() {
+        // Given
+        Long userId = -1L;
+        Long moduleId = 1L;
+        String sentenceText = "foo";
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.create(userId, moduleId, sentenceText));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
+        );
+    }
+
+    @Test
+    @DisplayName("create should throws IllegalArgumentException \"Invalid module id.\"")
+    void create_throws_IllegalArgumentException_when_invalid_moduleId() {
+        // Given
+        Long userId = 1L;
+        Long moduleId = -1L;
+        String sentenceText = "foo";
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.create(userId, moduleId, sentenceText));
+
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
+        );
+    }
+
+    @Test
+    @DisplayName("create should return new sentence with default text when text is null")
+    void create_returns_sentence_with_default_text_when_text_is_null() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        String sentenceText = null;
+
+        // When
+        SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getSentence()).isEqualTo("New module"),
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getModuleId()).isEqualTo(module.getId())
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("create should return new sentence with default text when text is blank")
+    void create_returns_sentence_with_default_text_when_text_is_blank() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        String sentenceText ="";
+
+        // When
+        SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getSentence()).isEqualTo("New module"),
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getModuleId()).isEqualTo(module.getId())
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("create should return new sentence with given text")
+    void create_returns_sentence_with_given_text() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        String sentenceText ="foo text";
+
+        // When
+        SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getSentence()).isEqualTo(sentenceText),
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getModuleId()).isEqualTo(module.getId())
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("create should return new sentence with ordinal number equals 1 when no sentences in module")
+    void create_returns_sentence_with_ordinal_number_equals_one() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        String sentenceText ="foo text";
+
+        // When
+        SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getOrdinalNumber()).isEqualTo(1L),
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getModuleId()).isEqualTo(module.getId())
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("create should return new sentence with ordinal number equals existing set of sentences plus one")
+    void create_returns_sentence_with_ordinal_number_equals_five() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        createTestSentences(userId, module.getId(), 20);
+
+        String sentenceText ="foo text";
+
+        // When
+        SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getOrdinalNumber()).isEqualTo(21L),
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getModuleId()).isEqualTo(module.getId())
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
 
     private AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
