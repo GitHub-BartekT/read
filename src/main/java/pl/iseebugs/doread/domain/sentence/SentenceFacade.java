@@ -120,36 +120,29 @@ public class SentenceFacade {
                 .build();
     }
 
-    //TODO: move to moduleSessionCoordinator
-    /**
-     * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
-     *
-     * @param userId   ID użytkownika
-     * @param moduleId ID modułu
-     * @return Lista utworzonych zdań w postaci SentenceReadModel
-     */
     @Transactional
-    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId) {
-        List<String> sentences = sentencesProperties.polish();
-        if (sentences == null || sentences.isEmpty()) {
-            throw new IllegalArgumentException("Lista zdań nie może być pusta.");
-        }
+    public void deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
+        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
+        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), ordinalNumber);
 
-        List<Sentence> sentenceEntities = IntStream.range(0, sentences.size())
-                .mapToObj(i -> Sentence.builder()
-                        .moduleId(moduleId)
-                        .userId(userId)
-                        .ordinalNumber((long) (i + 1))
-                        .sentence(sentences.get(i))
-                        .build())
+        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
+                .map(SentenceMapper::toWriteModelFromReadModel)
                 .toList();
-
-        List<Sentence> savedSentences = sentenceRepository.saveAll(sentenceEntities);
-
-        return savedSentences.stream()
-                .map(SentenceMapper::toReadModel)
-                .toList();
+        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
     }
+
+    @Transactional
+    public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
+        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
+        sentenceRepository.deleteByUserIdAndModuleIdAndId(userId, module.getId(), ordinalNumber);
+
+        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
+                .map(SentenceMapper::toWriteModelFromReadModel)
+                .toList();
+        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
+    }
+
+
 
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
@@ -185,20 +178,36 @@ public class SentenceFacade {
         return getAllByUserIdAndModuleId(userId, moduleId);
     }
 
-    @Transactional
-    public void deleteById(Long id) {
-        sentenceRepository.deleteById(id);
-    }
 
+    //TODO: move to moduleSessionCoordinator
+    /**
+     * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
+     *
+     * @param userId   ID użytkownika
+     * @param moduleId ID modułu
+     * @return Lista utworzonych zdań w postaci SentenceReadModel
+     */
     @Transactional
-    public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long id) throws ModuleNotFoundException {
-        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
-        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
+    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId) {
+        List<String> sentences = sentencesProperties.polish();
+        if (sentences == null || sentences.isEmpty()) {
+            throw new IllegalArgumentException("Lista zdań nie może być pusta.");
+        }
 
-        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
+        List<Sentence> sentenceEntities = IntStream.range(0, sentences.size())
+                .mapToObj(i -> Sentence.builder()
+                        .moduleId(moduleId)
+                        .userId(userId)
+                        .ordinalNumber((long) (i + 1))
+                        .sentence(sentences.get(i))
+                        .build())
                 .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
+
+        List<Sentence> savedSentences = sentenceRepository.saveAll(sentenceEntities);
+
+        return savedSentences.stream()
+                .map(SentenceMapper::toReadModel)
+                .toList();
     }
 
     @Transactional

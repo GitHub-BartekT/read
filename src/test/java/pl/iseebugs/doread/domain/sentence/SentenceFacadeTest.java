@@ -11,7 +11,6 @@ import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
-import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -367,6 +366,12 @@ class SentenceFacadeTest extends BaseIT {
         // When
         List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
 
+        System.out.println("Module name: " + module.getModuleName() );
+        for (SentenceReadModel sentence: result
+             ) {
+            System.out.printf("Sentence %s, ordinal number: %d \n ", sentence.getSentence(), sentence.getOrdinalNumber());
+        }
+
         // Then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(0),
@@ -673,14 +678,6 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId);
     }
 
-
-
-
-    /*---------------------------*/
-
-
-
-
     @Test
     @DisplayName("create should throws IllegalArgumentException \"Invalid user id.\"")
     void create_throws_IllegalArgumentException_when_invalid_userId() {
@@ -844,6 +841,13 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId);
     }
 
+
+
+    /*---------------------------*/
+
+
+
+
     private AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
                 .email(email)
@@ -870,22 +874,14 @@ class SentenceFacadeTest extends BaseIT {
         }
     }
 
-    private void createTestModules(Long userId, int modulesQuantity) throws AppUserNotFoundException {
-        for (int i = 0; i < modulesQuantity; i++) {
-            String moduleName = "testModule_" + (i + 1);
-            moduleFacade.createModule(userId, moduleName);
-            log.info("Created module: {}, for user: {}", moduleName, userId);
-        }
-    }
-
-    private void deleteAllSentencesInModule(Long userId, Long moduleId) {
+    private void deleteAllSentencesInModule(Long userId, Long moduleId) throws ModuleNotFoundException {
         List<SentenceReadModel> userSentences = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
         for (SentenceReadModel sentence : userSentences) {
-            sentenceFacade.deleteById(sentence.getId());
+            sentenceFacade.deleteByUserIdAndModuleIdAndId(userId, moduleId, sentence.getId());
         }
     }
 
-    private void deleteAllUserModulesAndSentences(Long userId) {
+    private void deleteAllUserModulesAndSentences(Long userId) throws ModuleNotFoundException {
         List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
         for (ModuleReadModel module : userModules) {
             deleteAllSentencesInModule(userId, module.getId());

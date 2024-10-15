@@ -35,7 +35,7 @@ class SentenceController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        sentenceFacade.deleteByUserIdAndModuleIdAndId(user.id(), moduleId, ordinalNumber);
+        sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(user.id(), moduleId, ordinalNumber);
         log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", user.id(), moduleId, ordinalNumber);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Zdanie usunięte pomyślnie."));
     }
