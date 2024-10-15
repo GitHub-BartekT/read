@@ -26,7 +26,7 @@ public class SentenceFacade {
 
 
     /**
-     * Get all sentences by module id and user id.
+     * Get all sentences read models by module id and user id. In asc order by ordinalNumber.
      *
      * @author Bartlomiej Tucholski
      * @contact iseebugs.pl
@@ -39,9 +39,16 @@ public class SentenceFacade {
                 .toList();
     }
 
-    public List<String> findAllSentenceByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
-                .map(Sentence::getSentence)
+    /**
+     * Get all sentences strings by module id and user id. In asc order by ordinalNumber.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<String> getAllSentenceByModuleId(Long userId, Long moduleId) {
+        return getAllByUserIdAndModuleId(userId, moduleId).stream()
+                .map(SentenceReadModel::getSentence)
                 .toList();
     }
 

@@ -200,7 +200,7 @@ class SentenceFacadeTest extends BaseIT {
 
 
     @Test
-    void findAllSentenceByModuleId() {
+    void getAllSentenceByModuleId() {
     }
 
 
