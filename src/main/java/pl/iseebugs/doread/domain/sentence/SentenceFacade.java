@@ -71,9 +71,17 @@ public class SentenceFacade {
                 .toList();
     }
 
-    public SentenceReadModel findById(Long id) {
-        return sentenceRepository.findById(id).map(SentenceMapper::toReadModel)
-                .orElseThrow(() -> new IllegalArgumentException("Sentence with id " + id + " not found"));
+    /**
+     * Find sentence by user id and sentence id.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public SentenceReadModel findByUserIdAndId(Long userId, Long sentenceId) throws SentenceNotFoundException {
+        userIdAndSentenceIdValidator(userId, sentenceId);
+        return sentenceRepository.findByUserIdAndId(userId, sentenceId).map(SentenceMapper::toReadModel)
+                .orElseThrow(SentenceNotFoundException::new);
     }
 
     @Transactional
@@ -180,8 +188,8 @@ public class SentenceFacade {
     }
 
     @Transactional
-    public SentenceReadModel updateById(Long id, String newSentence) {
-        SentenceReadModel sentence = findById(id);
+    public SentenceReadModel updateById(Long userId, Long id, String newSentence) throws SentenceNotFoundException {
+        SentenceReadModel sentence = findByUserIdAndId(userId, id);
         Sentence toUpdate = SentenceMapper.toEntity(sentence);
         toUpdate.setSentence(newSentence);
         Sentence result = sentenceRepository.save(toUpdate);
@@ -198,8 +206,13 @@ public class SentenceFacade {
     }
 
     private void userIdAndModuleIdValidator(final Long userId, final Long moduleId) {
-        sentenceValidator.longValidator(userId, "Invalid user id.");
+        validateUserId(userId);
         sentenceValidator.longValidator(moduleId, "Invalid module id.");
+    }
+
+    private void userIdAndSentenceIdValidator(final Long userId, final Long sentenceId) {
+        validateUserId(userId);
+        sentenceValidator.longValidator(sentenceId, "Invalid sentence id.");
     }
 }
 

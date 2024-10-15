@@ -267,9 +267,6 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId);
     }
 
-    /*---------------------------*/
-
-
     @Test
     @DisplayName("findAllByModuleIdAndBetween should return empty list when no sentences")
     void findAllByModuleIdAndBetween_Empty_List_when_no_sentences() throws Exception {
@@ -582,7 +579,7 @@ class SentenceFacadeTest extends BaseIT {
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        createTestSentences(userId, module.getId(), 5);
+        createTestSentences(userId, module.getId(), 10);
 
         Long startOfRange = 6L;
         Long endOfRange = 10L;
@@ -604,30 +601,76 @@ class SentenceFacadeTest extends BaseIT {
         // Clear Test Environment
         clearUserData(userId);
     }
-
-
-
-
-
-
-
-
-
-
+    
     @Test
-    void findAllByModuleIdAndBetween() {
+    @DisplayName("findByUserIdAndId should throws IllegalArgumentException \"Invalid user id.\" when invalid user id")
+    void findByUserIdAndId_throws_IllegalArgumentException_when_invalid_user_id() {
+        // Given
+        Long userId = -1L;
+        Long sentenceId = 1L;
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(userId, sentenceId));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
+        );
     }
 
+    @Test
+    @DisplayName("findByUserIdAndId should throws IllegalArgumentException \"Invalid sentence id.\" when invalid sentence id")
+    void findByUserIdAndId_throws_IllegalArgumentException_when_invalid_sentence_id() {
+        // Given
+        Long userId = 1L;
+        Long sentenceId = -1L;
 
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(userId, sentenceId));
 
-    /*---------------------------*/
-
-
-    /*---------------------------*/
-
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid sentence id.")
+        );
+    }
 
     @Test
-    void findById() {
+    @DisplayName("findByUserIdAndId should throws SentenceNotFoundException")
+    void findByUserIdAndId_throws_SentenceNotFoundException() {
+        // Given + When
+        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(1L, 1L));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(SentenceNotFoundException.class)
+        );
+    }
+
+    @Test
+    @DisplayName("findByUserIdAndId should returns data")
+    void findByUserIdAndId_returns_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        String text = "foo sentence";
+        SentenceReadModel toSave = sentenceFacade.create(userId, module.getId(), text);
+
+        // When
+        SentenceReadModel result = sentenceFacade.findByUserIdAndId(userId, toSave.getId());
+
+        // Then
+        assertAll(
+                () -> assertThat(result.getUserId()).isEqualTo(userId),
+                () -> assertThat(result.getSentence()).isEqualTo(text)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
     }
 
 

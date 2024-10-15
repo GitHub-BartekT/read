@@ -6,11 +6,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 @Repository
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
+    Optional<Sentence> findByUserIdAndId(Long userId, Long sentenceId);
     List<Sentence> findByUserIdAndModuleIdOrderByOrdinalNumberAsc(Long userId, Long moduleId);
     Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
+
     List<Sentence> findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
             Long userId,
             Long moduleId,
