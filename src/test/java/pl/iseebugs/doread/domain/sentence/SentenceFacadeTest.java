@@ -244,8 +244,28 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId);
     }
 
+    @Test
+    @DisplayName("getAllSentenceByModuleId should return sentences as strings")
+    void getAllSentenceByModuleId_returns_List_of_Sentence_Strings() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
 
-    /*---------------------------*/
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        createTestSentences(userId, module.getId(), 3);
+
+        // When
+        List<String> result = sentenceFacade.getAllSentenceByModuleId(userId, module.getId());
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(3)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
 
 
     @Test
