@@ -15,17 +15,13 @@ class SentenceValidator {
         return number != null && number >= 1;
     }
 
-    boolean integerValidator(final Integer id) {
-        return id != null && id >= 1;
-    }
-
     boolean validateRange(Long smallerNumber, Long higherNumber){
        if(!longValidator(smallerNumber)){
            smallerNumber = 0L;
        }
         longValidator(higherNumber, "Invalid end of range number.");
         if(higherNumber < smallerNumber){
-            throw new IllegalArgumentException("Beginning of range number is higher then end of range number.");
+            throw new IllegalArgumentException("Start of range number is higher then end of range number.");
         }
         return true;
     }
@@ -34,10 +30,25 @@ class SentenceValidator {
         return argument != null && !argument.isBlank();
     }
 
-    String validateAndSetDefaultModuleName(String moduleName) {
-        if (!stringValidator(moduleName)) {
-            moduleName = "New module";
+    String validateAndSetDefaultSentenceText(String sentenceText) {
+        if (!stringValidator(sentenceText)) {
+            sentenceText = "New module";
         }
-        return moduleName;
+        return sentenceText;
     }
+
+    void userIdAndSentenceIdValidator(final Long userId, final Long sentenceId) {
+        validateUserId(userId);
+        longValidator(sentenceId, "Invalid sentence id.");
+    }
+
+    void validateUserId(Long userId) {
+        longValidator(userId, "Invalid user id.");
+    }
+
+    void userIdAndModuleIdValidator(final Long userId, final Long moduleId) {
+        validateUserId(userId);
+        longValidator(moduleId, "Invalid module id.");
+    }
+
 }

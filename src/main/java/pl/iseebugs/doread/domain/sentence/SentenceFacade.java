@@ -32,7 +32,7 @@ public class SentenceFacade {
      * @since 1.0
      */
     public List<SentenceReadModel> getAllByUserIdAndModuleId(Long userId, Long moduleId) {
-        userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
         return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
@@ -60,7 +60,7 @@ public class SentenceFacade {
      * @since 1.0
      */
     public List<SentenceReadModel> findAllByModuleIdAndBetween(Long userId, Long moduleId, Long startOrdinalNumber, Long endOrdinalNumber) {
-        userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
         sentenceValidator.validateRange(startOrdinalNumber, endOrdinalNumber);
         return sentenceRepository.findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
                         userId,
@@ -79,34 +79,53 @@ public class SentenceFacade {
      * @since 1.0
      */
     public SentenceReadModel findByUserIdAndId(Long userId, Long sentenceId) throws SentenceNotFoundException {
-        userIdAndSentenceIdValidator(userId, sentenceId);
+        sentenceValidator.userIdAndSentenceIdValidator(userId, sentenceId);
         return sentenceRepository.findByUserIdAndId(userId, sentenceId).map(SentenceMapper::toReadModel)
                 .orElseThrow(SentenceNotFoundException::new);
     }
 
+    /**
+     * Create new sentence by user id and sentence id. Set ordinal number as max.ordinalNumber + 1 from current module.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     @Transactional
     public SentenceReadModel create(Long userId, Long moduleId, String sentenceText) {
-        Long size = (long) getAllByUserIdAndModuleId(userId, moduleId).size();
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+        sentenceText = sentenceValidator.validateAndSetDefaultSentenceText(sentenceText);
 
-        if (sentenceText == null || sentenceText.isEmpty()) {
-            throw new IllegalArgumentException("Sentence text must not be null or empty");
-        }
-        Sentence sentence = Sentence.builder()
+        long size = getAllByUserIdAndModuleId(userId, moduleId).size();
+
+        Sentence toSave = buildSentence(userId, moduleId, sentenceText, size);
+        Sentence result = sentenceRepository.save(toSave);
+
+/*        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
+                .map(SentenceMapper::toWriteModelFromReadModel)
+                .toList();
+        rearrangeSetByModuleId(userId, moduleId, moduleSentences);*/
+
+        return SentenceMapper.toReadModel(result);
+    }
+
+    /**
+     * Crete sentence with increment by 1 ordinal number.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    private static Sentence buildSentence(final Long userId, final Long moduleId, final String sentenceText, final long size) {
+        return Sentence.builder()
                 .moduleId(moduleId)
                 .sentence(sentenceText)
                 .ordinalNumber(size + 1)
                 .userId(userId)
                 .build();
-        Sentence result = sentenceRepository.save(sentence);
-
-        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
-
-        return SentenceMapper.toReadModel(result);
     }
 
+    //TODO: move to moduleSessionCoordinator
     /**
      * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
      *
@@ -199,20 +218,6 @@ public class SentenceFacade {
     public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
         return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
                 .map(SentenceMapper::toReadModel);
-    }
-
-    private void validateUserId(Long userId) {
-        sentenceValidator.longValidator(userId, "Invalid user id.");
-    }
-
-    private void userIdAndModuleIdValidator(final Long userId, final Long moduleId) {
-        validateUserId(userId);
-        sentenceValidator.longValidator(moduleId, "Invalid module id.");
-    }
-
-    private void userIdAndSentenceIdValidator(final Long userId, final Long sentenceId) {
-        validateUserId(userId);
-        sentenceValidator.longValidator(sentenceId, "Invalid sentence id.");
     }
 }
 

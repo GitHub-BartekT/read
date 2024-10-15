@@ -148,7 +148,7 @@ class SentenceFacadeTest extends BaseIT {
         createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
-        deleteAllUserModulesAndSentences(moduleId);
+        deleteAllUserModulesAndSentences(userId);
 
         // When
         List<SentenceReadModel> result = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
@@ -359,7 +359,7 @@ class SentenceFacadeTest extends BaseIT {
         createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
-        deleteAllUserModulesAndSentences(moduleId);
+        deleteAllUserModulesAndSentences(userId);
 
         Long startOfRange = 2L;
         Long endOfRange = 5L;
@@ -601,7 +601,7 @@ class SentenceFacadeTest extends BaseIT {
         // Clear Test Environment
         clearUserData(userId);
     }
-    
+
     @Test
     @DisplayName("findByUserIdAndId should throws IllegalArgumentException \"Invalid user id.\" when invalid user id")
     void findByUserIdAndId_throws_IllegalArgumentException_when_invalid_user_id() {
@@ -672,6 +672,7 @@ class SentenceFacadeTest extends BaseIT {
         // Clear Test Environment
         clearUserData(userId);
     }
+
 
 
     /*---------------------------*/
