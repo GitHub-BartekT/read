@@ -267,17 +267,351 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId);
     }
 
+    /*---------------------------*/
+
 
     @Test
-    void getAllSentenceByModuleId() {
+    @DisplayName("findAllByModuleIdAndBetween should return empty list when no sentences")
+    void findAllByModuleIdAndBetween_Empty_List_when_no_sentences() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        Long startOfRange = 2L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, module.getId(), startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should returns empty list when argument is non-exist user id")
+    void findAllByModuleIdAndBetween_returns_Empty_List_when_no_user() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+
+        Long nonExistUserId = userId + 1;
+
+        Long startOfRange = 2L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(nonExistUserId, module.getId(), startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should returns empty list when no modules in database")
+    void findAllByModuleIdAndBetween_returns_Empty_List_when_no_modules() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+
+        Long nonExistModuleId = module.getId() + 1;
+
+        Long startOfRange = 2L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, nonExistModuleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should returns empty list when module id is deletedModuleId")
+    void findAllByModuleIdAndBetween_returns_Empty_List_when_module_was_deleted() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        deleteAllUserModulesAndSentences(moduleId);
+
+        Long startOfRange = 2L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts at beginning of sentence ordinal number and end in the middle of")
+    void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_beginning_of_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = 1L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts in the middle of the range and end at the end of it")
+    void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_the_end_of_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = 9L;
+        Long endOfRange = 10L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts in the middle of the range and end at before the end")
+    void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_the_middle_of_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = 4L;
+        Long endOfRange = 7L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(4),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should returns list when beginning of range is less than 1")
+    void findAllByModuleIdAndBetween_returns_empty_list_when_start_range_number_is_less_than_1() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = -5L;
+        Long endOfRange = 5L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should returns list when the end range number is out of range")
+    void findAllByModuleIdAndBetween_returns_empty_list_when_end_range_number_is_out_of_range() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = 9L;
+        Long endOfRange = 15L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should returns empty list when range is out of range")
+    void findAllByModuleIdAndBetween_returns_empty_list_when_range_is_out_of_range() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, null);
+        createTestSentences(userId, module.getId(), 10);
+        Long moduleId = module.getId();
+
+        Long startOfRange = 20L;
+        Long endOfRange = 30L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(0),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should returns list of ModuleReadModel when in database are more sentences then one user's")
+    void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_more_than_one_user_data() throws Exception {
+        // Given
+        AppUserReadModel savedUser_1 = createTestUser("foo@mail.com");
+        Long userId_1 = savedUser_1.id();
+        ModuleReadModel module_1 = moduleFacade.createModule(userId_1, null);
+        createTestSentences(userId_1, module_1.getId(), 10);
+
+        AppUserReadModel savedUser_2 = createTestUser("bar@mail.com");
+        Long userId_2 = savedUser_2.id();
+        ModuleReadModel module_2 = moduleFacade.createModule(userId_2, null);
+        createTestSentences(userId_2, module_2.getId(), 10);
+        Long moduleId_2 = module_2.getId();
+
+        Long startOfRange = 6L;
+        Long endOfRange = 10L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId_2, moduleId_2, startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result).isNotNull()
+        );
+
+        // Clear Test Environment
+        clearUserData(userId_1);
+        clearUserData(userId_2);
+    }
+
+    @Test
+    @DisplayName("findAllByModuleIdAndBetween should return sentences sorted by ordinalNumber")
+    void findAllByModuleIdAndBetween_returns_Sentences_Sorted_By_OrdinalNumber() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        createTestSentences(userId, module.getId(), 5);
+
+        Long startOfRange = 6L;
+        Long endOfRange = 10L;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, module.getId(), startOfRange, endOfRange);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(6L),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(7L),
+                () -> assertThat(result.get(2).getOrdinalNumber()).isEqualTo(8L),
+                () -> assertThat(result.get(3).getOrdinalNumber()).isEqualTo(9L),
+                () -> assertThat(result.get(4).getOrdinalNumber()).isEqualTo(10L)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
     }
 
 
 
-    /*---------------------------*/
 
 
-    /*---------------------------*/
+
+
+
 
 
     @Test

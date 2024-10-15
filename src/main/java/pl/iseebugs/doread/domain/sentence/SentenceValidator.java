@@ -11,8 +11,23 @@ class SentenceValidator {
         }
     }
 
+    boolean longValidator(final Long number) {
+        return number != null && number >= 1;
+    }
+
     boolean integerValidator(final Integer id) {
         return id != null && id >= 1;
+    }
+
+    boolean validateRange(Long smallerNumber, Long higherNumber){
+       if(!longValidator(smallerNumber)){
+           smallerNumber = 0L;
+       }
+        longValidator(higherNumber, "Invalid end of range number.");
+        if(higherNumber < smallerNumber){
+            throw new IllegalArgumentException("Beginning of range number is higher then end of range number.");
+        }
+        return true;
     }
 
     boolean stringValidator(String argument) {

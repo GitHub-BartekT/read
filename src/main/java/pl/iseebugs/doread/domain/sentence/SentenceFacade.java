@@ -24,7 +24,6 @@ public class SentenceFacade {
     private final ModuleFacade moduleFacade;
     private final SentenceValidator sentenceValidator;
 
-
     /**
      * Get all sentences read models by module id and user id. In asc order by ordinalNumber.
      *
@@ -52,7 +51,17 @@ public class SentenceFacade {
                 .toList();
     }
 
+    /**
+     * Get all sentences by module id and user id.
+     * Numbers from a closed interval in asc order by ordinal number.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public List<SentenceReadModel> findAllByModuleIdAndBetween(Long userId, Long moduleId, Long startOrdinalNumber, Long endOrdinalNumber) {
+        userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.validateRange(startOrdinalNumber, endOrdinalNumber);
         return sentenceRepository.findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
                         userId,
                         moduleId,
