@@ -11,6 +11,7 @@ import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
+import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -62,6 +63,28 @@ class SentenceFacadeTest extends BaseIT {
                 () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
                 () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
         );
+    }
+
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should return empty list when no sentences")
+    void getAllByUserIdAndModuleId_returns_Empty_List_when_no_sentences() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade.getAllByUserIdAndModuleId(userId, module.getId());
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
     }
 
     @Test
@@ -194,6 +217,32 @@ class SentenceFacadeTest extends BaseIT {
         clearUserData(userId_2);
     }
 
+    @Test
+    @DisplayName("getAllByUserIdAndModuleId should return sentences sorted by ordinalNumber")
+    void getAllByUserIdAndModuleId_returns_Sentences_Sorted_By_OrdinalNumber() throws Exception {
+        // Given
+        AppUserReadModel savedUser = createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        createTestSentences(userId, module.getId(), 5);
+        // When
+        List<SentenceReadModel> result = sentenceFacade.getAllByUserIdAndModuleId(userId, module.getId());
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(5),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(1L),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(2L),
+                () -> assertThat(result.get(2).getOrdinalNumber()).isEqualTo(3L),
+                () -> assertThat(result.get(3).getOrdinalNumber()).isEqualTo(4L),
+                () -> assertThat(result.get(4).getOrdinalNumber()).isEqualTo(5L)
+        );
+
+        // Clear Test Environment
+        clearUserData(userId);
+    }
 
 
     /*---------------------------*/
