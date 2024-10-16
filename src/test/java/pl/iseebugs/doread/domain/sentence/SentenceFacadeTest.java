@@ -11,11 +11,13 @@ import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
+import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -870,15 +872,13 @@ class SentenceFacadeTest extends BaseIT {
         for (int i = 0; i < modulesQuantity; i++) {
             String sentenceText = "testSentence_" + (i + 1);
             sentenceFacade.create(userId, moduleId, sentenceText);
-            log.info("Created module: {}, for user: {}", sentenceText, userId);
+            log.info("Created sentence: {}, for user: {}", sentenceText, userId);
         }
     }
 
-    private void deleteAllSentencesInModule(Long userId, Long moduleId) throws ModuleNotFoundException {
-        List<SentenceReadModel> userSentences = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
-        for (SentenceReadModel sentence : userSentences) {
-            sentenceFacade.deleteByUserIdAndModuleIdAndId(userId, moduleId, sentence.getId());
-        }
+    private void deleteAllSentencesInModule(Long userId, Long moduleId){
+        List<SentenceWriteModel> sentenceList = new ArrayList<>();
+        sentenceFacade.rearrangeSetByModuleId(userId, moduleId, sentenceList);
     }
 
     private void deleteAllUserModulesAndSentences(Long userId) throws ModuleNotFoundException {

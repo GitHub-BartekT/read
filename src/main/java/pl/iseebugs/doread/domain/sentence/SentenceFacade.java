@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.domain.sentence;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class SentenceFacade {
 
     private final SentenceRepository sentenceRepository;
@@ -120,29 +122,48 @@ public class SentenceFacade {
                 .build();
     }
 
+    /**
+     * Delete sentences by:
+     * <ol>
+     *     <li>User Id</li>
+     *     <li>Module Id</li>
+     *     <li>Ordinal Number</li>
+     * </ol>
+     *
+     * After deleting sentence rebuild queue of module sentences ordinal numbers set.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     @Transactional
-    public void deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
+    public List<SentenceReadModel> deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
         ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
         sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), ordinalNumber);
-
-        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
+        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", userId, module.getId(), ordinalNumber);
+        return rearrangeSetAfterDeletedOneSentence(userId, moduleId);
     }
 
-    @Transactional
-    public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
-        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
-        sentenceRepository.deleteByUserIdAndModuleIdAndId(userId, module.getId(), ordinalNumber);
+    /**
+     * Rebuild sentences module ordinal numbers after deleting one sentence.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    private List<SentenceReadModel> rearrangeSetAfterDeletedOneSentence(Long userId, Long moduleId){
+        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
+        Long ordinalNumber = 1L;
 
-        List<SentenceWriteModel> moduleSentences = getAllByUserIdAndModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
+        for (Sentence sentence: existingSentences) {
+            if(sentence.getOrdinalNumber() != ordinalNumber) {
+                sentence.setOrdinalNumber(ordinalNumber);
+            }
+            ordinalNumber++;
+        }
+
+        return getAllByUserIdAndModuleId(userId, moduleId);
     }
-
-
 
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
@@ -155,7 +176,10 @@ public class SentenceFacade {
 
         existingSentences.stream()
                 .filter(sentence -> !newIds.contains(sentence.getId()))
-                .forEach(sentence -> sentenceRepository.delete(sentence));
+                .forEach(sentence ->{
+                    sentenceRepository.delete(sentence);
+                    log.info("Deleted sentence: userId: {}, moduleId: {}, sentenceId: {}", userId, moduleId, sentence.getId());
+                });
 
         for (int i = 0; i < inserts.size(); i++) {
             SentenceWriteModel insert = inserts.get(i);
