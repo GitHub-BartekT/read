@@ -16,11 +16,9 @@ class SentenceValidationTest {
     @BeforeEach
     void setUp() {
         var mockSentenceRepository = mock(SentenceRepository.class);
-        var mockSentenceProperties = mock(SentencesProperties.class);
 
         sentenceFacade = new SentenceFacade(
                 mockSentenceRepository,
-                mockSentenceProperties,
                 new SentenceValidator()
         );
     }

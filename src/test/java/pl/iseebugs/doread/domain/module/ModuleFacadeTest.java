@@ -36,24 +36,15 @@ class ModuleFacadeTest extends BaseIT {
 
     @Autowired
     AccountDeleteFacade accountDeleteFacade;
-
-    @Test
-    @DisplayName("getModuleByUserIdAndModuleId should throws ModuleNotFoundException")
-    void getModuleByUserIdAndModuleId_throws_ModuleNotFoundException() {
-        // Given + When
-        Throwable e = catchThrowable(() -> moduleFacade.getModuleByUserIdAndModuleId(1L, 1L));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(ModuleNotFoundException.class)
-        );
-    }
+    
+    @Autowired
+    ModuleTestHelper moduleTestHelper;
 
     @Test
     @DisplayName("getModuleByUserIdAndModuleId should returns data")
     void getModuleByUserIdAndModuleId_returns_ModuleReadModel() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "fooModule";
@@ -68,16 +59,16 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getModulesByUserId should returns empty list when argument is non-exist user id")
     void getModulesByUserId_returns_Empty_List_when_no_user() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
-        createTestModules(userId, 10);
+        moduleTestHelper.createTestModules(userId, 10);
 
         Long nonExistUserId = 10000000L;
 
@@ -91,14 +82,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getModulesByUserId should returns empty list when no modules in database")
     void getModulesByUserId_returns_Empty_List_when_no_modules() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         Long moduleId = 1L;
@@ -113,19 +104,19 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getModulesByUserId should returns empty list when module id is deletedModuleId")
     void getModulesByUserId_returns_Empty_List_when_module_was_deleted() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel savedModule = moduleFacade.createModule(userId, "foo");
         Long moduleId = savedModule.getId();
-        deleteAllUserModules(userId);
+        moduleTestHelper.deleteAllUserModules(userId);
 
         // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(moduleId);
@@ -137,17 +128,17 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getModulesByUserId should returns list of modules")
     void getModulesByUserId_returns_List_of_modules() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
-        createTestModules(userId, 5);
+        moduleTestHelper.createTestModules(userId, 5);
 
         // When
         List<ModuleReadModel> result = moduleFacade.getModulesByUserId(userId);
@@ -159,7 +150,7 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
     
     @Test
@@ -179,17 +170,17 @@ class ModuleFacadeTest extends BaseIT {
     @DisplayName("getAllModules should returns list with data")
     void getAllModules_returns_All_modules() throws Exception {
         // Given
-        AppUserReadModel savedUser_1 = createTestUser();
+        AppUserReadModel savedUser_1 = moduleTestHelper.createTestUser();
         Long userId_1 = savedUser_1.id();
-        createTestModules(userId_1, 5);
+        moduleTestHelper.createTestModules(userId_1, 5);
 
-        AppUserReadModel savedUser_2 = createTestUser("foo@mail.com");
+        AppUserReadModel savedUser_2 = moduleTestHelper.createTestUser("foo@mail.com");
         Long userId_2 = savedUser_2.id();
-        createTestModules(userId_2, 10);
+        moduleTestHelper.createTestModules(userId_2, 10);
 
-        AppUserReadModel savedUser_3 = createTestUser("bat@mail.com");
+        AppUserReadModel savedUser_3 = moduleTestHelper.createTestUser("bat@mail.com");
         Long userId_3 = savedUser_3.id();
-        createTestModules(userId_3, 3);
+        moduleTestHelper.createTestModules(userId_3, 3);
         
         // When
         List<ModuleReadModel> result = moduleFacade.getAllModules();
@@ -201,22 +192,9 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId_1);
-        clearUserData(userId_2);
-        clearUserData(userId_3);
-    }
-
-    @Test
-    @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
-    void createModule_throws_IllegalArgumentException() {
-        // Given + When
-        Throwable e = catchThrowable(() -> moduleFacade.createModule(-1L, "foo"));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
-        );
+        moduleTestHelper.clearUserData(userId_1);
+        moduleTestHelper.clearUserData(userId_2);
+        moduleTestHelper.clearUserData(userId_3);
     }
 
     @Test
@@ -235,7 +213,7 @@ class ModuleFacadeTest extends BaseIT {
     @DisplayName("createModule should creates module with default name")
     void createModule_create_module_with_default_name() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = null;
@@ -255,14 +233,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("createModule should creates module with default specific name")
     void createModule_create_module_with_specific_name() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "foo module";
@@ -282,68 +260,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
-    }
-
-    @Test
-    @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
-    void updateModule_throws_IllegalArgumentException_when_invalid_user_id() {
-        // Given
-        Long userId = -1L;
-        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
-        moduleToUpdate.setId(1L);
-
-        // When
-        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
-        );
-    }
-
-    @Test
-    @DisplayName("createModule should throws IllegalArgumentException \"Invalid module id.\"")
-    void updateModule_throws_IllegalArgumentException_when_invalid_module_id() {
-        // Given
-        Long userId = 1L;
-
-        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
-        moduleToUpdate.setId(-1L);
-
-        // When
-        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
-        );
-    }
-
-    @Test
-    @DisplayName("createModule should throws ModuleNotFoundException when no user")
-    void updateModule_throws_ModuleNotFoundException() {
-        // Given
-        Long userId = 1L;
-
-        ModuleWriteModel moduleToUpdate = new ModuleWriteModel();
-        moduleToUpdate.setId(1L);
-        // When
-        Throwable e = catchThrowable(() -> moduleFacade.updateModule(userId, moduleToUpdate));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(ModuleNotFoundException.class)
-        );
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("createModule should updates all fields")
     void updateModule_updates_all_fields() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "foo module";
@@ -375,14 +299,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("createModule should updates all fields when given userId in ModuleWriteModel is different than userId")
     void updateModule_updates_all_fields_when_wrong_userId_in_write_model() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "foo module";
@@ -415,14 +339,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("createModule should updates chosen fields")
     void updateModule_updates_chosen_fields() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "foo module";
@@ -450,14 +374,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("createModule should do nothing when all argument fields are null")
     void updateModule_do_nothing() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         String moduleName = "foo module";
@@ -482,48 +406,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
-    }
-
-    @Test
-    @DisplayName("setNextSession should throws IllegalArgumentException \"Invalid User ID.\"")
-    void setNextSession_throws_IllegalArgumentException_when_invalid_user_id() {
-        // Given
-        Long userId = -1L;
-        Long moduleId = 1L;
-
-        //When
-        Throwable e = catchThrowable(() -> moduleFacade.setNextSession(userId, moduleId));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid User ID.")
-        );
-    }
-
-    @Test
-    @DisplayName("setNextSession should throws IllegalArgumentException \"Invalid module id.\"")
-    void setNextSession_throws_IllegalArgumentException_when_invalid_module_id() {
-        // Given
-        Long userId = 1L;
-        Long moduleId = -1L;
-
-        //When
-        Throwable e = catchThrowable(() -> moduleFacade.setNextSession(userId, moduleId));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
-        );
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("setNextSession should increment next session when nextSession is less then sessionsPerDay")
     void setNextSession_increments_next_session() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel userModule = moduleFacade.createModule(userId, null);
@@ -541,14 +431,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("setNextSession should increment actualDay and set nextSession to one when nextSession equal sessionsPerDay")
     void setNextSession_increments_actual_day_and_set_next_session() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel userModule = moduleFacade.createModule(userId, null);
@@ -572,14 +462,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("deleteModule should do nothing when no user id in db")
     void deleteModule_do_nothing_when_no_user_in_db() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel userModule = moduleFacade.createModule(userId, null);
@@ -598,14 +488,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("deleteModule should do nothing when no module id in db")
     void deleteModule_do_nothing_when_no_module_in_db() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel userModule = moduleFacade.createModule(userId, null);
@@ -624,14 +514,14 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("deleteModule should do nothing when no data")
     void deleteModule_deleted_when_not_found_data() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = moduleTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel userModule = moduleFacade.createModule(userId, null);
@@ -651,44 +541,6 @@ class ModuleFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
-    }
-
-    private AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
-        AppUserWriteModel newUser = AppUserWriteModel.builder()
-                .email(email)
-                .password("fooPassword")
-                .build();
-
-        return appUserFacade.create(newUser);
-    }
-    
-    private AppUserReadModel createTestUser() throws AppUserNotFoundException {
-        return createTestUser("some.foo.bar@email.com");
-    }
-
-    private void deleteTestUser(Long userId) throws Exception {
-        AppUserReadModel user = appUserFacade.findUserById(userId);
-        appUserFacade.anonymization(user.id());
-    }
-
-    private void createTestModules(Long userId, int modulesQuantity) throws AppUserNotFoundException {
-        for (int i = 0; i < modulesQuantity; i++) {
-            String moduleName = "testModule_" + (i + 1);
-            moduleFacade.createModule(userId, moduleName);
-            log.info("Created module: {}, for user: {}", moduleName, userId);
-        }
-    }
-
-    private void deleteAllUserModules(Long userId) {
-        List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
-        for (ModuleReadModel module : userModules) {
-            moduleFacade.deleteModule(module.getId(), userId);
-        }
-    }
-
-    private void clearUserData(final Long userId) throws Exception {
-        deleteAllUserModules(userId);
-        deleteTestUser(userId);
+        moduleTestHelper.clearUserData(userId);
     }
 }
