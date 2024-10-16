@@ -991,7 +991,7 @@ class SentenceFacadeTest extends BaseIT {
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        Long moduleId = module.getId() + 1;
+        Long moduleId = module.getId();
 
         // When
         List<SentenceReadModel> result = sentenceFacade
@@ -1007,4 +1007,138 @@ class SentenceFacadeTest extends BaseIT {
         sentenceTestHelper.clearUserData(userId);
     }
 
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should do nothing when ordinal number is out of range," +
+            " and return list in ascending ordinal by ordinalNumber")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_do_nothing() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long moduleId = module.getId();
+
+        sentenceTestHelper.createTestSentences(userId, moduleId, 3);
+
+        List<SentenceReadModel> listBefore = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, 4L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(3),
+                () -> assertThat(listBefore.size()).isEqualTo(result.size()),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(1),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(2),
+                () -> assertThat(result.get(2).getOrdinalNumber()).isEqualTo(3)
+                );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should deletes first position," +
+            " and return all module sentences in ascending ordinal by ordinalNumber starting from 1")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_deleting_first_position() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long moduleId = module.getId();
+
+        sentenceTestHelper.createTestSentences(userId, moduleId, 3);
+
+        List<SentenceReadModel> listBefore = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, 1L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(listBefore.size()).isEqualTo(result.size() + 1),
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(1),
+                () -> assertThat(result.get(0).getSentence()).isEqualTo("testSentence_2"),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(2),
+                () -> assertThat(result.get(1).getSentence()).isEqualTo("testSentence_3")
+                );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should deletes last position," +
+            " and return all module sentences in ascending ordinal by ordinalNumber starting from 1")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_deleting_last_position() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long moduleId = module.getId();
+
+        sentenceTestHelper.createTestSentences(userId, moduleId, 3);
+
+        List<SentenceReadModel> listBefore = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, 3L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(listBefore.size()).isEqualTo(result.size() + 1),
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(1),
+                () -> assertThat(result.get(0).getSentence()).isEqualTo("testSentence_1"),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(2),
+                () -> assertThat(result.get(1).getSentence()).isEqualTo("testSentence_2")
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should deletes mid position," +
+            " and return all module sentences in ascending ordinal by ordinalNumber starting from 1")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_deleting_mid_position() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long moduleId = module.getId();
+
+        sentenceTestHelper.createTestSentences(userId, moduleId, 3);
+
+        List<SentenceReadModel> listBefore = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, 2L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(listBefore.size()).isEqualTo(result.size() + 1),
+                () -> assertThat(result.size()).isEqualTo(2),
+                () -> assertThat(result.get(0).getOrdinalNumber()).isEqualTo(1),
+                () -> assertThat(result.get(0).getSentence()).isEqualTo("testSentence_1"),
+                () -> assertThat(result.get(1).getOrdinalNumber()).isEqualTo(2),
+                () -> assertThat(result.get(1).getSentence()).isEqualTo("testSentence_3")
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
 }
