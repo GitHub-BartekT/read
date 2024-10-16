@@ -13,8 +13,6 @@ import java.util.stream.IntStream;
 interface SentenceRepository extends JpaRepository<Sentence, Long> {
     Optional<Sentence> findByUserIdAndId(Long userId, Long sentenceId);
     List<Sentence> findByUserIdAndModuleIdOrderByOrdinalNumberAsc(Long userId, Long moduleId);
-    Page<Sentence> findByModuleIdOrderByOrdinalNumberAsc(Long moduleId, Pageable pageable);
-
     List<Sentence> findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
             Long userId,
             Long moduleId,
@@ -23,6 +21,4 @@ interface SentenceRepository extends JpaRepository<Sentence, Long> {
     );
 
     void deleteByUserIdAndModuleIdAndOrdinalNumber(Long userid, Long moduleId, Long id);
-
-    void deleteByUserIdAndModuleIdAndId(Long userid, Long moduleId, Long id);
 }

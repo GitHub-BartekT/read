@@ -23,7 +23,6 @@ public class SentenceFacade {
 
     private final SentenceRepository sentenceRepository;
     private final SentencesProperties sentencesProperties;
-    private final ModuleFacade moduleFacade;
     private final SentenceValidator sentenceValidator;
 
     /**
@@ -168,7 +167,7 @@ public class SentenceFacade {
     }
 
 
-
+    //To tests. Removing all sentences from module.
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
         List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
@@ -206,7 +205,6 @@ public class SentenceFacade {
         return getAllByUserIdAndModuleId(userId, moduleId);
     }
 
-
     //TODO: move to moduleSessionCoordinator
     /**
      * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
@@ -236,20 +234,6 @@ public class SentenceFacade {
         return savedSentences.stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
-    }
-
-    @Transactional
-    public SentenceReadModel updateById(Long userId, Long id, String newSentence) throws SentenceNotFoundException {
-        SentenceReadModel sentence = findByUserIdAndId(userId, id);
-        Sentence toUpdate = SentenceMapper.toEntity(sentence);
-        toUpdate.setSentence(newSentence);
-        Sentence result = sentenceRepository.save(toUpdate);
-        return SentenceMapper.toReadModel(result);
-    }
-
-    public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
-        return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
-                .map(SentenceMapper::toReadModel);
     }
 }
 
