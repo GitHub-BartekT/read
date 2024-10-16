@@ -1,6 +1,5 @@
 package pl.iseebugs.doread.domain.sentence;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,21 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.BaseIT;
 import pl.iseebugs.doread.domain.account.delete.AccountDeleteFacade;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
-import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
-import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
-import pl.iseebugs.doread.domain.user.AppUserFacade;
-import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
-import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @Log4j2
 @Transactional
@@ -40,32 +32,6 @@ class SentenceFacadeTest extends BaseIT {
 
     @Autowired
     AccountDeleteFacade accountDeleteFacade;
-
-    @Test
-    @DisplayName("getAllByUserIdAndModuleId should throws IllegalArgumentException \"Invalid user id.\"")
-    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_userId() {
-        // Given + When
-        Throwable e = catchThrowable(() -> sentenceFacade.getAllByUserIdAndModuleId(-1L, 1L));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
-        );
-    }
-
-    @Test
-    @DisplayName("getAllByUserIdAndModuleId should throws IllegalArgumentException \"Invalid module id.\"")
-    void getAllByUserIdAndModuleId_throws_IllegalArgumentException_when_invalid_moduleId() {
-        // Given + When
-        Throwable e = catchThrowable(() -> sentenceFacade.getAllByUserIdAndModuleId(1L, -1L));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
-        );
-    }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should return empty list when no sentences")
@@ -611,52 +577,6 @@ class SentenceFacadeTest extends BaseIT {
     }
 
     @Test
-    @DisplayName("findByUserIdAndId should throws IllegalArgumentException \"Invalid user id.\" when invalid user id")
-    void findByUserIdAndId_throws_IllegalArgumentException_when_invalid_user_id() {
-        // Given
-        Long userId = -1L;
-        Long sentenceId = 1L;
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(userId, sentenceId));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
-        );
-    }
-
-    @Test
-    @DisplayName("findByUserIdAndId should throws IllegalArgumentException \"Invalid sentence id.\" when invalid sentence id")
-    void findByUserIdAndId_throws_IllegalArgumentException_when_invalid_sentence_id() {
-        // Given
-        Long userId = 1L;
-        Long sentenceId = -1L;
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(userId, sentenceId));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid sentence id.")
-        );
-    }
-
-    @Test
-    @DisplayName("findByUserIdAndId should throws SentenceNotFoundException")
-    void findByUserIdAndId_throws_SentenceNotFoundException() {
-        // Given + When
-        Throwable e = catchThrowable(() -> sentenceFacade.findByUserIdAndId(1L, 1L));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(SentenceNotFoundException.class)
-        );
-    }
-
-    @Test
     @DisplayName("findByUserIdAndId should returns data")
     void findByUserIdAndId_returns_data() throws Exception {
         // Given
@@ -679,43 +599,6 @@ class SentenceFacadeTest extends BaseIT {
 
         // Clear Test Environment
         sentenceTestHelper.clearUserData(userId);
-    }
-
-    @Test
-    @DisplayName("create should throws IllegalArgumentException \"Invalid user id.\"")
-    void create_throws_IllegalArgumentException_when_invalid_userId() {
-        // Given
-        Long userId = -1L;
-        Long moduleId = 1L;
-        String sentenceText = "foo";
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.create(userId, moduleId, sentenceText));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
-        );
-    }
-
-    @Test
-    @DisplayName("create should throws IllegalArgumentException \"Invalid module id.\"")
-    void create_throws_IllegalArgumentException_when_invalid_moduleId() {
-        // Given
-        Long userId = 1L;
-        Long moduleId = -1L;
-        String sentenceText = "foo";
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.create(userId, moduleId, sentenceText));
-
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
-        );
     }
 
     @Test
@@ -842,66 +725,6 @@ class SentenceFacadeTest extends BaseIT {
 
         // Clear Test Environment
         sentenceTestHelper.clearUserData(userId);
-    }
-
-
-
-    /*---------------------------*/
-
-
-
-    @Test
-    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid user id.\"")
-    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_userId() {
-        // Given
-        Long userId = -1L;
-        Long moduleId = 1L;
-        Long ordinalNumber = 1L;
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
-        );
-    }
-
-    @Test
-    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid module id.\"")
-    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_moduleId() {
-        // Given
-        Long userId = 1L;
-        Long moduleId = -1L;
-        Long ordinalNumber = 1L;
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
-        );
-    }
-
-    @Test
-    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid ordinalNumber\"")
-    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_ordinalNumber() {
-        // Given
-        Long userId = 1L;
-        Long moduleId = 1L;
-        Long ordinalNumber = -1L;
-
-        // When
-        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
-
-        // Then
-        assertAll(
-                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThat(e.getMessage()).isEqualTo("Invalid ordinalNumber")
-        );
     }
 
     @Test

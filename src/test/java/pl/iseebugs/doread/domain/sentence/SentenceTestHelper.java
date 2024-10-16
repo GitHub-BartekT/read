@@ -2,10 +2,8 @@ package pl.iseebugs.doread.domain.sentence;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
-import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
@@ -43,7 +41,7 @@ class SentenceTestHelper {
         appUserFacade.anonymization(user.id());
     }
 
-    void createTestSentences(Long userId, Long moduleId, int modulesQuantity) throws AppUserNotFoundException {
+    void createTestSentences(Long userId, Long moduleId, int modulesQuantity) {
         for (int i = 0; i < modulesQuantity; i++) {
             String sentenceText = "testSentence_" + (i + 1);
             sentenceFacade.create(userId, moduleId, sentenceText);
@@ -56,7 +54,7 @@ class SentenceTestHelper {
         sentenceFacade.rearrangeSetByModuleId(userId, moduleId, sentenceList);
     }
 
-    void deleteAllUserModulesAndSentences(Long userId) throws ModuleNotFoundException {
+    void deleteAllUserModulesAndSentences(Long userId) {
         List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
         for (ModuleReadModel module : userModules) {
             deleteAllSentencesInModule(userId, module.getId());
