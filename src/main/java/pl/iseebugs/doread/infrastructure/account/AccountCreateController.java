@@ -13,6 +13,7 @@ import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.security.projection.LoginTokenDto;
+import pl.iseebugs.doread.domain.sentence.SentenceNotFoundException;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
@@ -24,7 +25,7 @@ class AccountCreateController {
     AccountCreateFacade accountCreateFacade;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<LoginTokenDto>> signUp(@RequestBody LoginRequest signUpRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException {
+    public ResponseEntity<ApiResponse<LoginTokenDto>> signUp(@RequestBody LoginRequest signUpRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, SentenceNotFoundException {
         return ResponseEntity.ok(accountCreateFacade.signUp(signUpRequest));
     }
 
