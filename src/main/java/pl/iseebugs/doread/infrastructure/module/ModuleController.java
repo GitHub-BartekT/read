@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
-import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinator;
+import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinatorFacade;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
@@ -31,7 +31,7 @@ class ModuleController {
     ModuleFacade moduleFacade;
     SecurityFacade securityFacade;
     AppUserFacade appUserFacade;
-    ModuleSessionCoordinator moduleSessionCoordinator;
+    ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade;
 
     @DeleteMapping()
     public ResponseEntity<ApiResponse<Void>> deleteModule(@RequestHeader("Authorization") String authHeader, @RequestParam Long moduleId) throws EmailNotFoundException {
@@ -41,7 +41,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        moduleSessionCoordinator.deleteModule(user.id(), moduleId);
+        moduleSessionCoordinatorFacade.deleteModule(user.id(), moduleId);
         log.info("Deleted module: userId: {}, moduleId: {}", user.id(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Moduł usunięty pomyślnie."));
     }
@@ -66,7 +66,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        List<ModuleReadModel> data = moduleSessionCoordinator.createNewModule(user.id());
+        List<ModuleReadModel> data = moduleSessionCoordinatorFacade.createNewModule(user.id());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
@@ -90,7 +90,7 @@ class ModuleController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        ModuleReadModel data = moduleSessionCoordinator.updateModuleWithSessionName(user.id(), toWrite);
+        ModuleReadModel data = moduleSessionCoordinatorFacade.updateModuleWithSessionName(user.id(), toWrite);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
     }
 

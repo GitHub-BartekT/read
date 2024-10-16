@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
@@ -18,7 +17,6 @@ import java.util.stream.IntStream;
 public class SentenceFacade {
 
     private final SentenceRepository sentenceRepository;
-    private final SentencesProperties sentencesProperties;
     private final SentenceValidator sentenceValidator;
 
     /**
@@ -82,7 +80,7 @@ public class SentenceFacade {
     }
 
     /**
-     * Create new sentence by user id and sentence id. Set ordinal number as max.ordinalNumber + 1 from current module.
+     * Create new sentence by user id and module id. Set ordinal number as max.ordinalNumber + 1 from current module.
      *
      * @author Bartlomiej Tucholski
      * @contact iseebugs.pl
@@ -99,6 +97,51 @@ public class SentenceFacade {
         Sentence result = sentenceRepository.save(toSave);
 
         return SentenceMapper.toReadModel(result);
+    }
+
+    /**
+     * Create new sentences by user id and module id.
+     * Add set at the end of existing set. Set first new sentence ordinal number as current set size + 1.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    @Transactional
+    public List<SentenceReadModel> createMany(Long userId, Long moduleId, List<String> listToSave) {
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+
+        List<SentenceReadModel> existSentences = getAllByUserIdAndModuleId(userId, moduleId);
+        int startIndex = existSentences.size();
+
+        List<Sentence> toSave = setListToSave(userId, moduleId, listToSave, startIndex);
+
+        sentenceRepository.saveAll(toSave);
+
+        return getAllByUserIdAndModuleId(userId, moduleId);
+    }
+
+    /**
+     * Set list of sentences to save.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    private List<Sentence> setListToSave(final Long userId, final Long moduleId, final List<String> listToSave, final int startIndex) {
+        List<Sentence> toSave = new ArrayList<>();
+        for (int i = 0; i < listToSave.size() ; i++){
+            String sentenceText = listToSave.get(i);
+            String validateText = sentenceValidator.validateAndSetDefaultSentenceText(sentenceText);
+            Sentence newSentence = Sentence.builder()
+                    .sentence(validateText)
+                    .moduleId(moduleId)
+                    .userId(userId)
+                    .ordinalNumber((long) (startIndex + i))
+                    .build();
+            toSave.add(newSentence);
+        }
+        return toSave;
     }
 
     /**
@@ -132,7 +175,7 @@ public class SentenceFacade {
      * @since 1.0
      */
     @Transactional
-    public List<SentenceReadModel> deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
+    public List<SentenceReadModel> deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) {
         sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
         sentenceValidator.longValidator(ordinalNumber, "Invalid ordinalNumber");
 
@@ -198,37 +241,6 @@ public class SentenceFacade {
             sentenceRepository.save(sentence);
         }
         return getAllByUserIdAndModuleId(userId, moduleId);
-    }
-
-    //TODO: move to moduleSessionCoordinator
-    /**
-     * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
-     *
-     * @param userId   ID użytkownika
-     * @param moduleId ID modułu
-     * @return Lista utworzonych zdań w postaci SentenceReadModel
-     */
-    @Transactional
-    public List<SentenceReadModel> createSentencesFromProperties(Long userId, Long moduleId) {
-        List<String> sentences = sentencesProperties.polish();
-        if (sentences == null || sentences.isEmpty()) {
-            throw new IllegalArgumentException("Lista zdań nie może być pusta.");
-        }
-
-        List<Sentence> sentenceEntities = IntStream.range(0, sentences.size())
-                .mapToObj(i -> Sentence.builder()
-                        .moduleId(moduleId)
-                        .userId(userId)
-                        .ordinalNumber((long) (i + 1))
-                        .sentence(sentences.get(i))
-                        .build())
-                .toList();
-
-        List<Sentence> savedSentences = sentenceRepository.saveAll(sentenceEntities);
-
-        return savedSentences.stream()
-                .map(SentenceMapper::toReadModel)
-                .toList();
     }
 }
 

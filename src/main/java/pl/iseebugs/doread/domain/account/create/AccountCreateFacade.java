@@ -10,11 +10,12 @@ import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
-import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinator;
+import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinatorFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.security.projection.LoginTokenDto;
+import pl.iseebugs.doread.domain.sentence.SentenceNotFoundException;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
@@ -43,23 +44,23 @@ public class AccountCreateFacade {
     ConfirmationTokenService confirmationTokenService;
     AccountHelper accountHelper;
     CreateAccountValidator createAccountValidator;
-    ModuleSessionCoordinator moduleSessionCoordinator;
+    ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade;
 
     AccountCreateFacade(SecurityFacade securityFacade,
                         AppUserFacade appUserFacade,
                         ConfirmationTokenService confirmationTokenService,
                         AccountHelper accountHelper,
                         CreateAccountValidator createAccountValidator,
-                        ModuleSessionCoordinator moduleSessionCoordinator) {
+                        ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade) {
         this.securityFacade = securityFacade;
         this.appUserFacade = appUserFacade;
         this.confirmationTokenService = confirmationTokenService;
         this.accountHelper = accountHelper;
         this.createAccountValidator = createAccountValidator;
-        this.moduleSessionCoordinator = moduleSessionCoordinator;
+        this.moduleSessionCoordinatorFacade = moduleSessionCoordinatorFacade;
     }
 
-    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException {
+    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, SentenceNotFoundException {
         String email = registrationRequest.getEmail();
         String password = securityFacade.passwordEncode(registrationRequest.getPassword());
 
@@ -68,7 +69,7 @@ public class AccountCreateFacade {
 
         AppUserReadModel createdUser = createAppUser(email, password);
         String token = confirmationTokenService.createNewConfirmationToken(createdUser.id());
-        moduleSessionCoordinator.creatingPredefinedModule(createdUser.id());
+        moduleSessionCoordinatorFacade.creatingPredefinedModule(createdUser.id());
 
         sendConfirmationEmail(email, token);
 
