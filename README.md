@@ -26,11 +26,32 @@ The app follows a **clean, modular hexagonal architecture**:
 * REST API endpoints.
 * Some HTML files are static, while others are MVC templates.
 * Security integration is based on a separate repository.
-* ### Database✅
+#### Modules:
+#### Business Modules
+* Module:
+  * Manages individual modules, which consist of sets of sentences.
+  * Responsible for:
+    * Setting the current lesson.
+    * Defining the number of sentences displayed per session.
+    * Storing module-related data, such as the number of daily sessions, newly learned sentences, and sorting data by session number.
+* Sentence:
+  * Implements business logic related to managing sentences within user modules.
+  * Main tasks:
+    * Storing: Stores sentences in the context of specific user modules.
+    * Sorting: Sorts sentences according to a predefined order (e.g., ordinalNumber).
+    * Modifying: Allows modifying the content of sentences and their attributes.
+    * Deleting: Manages the deletion of sentences assigned to user modules.
+* Session:
+  * Combines individual modules into learning sessions.
+  * A session represents a set of actions performed within a single module, such as reviewing, revisiting, and learning new sentences.
+  * Manages user progress within lessons, for example, controlling which sentences have already been learned.
+#### Infrastructural Modules
+* Details: [my security git-hub repo](https://github.com/GitHub-BartekT/SpringBoot_Security_Module)
+### Database✅
 * PostgreSQL database.
 * Migrations managed by **Flyway**.
 * Designed with an Entity Relationship Diagram (ERD) for reference.
-* #### ERD
+#### ERD
 ![schema.png](documentation%2Freadme%2Fschema.png)
 ### Technologies
 #### Backend
@@ -55,7 +76,7 @@ The app follows a **clean, modular hexagonal architecture**:
 ## Pending features
 ### Version 1.0
 1. Module CRUD✅
-2. Sentence CRUD
+2. Sentence CRUD✅
 3. Backend for statistics
 4. Launch🚀
 ### Version 1.1

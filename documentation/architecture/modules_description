@@ -1,0 +1,30 @@
+Business modules
+    Module:
+        Manages individual modules which consist of sets of sentences.
+        Among other things, it sets the current lesson and the number of displayed sentences
+    Sentence:
+        implements business logic related to:
+            storing, sorting, modifying and deleting sentences related to user modules.
+    Session:
+        Combines individual modules into sessions.
+
+Infrastructural modules
+    Account:
+        Create:
+            create new account process
+        Lifecycle:
+            login,
+            creating access and refresh tokens
+            refreshing access tokens
+            password changing
+        Delete:
+            anonymization account process
+    Email:
+        Sending emails to users
+    User:
+    store user data
+
+
+
+
+
