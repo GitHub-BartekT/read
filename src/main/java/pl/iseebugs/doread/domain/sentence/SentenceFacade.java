@@ -138,9 +138,11 @@ public class SentenceFacade {
      */
     @Transactional
     public List<SentenceReadModel> deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
-        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
-        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), ordinalNumber);
-        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", userId, module.getId(), ordinalNumber);
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.longValidator(ordinalNumber, "Invalid ordinalNumber");
+
+        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber);
+        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", userId, moduleId, ordinalNumber);
         return rearrangeSetAfterDeletedOneSentence(userId, moduleId);
     }
 

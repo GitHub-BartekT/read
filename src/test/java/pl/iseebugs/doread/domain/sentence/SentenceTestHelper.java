@@ -25,7 +25,6 @@ class SentenceTestHelper {
     SentenceFacade sentenceFacade;
     ModuleFacade moduleFacade;
 
-
     AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
         AppUserWriteModel newUser = AppUserWriteModel.builder()
                 .email(email)

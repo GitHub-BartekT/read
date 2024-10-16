@@ -849,4 +849,162 @@ class SentenceFacadeTest extends BaseIT {
     /*---------------------------*/
 
 
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid user id.\"")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_userId() {
+        // Given
+        Long userId = -1L;
+        Long moduleId = 1L;
+        Long ordinalNumber = 1L;
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid user id.")
+        );
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid module id.\"")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_moduleId() {
+        // Given
+        Long userId = 1L;
+        Long moduleId = -1L;
+        Long ordinalNumber = 1L;
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid module id.")
+        );
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should throws IllegalArgumentException \"Invalid ordinalNumber\"")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_throws_IllegalArgumentException_when_invalid_ordinalNumber() {
+        // Given
+        Long userId = 1L;
+        Long moduleId = 1L;
+        Long ordinalNumber = -1L;
+
+        // When
+        Throwable e = catchThrowable(() -> sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber));
+
+        // Then
+        assertAll(
+                () -> assertThat(e).isInstanceOf(IllegalArgumentException.class),
+                () -> assertThat(e.getMessage()).isEqualTo("Invalid ordinalNumber")
+        );
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should return empty list when no user found")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_returns_empty_list_when_no_user_found() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+        Long noExistsUserId = userId + 1;
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 5);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(noExistsUserId, module.getId(), 2L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should return empty list when no module found")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_returns_empty_list_when_no_module_found() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long noExistsModuleId = module.getId() + 1;
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 5);
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, noExistsModuleId, 2L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should return empty list when the user isn't the owner of the module")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_returns_empty_list_when_user_and_module_do_not_match_each_ather() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser("foo@mail.com");
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long noExistsModuleId = module.getId() + 1;
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 5);
+
+        AppUserReadModel savedUser_2 = sentenceTestHelper.createTestUser("bar@mail.com");
+        Long userId_2 = savedUser_2.id();
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId_2, noExistsModuleId, 2L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId_2);
+    }
+
+    @Test
+    @DisplayName("deleteByUserIdAndModuleIdAndOrdinalNumber should return empty list when no sentences in user's module")
+    void deleteByUserIdAndModuleIdAndOrdinalNumber_returns_empty_list_when_user_module_has_no_sentences() throws Exception {
+        // Given
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
+        Long userId = savedUser.id();
+
+        ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
+        Long moduleId = module.getId() + 1;
+
+        // When
+        List<SentenceReadModel> result = sentenceFacade
+                .deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, 1L);
+
+        // Then
+        assertAll(
+                () -> assertThat(result).isNotNull(),
+                () -> assertThat(result.size()).isEqualTo(0)
+        );
+
+        // Clear Test Environment
+        sentenceTestHelper.clearUserData(userId);
+    }
+
 }
