@@ -1,5 +1,6 @@
 package pl.iseebugs.doread.domain.sentence;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class SentenceFacadeTest extends BaseIT {
     SentenceFacade sentenceFacade;
 
     @Autowired
-    AppUserFacade appUserFacade;
+    SentenceTestHelper sentenceTestHelper;
 
     @Autowired
     ModuleFacade moduleFacade;
@@ -70,7 +71,7 @@ class SentenceFacadeTest extends BaseIT {
     @DisplayName("getAllByUserIdAndModuleId should return empty list when no sentences")
     void getAllByUserIdAndModuleId_returns_Empty_List_when_no_sentences() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
@@ -85,18 +86,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns empty list when argument is non-exist user id")
     void getAllByUserIdAndModuleId_returns_Empty_List_when_no_user() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
 
         Long nonExistUserId = userId + 1;
 
@@ -110,18 +111,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns empty list when no modules in database")
     void getAllByUserIdAndModuleId_returns_Empty_List_when_no_modules() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
 
         Long nonExistModuleId = module.getId() + 1;
 
@@ -135,21 +136,21 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns empty list when module id is deletedModuleId")
     void getAllByUserIdAndModuleId_returns_Empty_List_when_module_was_deleted() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
-        deleteAllUserModulesAndSentences(userId);
+        sentenceTestHelper.deleteAllUserModulesAndSentences(userId);
 
         // When
         List<SentenceReadModel> result = sentenceFacade.getAllByUserIdAndModuleId(userId, moduleId);
@@ -161,18 +162,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel")
     void getAllByUserIdAndModuleId_returns_List_of_ModuleReadModel() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         // When
@@ -185,23 +186,23 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when in database are more sentences then one user's")
     void getAllByUserIdAndModuleId_returns_List_of_ModuleReadModel_from_more_than_one_user_data() throws Exception {
         // Given
-        AppUserReadModel savedUser_1 = createTestUser("foo@mail.com");
+        AppUserReadModel savedUser_1 = sentenceTestHelper.createTestUser("foo@mail.com");
         Long userId_1 = savedUser_1.id();
         ModuleReadModel module_1 = moduleFacade.createModule(userId_1, null);
-        createTestSentences(userId_1, module_1.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId_1, module_1.getId(), 10);
         Long moduleId_1 = module_1.getId();
 
-        AppUserReadModel savedUser_2 = createTestUser("bar@mail.com");
+        AppUserReadModel savedUser_2 = sentenceTestHelper.createTestUser("bar@mail.com");
         Long userId_2 = savedUser_2.id();
         ModuleReadModel module_2 = moduleFacade.createModule(userId_2, null);
-        createTestSentences(userId_2, module_2.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId_2, module_2.getId(), 10);
         Long moduleId_2 = module_2.getId();
 
         // When
@@ -214,19 +215,19 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId_1);
-        clearUserData(userId_2);
+        sentenceTestHelper.clearUserData(userId_1);
+        sentenceTestHelper.clearUserData(userId_2);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should return sentences sorted by ordinalNumber")
     void getAllByUserIdAndModuleId_returns_Sentences_Sorted_By_OrdinalNumber() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        createTestSentences(userId, module.getId(), 5);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 5);
         // When
         List<SentenceReadModel> result = sentenceFacade.getAllByUserIdAndModuleId(userId, module.getId());
 
@@ -242,18 +243,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllSentenceByModuleId should return sentences as strings")
     void getAllSentenceByModuleId_returns_List_of_Sentence_Strings() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        createTestSentences(userId, module.getId(), 3);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 3);
 
         // When
         List<String> result = sentenceFacade.getAllSentenceByModuleId(userId, module.getId());
@@ -265,14 +266,14 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should return empty list when no sentences")
     void findAllByModuleIdAndBetween_Empty_List_when_no_sentences() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
@@ -290,18 +291,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should returns empty list when argument is non-exist user id")
     void findAllByModuleIdAndBetween_returns_Empty_List_when_no_user() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
 
         Long nonExistUserId = userId + 1;
 
@@ -318,18 +319,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should returns empty list when no modules in database")
     void findAllByModuleIdAndBetween_returns_Empty_List_when_no_modules() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
 
         Long nonExistModuleId = module.getId() + 1;
 
@@ -346,21 +347,21 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should returns empty list when module id is deletedModuleId")
     void findAllByModuleIdAndBetween_returns_Empty_List_when_module_was_deleted() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
-        deleteAllUserModulesAndSentences(userId);
+        sentenceTestHelper.deleteAllUserModulesAndSentences(userId);
 
         Long startOfRange = 2L;
         Long endOfRange = 5L;
@@ -368,9 +369,9 @@ class SentenceFacadeTest extends BaseIT {
         // When
         List<SentenceReadModel> result = sentenceFacade.findAllByModuleIdAndBetween(userId, moduleId, startOfRange, endOfRange);
 
-        System.out.println("Module name: " + module.getModuleName() );
-        for (SentenceReadModel sentence: result
-             ) {
+        System.out.println("Module name: " + module.getModuleName());
+        for (SentenceReadModel sentence : result
+        ) {
             System.out.printf("Sentence %s, ordinal number: %d \n ", sentence.getSentence(), sentence.getOrdinalNumber());
         }
 
@@ -381,18 +382,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts at beginning of sentence ordinal number and end in the middle of")
     void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_beginning_of_data() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = 1L;
@@ -408,18 +409,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts in the middle of the range and end at the end of it")
     void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_the_end_of_data() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = 9L;
@@ -435,18 +436,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list of ModuleReadModel when the range starts in the middle of the range and end at before the end")
     void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_the_middle_of_data() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = 4L;
@@ -462,18 +463,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list when beginning of range is less than 1")
     void findAllByModuleIdAndBetween_returns_empty_list_when_start_range_number_is_less_than_1() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = -5L;
@@ -489,18 +490,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("getAllByUserIdAndModuleId should returns list when the end range number is out of range")
     void findAllByModuleIdAndBetween_returns_empty_list_when_end_range_number_is_out_of_range() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = 9L;
@@ -516,18 +517,18 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should returns empty list when range is out of range")
     void findAllByModuleIdAndBetween_returns_empty_list_when_range_is_out_of_range() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, null);
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
         Long moduleId = module.getId();
 
         Long startOfRange = 20L;
@@ -543,22 +544,22 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should returns list of ModuleReadModel when in database are more sentences then one user's")
     void findAllByModuleIdAndBetween_returns_List_of_ModuleReadModel_from_more_than_one_user_data() throws Exception {
         // Given
-        AppUserReadModel savedUser_1 = createTestUser("foo@mail.com");
+        AppUserReadModel savedUser_1 = sentenceTestHelper.createTestUser("foo@mail.com");
         Long userId_1 = savedUser_1.id();
         ModuleReadModel module_1 = moduleFacade.createModule(userId_1, null);
-        createTestSentences(userId_1, module_1.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId_1, module_1.getId(), 10);
 
-        AppUserReadModel savedUser_2 = createTestUser("bar@mail.com");
+        AppUserReadModel savedUser_2 = sentenceTestHelper.createTestUser("bar@mail.com");
         Long userId_2 = savedUser_2.id();
         ModuleReadModel module_2 = moduleFacade.createModule(userId_2, null);
-        createTestSentences(userId_2, module_2.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId_2, module_2.getId(), 10);
         Long moduleId_2 = module_2.getId();
 
         Long startOfRange = 6L;
@@ -574,19 +575,19 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId_1);
-        clearUserData(userId_2);
+        sentenceTestHelper.clearUserData(userId_1);
+        sentenceTestHelper.clearUserData(userId_2);
     }
 
     @Test
     @DisplayName("findAllByModuleIdAndBetween should return sentences sorted by ordinalNumber")
     void findAllByModuleIdAndBetween_returns_Sentences_Sorted_By_OrdinalNumber() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        createTestSentences(userId, module.getId(), 10);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 10);
 
         Long startOfRange = 6L;
         Long endOfRange = 10L;
@@ -606,7 +607,7 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
@@ -659,7 +660,7 @@ class SentenceFacadeTest extends BaseIT {
     @DisplayName("findByUserIdAndId should returns data")
     void findByUserIdAndId_returns_data() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
@@ -677,7 +678,7 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
@@ -721,7 +722,7 @@ class SentenceFacadeTest extends BaseIT {
     @DisplayName("create should return new sentence with default text when text is null")
     void create_returns_sentence_with_default_text_when_text_is_null() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
@@ -739,19 +740,19 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("create should return new sentence with default text when text is blank")
     void create_returns_sentence_with_default_text_when_text_is_blank() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
 
-        String sentenceText ="";
+        String sentenceText = "";
 
         // When
         SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
@@ -764,19 +765,19 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("create should return new sentence with given text")
     void create_returns_sentence_with_given_text() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
 
-        String sentenceText ="foo text";
+        String sentenceText = "foo text";
 
         // When
         SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
@@ -789,19 +790,19 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("create should return new sentence with ordinal number equals 1 when no sentences in module")
     void create_returns_sentence_with_ordinal_number_equals_one() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
 
-        String sentenceText ="foo text";
+        String sentenceText = "foo text";
 
         // When
         SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
@@ -814,20 +815,20 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
     @Test
     @DisplayName("create should return new sentence with ordinal number equals existing set of sentences plus one")
     void create_returns_sentence_with_ordinal_number_equals_five() throws Exception {
         // Given
-        AppUserReadModel savedUser = createTestUser();
+        AppUserReadModel savedUser = sentenceTestHelper.createTestUser();
         Long userId = savedUser.id();
 
         ModuleReadModel module = moduleFacade.createModule(userId, "testModule");
-        createTestSentences(userId, module.getId(), 20);
+        sentenceTestHelper.createTestSentences(userId, module.getId(), 20);
 
-        String sentenceText ="foo text";
+        String sentenceText = "foo text";
 
         // When
         SentenceReadModel result = sentenceFacade.create(userId, module.getId(), sentenceText);
@@ -840,7 +841,7 @@ class SentenceFacadeTest extends BaseIT {
         );
 
         // Clear Test Environment
-        clearUserData(userId);
+        sentenceTestHelper.clearUserData(userId);
     }
 
 
@@ -848,49 +849,4 @@ class SentenceFacadeTest extends BaseIT {
     /*---------------------------*/
 
 
-
-
-    private AppUserReadModel createTestUser(String email) throws AppUserNotFoundException {
-        AppUserWriteModel newUser = AppUserWriteModel.builder()
-                .email(email)
-                .password("fooPassword")
-                .build();
-
-        return appUserFacade.create(newUser);
-    }
-
-    private AppUserReadModel createTestUser() throws AppUserNotFoundException {
-        return createTestUser("some.foo.bar@email.com");
-    }
-
-    private void deleteTestUser(Long userId) throws Exception {
-        AppUserReadModel user = appUserFacade.findUserById(userId);
-        appUserFacade.anonymization(user.id());
-    }
-
-    private void createTestSentences(Long userId, Long moduleId, int modulesQuantity) throws AppUserNotFoundException {
-        for (int i = 0; i < modulesQuantity; i++) {
-            String sentenceText = "testSentence_" + (i + 1);
-            sentenceFacade.create(userId, moduleId, sentenceText);
-            log.info("Created sentence: {}, for user: {}", sentenceText, userId);
-        }
-    }
-
-    private void deleteAllSentencesInModule(Long userId, Long moduleId){
-        List<SentenceWriteModel> sentenceList = new ArrayList<>();
-        sentenceFacade.rearrangeSetByModuleId(userId, moduleId, sentenceList);
-    }
-
-    private void deleteAllUserModulesAndSentences(Long userId) throws ModuleNotFoundException {
-        List<ModuleReadModel> userModules = moduleFacade.getModulesByUserId(userId);
-        for (ModuleReadModel module : userModules) {
-            deleteAllSentencesInModule(userId, module.getId());
-            moduleFacade.deleteModule(module.getId(), userId);
-        }
-    }
-
-    private void clearUserData(final Long userId) throws Exception {
-        deleteAllUserModulesAndSentences(userId);
-        deleteTestUser(userId);
-    }
 }
