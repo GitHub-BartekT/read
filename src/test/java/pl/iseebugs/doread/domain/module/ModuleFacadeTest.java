@@ -206,11 +206,6 @@ class ModuleFacadeTest extends BaseIT {
         clearUserData(userId_3);
     }
 
-    private void clearUserData(final Long userId_1) throws Exception {
-        deleteAllUserModules(userId_1);
-        deleteTestUser(userId_1);
-    }
-
     @Test
     @DisplayName("createModule should throws IllegalArgumentException \"Invalid User ID.\"")
     void createModule_throws_IllegalArgumentException() {
@@ -690,5 +685,10 @@ class ModuleFacadeTest extends BaseIT {
         for (ModuleReadModel module : userModules) {
             moduleFacade.deleteModule(module.getId(), userId);
         }
+    }
+
+    private void clearUserData(final Long userId) throws Exception {
+        deleteAllUserModules(userId);
+        deleteTestUser(userId);
     }
 }

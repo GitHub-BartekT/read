@@ -54,9 +54,10 @@ The app follows a **clean, modular hexagonal architecture**:
 
 ## Pending features
 ### Version 1.0
-1. Module CRUD
-2. Backend for statistics
-3. Launch🚀
+1. Module CRUD✅
+2. Sentence CRUD
+3. Backend for statistics
+4. Launch🚀
 ### Version 1.1
 1. Add password management
 2. Redraw pages:

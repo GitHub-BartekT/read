@@ -141,7 +141,6 @@ class ModuleValidatorTest {
         );
     }
 
-
     @Test
     @DisplayName("stringValidator should returns false when argument is null")
     void stringValidator_returns_false_when_argument_is_null() {

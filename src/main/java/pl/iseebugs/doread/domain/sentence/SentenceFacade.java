@@ -1,13 +1,10 @@
 package pl.iseebugs.doread.domain.sentence;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
-import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceWriteModel;
 
@@ -17,25 +14,51 @@ import java.util.stream.IntStream;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class SentenceFacade {
 
-    SentenceRepository sentenceRepository;
-    SentencesProperties sentencesProperties;
-    ModuleFacade moduleFacade;
+    private final SentenceRepository sentenceRepository;
+    private final SentencesProperties sentencesProperties;
+    private final SentenceValidator sentenceValidator;
 
-    public List<SentenceReadModel> findAllByModuleId(Long userId, Long moduleId) {
+    /**
+     * Get all sentences read models by module id and user id. In asc order by ordinalNumber.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<SentenceReadModel> getAllByUserIdAndModuleId(Long userId, Long moduleId) {
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
         return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
     }
 
-    public List<String> findAllSentenceByModuleId(Long userId, Long moduleId) {
-        return sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId).stream()
-                .map(Sentence::getSentence)
+    /**
+     * Get all sentences strings by module id and user id. In asc order by ordinalNumber.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public List<String> getAllSentenceByModuleId(Long userId, Long moduleId) {
+        return getAllByUserIdAndModuleId(userId, moduleId).stream()
+                .map(SentenceReadModel::getSentence)
                 .toList();
     }
 
+    /**
+     * Get all sentences by module id and user id.
+     * Numbers from a closed interval in asc order by ordinal number.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     public List<SentenceReadModel> findAllByModuleIdAndBetween(Long userId, Long moduleId, Long startOrdinalNumber, Long endOrdinalNumber) {
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.validateRange(startOrdinalNumber, endOrdinalNumber);
         return sentenceRepository.findByUserIdAndModuleIdAndOrdinalNumberBetweenOrderByOrdinalNumberAsc(
                         userId,
                         moduleId,
@@ -45,39 +68,139 @@ public class SentenceFacade {
                 .toList();
     }
 
-    public SentenceReadModel findById(Long id) {
-        return sentenceRepository.findById(id).map(SentenceMapper::toReadModel)
-                .orElseThrow(() -> new IllegalArgumentException("Sentence with id " + id + " not found"));
+    /**
+     * Find sentence by user id and sentence id.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    public SentenceReadModel findByUserIdAndId(Long userId, Long sentenceId) throws SentenceNotFoundException {
+        sentenceValidator.userIdAndSentenceIdValidator(userId, sentenceId);
+        return sentenceRepository.findByUserIdAndId(userId, sentenceId).map(SentenceMapper::toReadModel)
+                .orElseThrow(SentenceNotFoundException::new);
     }
 
-    public Page<SentenceReadModel> findByModuleIdWithPagination(Long moduleId, int page, int size) {
-        return sentenceRepository.findByModuleIdOrderByOrdinalNumberAsc(moduleId, PageRequest.of(page, size))
-                .map(SentenceMapper::toReadModel);
-    }
-
+    /**
+     * Create new sentence by user id and sentence id. Set ordinal number as max.ordinalNumber + 1 from current module.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
     @Transactional
     public SentenceReadModel create(Long userId, Long moduleId, String sentenceText) {
-        Long size = (long) findAllByModuleId(userId, moduleId).size();
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+        sentenceText = sentenceValidator.validateAndSetDefaultSentenceText(sentenceText);
 
-        if (sentenceText == null || sentenceText.isEmpty()) {
-            throw new IllegalArgumentException("Sentence text must not be null or empty");
-        }
-        Sentence sentence = Sentence.builder()
+        long size = getAllByUserIdAndModuleId(userId, moduleId).size();
+
+        Sentence toSave = buildSentence(userId, moduleId, sentenceText, size);
+        Sentence result = sentenceRepository.save(toSave);
+
+        return SentenceMapper.toReadModel(result);
+    }
+
+    /**
+     * Crete sentence with increment by 1 ordinal number.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    private static Sentence buildSentence(final Long userId, final Long moduleId, final String sentenceText, final long size) {
+        return Sentence.builder()
                 .moduleId(moduleId)
                 .sentence(sentenceText)
                 .ordinalNumber(size + 1)
                 .userId(userId)
                 .build();
-        Sentence result = sentenceRepository.save(sentence);
-
-        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
-
-        return SentenceMapper.toReadModel(result);
     }
 
+    /**
+     * Delete sentences by:
+     * <ol>
+     *     <li>User Id</li>
+     *     <li>Module Id</li>
+     *     <li>Ordinal Number</li>
+     * </ol>
+     *
+     * After deleting sentence rebuild queue of module sentences ordinal numbers set.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    @Transactional
+    public List<SentenceReadModel> deleteByUserIdAndModuleIdAndOrdinalNumber(Long userId, Long moduleId, Long ordinalNumber) throws ModuleNotFoundException {
+        sentenceValidator.userIdAndModuleIdValidator(userId, moduleId);
+        sentenceValidator.longValidator(ordinalNumber, "Invalid ordinalNumber");
+
+        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber);
+        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", userId, moduleId, ordinalNumber);
+        return rearrangeSetAfterDeletedOneSentence(userId, moduleId);
+    }
+
+    /**
+     * Rebuild sentences module ordinal numbers after deleting one sentence.
+     *
+     * @author Bartlomiej Tucholski
+     * @contact iseebugs.pl
+     * @since 1.0
+     */
+    private List<SentenceReadModel> rearrangeSetAfterDeletedOneSentence(Long userId, Long moduleId){
+        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
+        Long ordinalNumber = 1L;
+
+        for (Sentence sentence: existingSentences) {
+            if(sentence.getOrdinalNumber() != ordinalNumber) {
+                sentence.setOrdinalNumber(ordinalNumber);
+            }
+            ordinalNumber++;
+        }
+
+        return getAllByUserIdAndModuleId(userId, moduleId);
+    }
+
+    //To tests. Removing all sentences from module.
+    @Transactional
+    public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
+        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
+
+        List<Long> newIds = inserts.stream()
+                .map(SentenceWriteModel::getId)
+                .filter(Objects::nonNull)
+                .toList();
+
+        existingSentences.stream()
+                .filter(sentence -> !newIds.contains(sentence.getId()))
+                .forEach(sentence ->{
+                    sentenceRepository.delete(sentence);
+                    log.info("Deleted sentence: userId: {}, moduleId: {}, sentenceId: {}", userId, moduleId, sentence.getId());
+                });
+
+        for (int i = 0; i < inserts.size(); i++) {
+            SentenceWriteModel insert = inserts.get(i);
+            Sentence sentence;
+
+            if (insert.getId() != null) {
+                sentence = existingSentences.stream()
+                        .filter(s -> s.getId().equals(insert.getId()))
+                        .findFirst()
+                        .orElseThrow(() -> new IllegalArgumentException("Zdanie o ID " + insert.getId() + " nie istnieje."));
+            } else {
+                sentence = new Sentence();
+                sentence.setModuleId(moduleId);
+            }
+
+            sentence.setSentence(insert.getSentence());
+            sentence.setOrdinalNumber((long) (i + 1));
+            sentenceRepository.save(sentence);
+        }
+        return getAllByUserIdAndModuleId(userId, moduleId);
+    }
+
+    //TODO: move to moduleSessionCoordinator
     /**
      * Tworzy wiele zdań na podstawie listy, przypisując moduleId, userId oraz odpowiedni ordinalNumber.
      *
@@ -106,65 +229,6 @@ public class SentenceFacade {
         return savedSentences.stream()
                 .map(SentenceMapper::toReadModel)
                 .toList();
-    }
-
-    @Transactional
-    public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
-        List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);
-
-        List<Long> newIds = inserts.stream()
-                .map(SentenceWriteModel::getId)
-                .filter(Objects::nonNull)
-                .toList();
-
-        existingSentences.stream()
-                .filter(sentence -> !newIds.contains(sentence.getId()))
-                .forEach(sentence -> sentenceRepository.delete(sentence));
-
-        for (int i = 0; i < inserts.size(); i++) {
-            SentenceWriteModel insert = inserts.get(i);
-            Sentence sentence;
-
-            if (insert.getId() != null) {
-                sentence = existingSentences.stream()
-                        .filter(s -> s.getId().equals(insert.getId()))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Zdanie o ID " + insert.getId() + " nie istnieje."));
-            } else {
-                sentence = new Sentence();
-                sentence.setModuleId(moduleId);
-            }
-
-            sentence.setSentence(insert.getSentence());
-            sentence.setOrdinalNumber((long) (i + 1));
-            sentenceRepository.save(sentence);
-        }
-        return findAllByModuleId(userId, moduleId);
-    }
-
-    @Transactional
-    public void deleteById(Long id) {
-        sentenceRepository.deleteById(id);
-    }
-
-    @Transactional
-    public void deleteByUserIdAndModuleIdAndId(Long userId, Long moduleId, Long id) throws ModuleNotFoundException {
-        ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, moduleId);
-        sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, module.getId(), id);
-
-        List<SentenceWriteModel> moduleSentences = findAllByModuleId(userId, moduleId).stream()
-                .map(SentenceMapper::toWriteModelFromReadModel)
-                .toList();
-        rearrangeSetByModuleId(userId, moduleId, moduleSentences);
-    }
-
-    @Transactional
-    public SentenceReadModel updateById(Long id, String newSentence) {
-        SentenceReadModel sentence = findById(id);
-        Sentence toUpdate = SentenceMapper.toEntity(sentence);
-        toUpdate.setSentence(newSentence);
-        Sentence result = sentenceRepository.save(toUpdate);
-        return SentenceMapper.toReadModel(result);
     }
 }
 

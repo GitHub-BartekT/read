@@ -9,11 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import pl.iseebugs.doread.domain.ApiResponse;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
-import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
 import pl.iseebugs.doread.domain.sentence.SentenceFacade;
-import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 
@@ -37,7 +35,7 @@ class SentenceController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        sentenceFacade.deleteByUserIdAndModuleIdAndId(user.id(), moduleId, ordinalNumber);
+        sentenceFacade.deleteByUserIdAndModuleIdAndOrdinalNumber(user.id(), moduleId, ordinalNumber);
         log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", user.id(), moduleId, ordinalNumber);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Zdanie usunięte pomyślnie."));
     }
@@ -50,7 +48,7 @@ class SentenceController {
         String accessToken = authHeader.substring(7);
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
-        List<String> data = sentenceFacade.findAllSentenceByModuleId(user.id(), moduleId);
+        List<String> data = sentenceFacade.getAllSentenceByModuleId(user.id(), moduleId);
         log.info("Sentence list size: {}", data.size());
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Sentence list.", data));
     }
@@ -64,7 +62,7 @@ class SentenceController {
         String userEmail = securityFacade.extractEmail(accessToken);
         AppUserReadModel user = appUserFacade.findByEmail(userEmail);
         sentenceFacade.create(user.id(), moduleId, sentence);
-        List<String> data = sentenceFacade.findAllSentenceByModuleId(user.id(), moduleId);
+        List<String> data = sentenceFacade.getAllSentenceByModuleId(user.id(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithStatus(201, "Created new sentence.", data));
     }
 }
