@@ -23,6 +23,7 @@ target/
 ### NetBeans ###
 application.yml
 application-*.yml
+email-config.yml
 
 ### NetBeans ###
 /nbproject/private/
