@@ -21,10 +21,10 @@ target/
 .env
 
 ### NetBeans ###
-application.yml
-application-test.yml
-application-prod.yml
-application-dev.yml
+/src/main/resources/application.yml
+/src/main/resources/application-test.yml
+/src/main/resources/application-prod.yml
+/src/main/resources/application-dev.yml
 
 ### NetBeans ###
 /nbproject/private/
