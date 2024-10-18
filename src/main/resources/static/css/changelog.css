@@ -34,3 +34,7 @@ body {
     background-color: #495057;
     border-radius: 4px;
 }
+
+.content {
+    padding: 30px;
+}
