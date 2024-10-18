@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/api';
 const REFRESH_TOKEN_URL = API_URL + '/auth/refresh';
 
 function goToLoginPage() {

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>pl.iseebugs</groupId>
 	<artifactId>read</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>do read</name>
 	<description>Demo project for Spring Boot security</description>
 	<properties>

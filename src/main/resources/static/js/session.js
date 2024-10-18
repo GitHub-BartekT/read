@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/session';
+const API_URL = 'http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/api/session';
 const token = localStorage.getItem('accessToken');
 const sessionId = new URLSearchParams(window.location.search).get('sessionId');
 let currentSentenceIndex = 0;
