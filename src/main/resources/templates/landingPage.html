@@ -36,8 +36,43 @@
     </div>
 </footer>
 <script>
-    // Login button
+
     document.getElementById('loginBtn').addEventListener('click', function () {
+        login();
+    });
+
+    document.getElementById('password').addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            login();
+        }
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', function () {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        fetch('/api/auth/create/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({email, password})
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.statusCode !== 200) {
+                    showError(data.message);
+                } else {
+                    showError(data.message);
+                    // Zarejestrowano pomyślnie, przekierowanie lub inne akcje
+                    console.log('Zarejestrowano:', data);
+                }
+            })
+            .catch(error => showError('Wystąpił błąd podczas rejestracji.'));
+    });
+
+    function login(){
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
@@ -70,37 +105,13 @@
             }
         })
             .catch(error => showError('Wystąpił błąd podczas logowania.'));
-    });
-
-    // Registration button
-    document.getElementById('registerBtn').addEventListener('click', function () {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        fetch('/api/auth/create/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email, password})
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.statusCode !== 200) {
-                    showError(data.message);
-                } else {
-                    showError(data.message);
-                    // Zarejestrowano pomyślnie, przekierowanie lub inne akcje
-                    console.log('Zarejestrowano:', data);
-                }
-            })
-            .catch(error => showError('Wystąpił błąd podczas rejestracji.'));
-    });
+    }
 
     function showError(message) {
         const errorMessageElement = document.getElementById('errorMessage');
         errorMessageElement.textContent = message;
     }
+
 </script>
 </body>
 </html>
