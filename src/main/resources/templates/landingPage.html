@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>do read - Landing Page</title>
     <link rel="stylesheet" th:href="@{/css/landing-page.css}">
+    <link rel="stylesheet" th:href="@{/css/footer.css}">
 </head>
 <body>
 
@@ -24,7 +25,16 @@
 
     <div id="errorMessage" class="error-message"></div>
 </div>
-
+<footer>
+    <div class="footer-links">
+        <a href="/changelog.html">Changelog</a>
+        <span>|</span>
+        <a href="#">RODO</a>
+    </div>
+    <div class="rights">
+        <p>2023-2024 Bartlomiej Tucholski All Rights Reserved</p>
+    </div>
+</footer>
 <script>
     // Login button
     document.getElementById('loginBtn').addEventListener('click', function () {
