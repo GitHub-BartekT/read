@@ -59,7 +59,13 @@ button:hover {
     opacity: 0.9;
 }
 
+button.grey-button {
+    background-color: #7a7979;
+}
+
 .error-message {
     color: red;
     margin-top: 10px;
 }
+
+

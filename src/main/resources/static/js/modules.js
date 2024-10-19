@@ -1,6 +1,3 @@
-const API_URL_MODULE = API_URL + '/module';
-const API_URL_SENTENCES = API_URL + '/sentence';
-
 getAllUserModules();
 
 function getAllUserModules() {

@@ -1,5 +1,3 @@
-const API_URL_SESSION = API_URL + '/session';
-
 getAllSentences();
 
 function getAllSentences(moduleId) {

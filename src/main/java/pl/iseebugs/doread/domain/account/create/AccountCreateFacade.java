@@ -76,7 +76,7 @@ public class AccountCreateFacade {
         Date tokenExpiresAt = confirmationTokenService.calculateTokenExpiration(token);
         LoginTokenDto loginTokenDto = new LoginTokenDto(token, tokenExpiresAt);
 
-        return ApiResponseFactory.createSuccessResponse("Successfully signed up.", loginTokenDto);
+        return ApiResponseFactory.createSuccessResponse("Wiadomość z linkiem została wysłana!", loginTokenDto);
     }
 
     public ApiResponse<Void> confirmToken(final String token) throws TokenNotFoundException, RegistrationTokenConflictException, AppUserNotFoundException {
