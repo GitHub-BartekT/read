@@ -1,5 +1,3 @@
-const API_URL_DELETE = API_URL + '/auth/delete';
-
 function logout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');

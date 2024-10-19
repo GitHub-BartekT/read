@@ -1,11 +1,10 @@
-const API_URL = 'http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/api/session';
 const token = localStorage.getItem('accessToken');
 const sessionId = new URLSearchParams(window.location.search).get('sessionId');
 let currentSentenceIndex = 0;
 let sentences = [];
 
 // Fetch the sentences from the API
-fetch(`${API_URL}/next-session?sessionId=${sessionId}`, {
+fetch(`${API_URL_SESSION}/next-session?sessionId=${sessionId}`, {
     method: 'GET',
     headers: {
         'Authorization': `Bearer ${token}`,
@@ -43,7 +42,7 @@ function showNextSentence() {
 }
 
 function endSession() {
-    fetch(`${API_URL}/end-session?sessionId=${sessionId}`, {
+    fetch(`${API_URL_SESSION}/end-session?sessionId=${sessionId}`, {
         method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${token}`,

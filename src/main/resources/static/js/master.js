@@ -1,5 +1,9 @@
-const API_URL = 'http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/api';
-const REFRESH_TOKEN_URL = API_URL + '/auth/refresh';
+const API_BASE_URL = `${window.location.protocol}//${window.location.host}/api`;
+const REFRESH_TOKEN_URL = API_BASE_URL + '/auth/refresh';
+const API_URL_DELETE = API_BASE_URL + '/auth/delete';
+const API_URL_SENTENCES = API_BASE_URL + '/sentence';
+const API_URL_MODULE = API_BASE_URL + '/module';
+const API_URL_SESSION = API_BASE_URL + '/session';
 
 function goToLoginPage() {
     window.location.href = '/';
