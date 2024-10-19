@@ -11,6 +11,8 @@ import pl.iseebugs.doread.domain.module.dto.ModuleWriteModel;
 import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.sentence.dto.SentenceReadModel;
 import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
+import pl.iseebugs.doread.domain.sessionstatistics.SessionStatisticsFacade;
+import pl.iseebugs.doread.domain.sessionstatistics.SessionStatisticsRepository;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -30,6 +32,8 @@ public class SessionFacade {
     private final ModuleFacade moduleFacade;
     private final AppUserFacade appUserFacade;
     private final SentenceFacade sentenceFacade;
+    private final SessionStatisticsFacade sessionStatisticsFacade;
+
 
     public SessionWriteModel createSession(Long userId, String sessionName) throws AppUserNotFoundException {
         Session session = new Session();
@@ -120,7 +124,7 @@ public class SessionFacade {
         }
 
         nextSessionSentences.forEach(System.out::println);
-
+        sessionStatisticsFacade.createSessionStatistic(userId, sessionId, nextSessionSentences.size(), false, userSession.getOrdinalSchema(), modules.size());
         return nextSessionSentences;
     }
 
@@ -132,10 +136,16 @@ public class SessionFacade {
 
         List<SessionModule> modules = userSession.getSessionModules();
 
+        int sentenceCount = 0;
+
         for (SessionModule sessionModule : modules) {
             ModuleReadModel module = moduleFacade.getModuleByUserIdAndModuleId(userId, sessionModule.getModuleId());
+            sentenceCount = sentenceCount + module.getPresentationsPerSession();
             moduleFacade.setNextSession(userId, module.getId());
         }
+
+        sessionStatisticsFacade.createSessionStatistic(userId, sessionId, sentenceCount, true, userSession.getOrdinalSchema(), modules.size());
+
     }
 
     @Transactional

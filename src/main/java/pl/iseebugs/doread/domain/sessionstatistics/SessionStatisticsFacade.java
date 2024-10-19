@@ -1,26 +1,30 @@
 package pl.iseebugs.doread.domain.sessionstatistics;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 public class SessionStatisticsFacade {
 
     private final SessionStatisticsRepository sessionStatisticsRepository;
 
-    public SessionStatistics createSessionStatistic(Long userId, Long moduleId, int sentencesCount, boolean isFinished, String ordinalType, int modulesInSession) {
+    public SessionStatistics createSessionStatistic(Long userId, Long sessionId, int sentencesCount, boolean isFinished, String ordinalType, int modulesInSession) {
         SessionStatistics sessionStatistics = SessionStatistics.builder()
                 .userId(userId)
-                .moduleId(moduleId)
+                .sessionId(sessionId)
                 .sentencesCount(sentencesCount)
                 .isFinished(isFinished)
                 .ordinalType(ordinalType)
                 .modulesInSession(modulesInSession)
                 .build();
-        return sessionStatisticsRepository.save(sessionStatistics);
+        SessionStatistics result =  sessionStatisticsRepository.save(sessionStatistics);
+log.info("Created statistic id : {}", result.getId());
+        return result;
     }
 
     public List<SessionStatistics> getAllSessionStatistics() {
