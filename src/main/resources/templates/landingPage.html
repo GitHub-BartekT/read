@@ -22,8 +22,8 @@
         <button type="button" id="loginBtn" class="login">Zaloguj się</button>
         <button type="button" id="registerBtn" class="register">Załóż konto</button>
     </form>
-
     <div id="errorMessage" class="error-message"></div>
+    <br>
 </div>
 <footer>
     <div class="footer-links">
@@ -48,9 +48,9 @@
     });
 
     document.getElementById('registerBtn').addEventListener('click', function () {
+        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
-
         fetch('/api/auth/create/signup', {
             method: 'POST',
             headers: {
@@ -63,8 +63,7 @@
                 if (data.statusCode !== 200) {
                     showError(data.message);
                 } else {
-                    showError(data.message);
-                    // Zarejestrowano pomyślnie, przekierowanie lub inne akcje
+                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
                     console.log('Zarejestrowano:', data);
                 }
             })
