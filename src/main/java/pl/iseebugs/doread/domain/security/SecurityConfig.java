@@ -48,17 +48,16 @@ class SecurityConfig {
                                 "/session.html",
                                 "/modules.html",
                                 "/account.html",
-                                "/changelog.html").permitAll()
+                                "/changelog.html",
+                                "/RODO.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
-                                "/api/allModules",
                                 "/api/auth",
                                 "/api/auth/create",
                                 "/api/auth/create/**",
                                 "/api/auth/confirm",
-                                "/api/auth/signin",
-                                "/api/auth/delete/**").permitAll()
+                                "/api/auth/signin").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -69,6 +68,7 @@ class SecurityConfig {
                                 "/api/auth/users",
                                 "/api/auth/delete",
                                 "/api/auth/delete/**",
+                                "/api/allModules",
                                 "/api/auth/users/password",
                                 "/api/auth/users/delete-confirm",
                                 "/api/auth/refresh",
