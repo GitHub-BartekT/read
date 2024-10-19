@@ -117,7 +117,7 @@
     });
 
     function activationLink() {
-
+        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
         const email = document.getElementById('email').value;
         const API_URL_REFRESH_ACTIVATION_TOKEN = '/api/auth/create/refresh-confirmation-token?email=' + email;
 
@@ -144,7 +144,7 @@
                 if (data.statusCode !== 204) {
                     showError(data.body.message);
                 } else {
-                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
+                    showError('Email został wysłany!')
 
                 }
             })

@@ -6,7 +6,7 @@ public interface EmailSender
 
     class EmailConflictException extends Exception{
         public EmailConflictException() {
-            super("The email address already exists.");
+            super("Już istnieje konto z takim emailem.");
         }
         public EmailConflictException(String message) {
             super(message);
