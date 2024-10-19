@@ -76,7 +76,7 @@
     });
 
     function login() {
-
+        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
@@ -89,6 +89,7 @@
         })
             .then(response => {
                 if (response.ok) {
+                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
                     return response.json();
                 } else {
                     return response.json().then(data => {
@@ -109,6 +110,46 @@
             }
         })
             .catch(error => showError('Wystąpił błąd podczas logowania.'));
+    }
+
+    document.getElementById('activationTokenBtn').addEventListener('click', function () {
+        activationLink();
+    });
+
+    function activationLink() {
+
+        const email = document.getElementById('email').value;
+        const API_URL_REFRESH_ACTIVATION_TOKEN = '/api/auth/create/refresh-confirmation-token?email=' + email;
+
+        if (email === null || email === "") {
+            showError("Podaj email.")
+        }
+        else
+        {
+            fetch(API_URL_REFRESH_ACTIVATION_TOKEN, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        return response.json().then(data => {
+                            throw new Error(data.message || 'Wystąpił błąd podczas próby uzyskania nowego linku aktywacyjnego.');
+                        });
+                    }
+                }).then(data => {
+                if (data.statusCode !== 204) {
+                    showError(data.body.message);
+                } else {
+                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
+
+                }
+            })
+                .catch(error => showError(''));
+        }
     }
 
     function showError(message) {
