@@ -25,12 +25,14 @@
     <div id="errorMessage" class="error-message"></div>
     <br>
     <br>
-    <br>
-    <button type="button" id="activationTokenBtn" class="grey-button">Nowy link aktywacyjny.</button>
+    <form>
+        <button type="button" id="activationTokenBtn" class="grey-button">Nowy link aktywacyjny.</button>
+    </form>
+
 </div>
 <footer>
     <div class="footer-links">
-        <a href="/changelog.html">Changelog</a>
+        <a href="/changelog.html">Documentation</a>
         <span>|</span>
         <a href="#">RODO</a>
     </div>
@@ -44,7 +46,7 @@
         login();
     });
 
-    document.getElementById('password').addEventListener('keydown', function(event) {
+    document.getElementById('password').addEventListener('keydown', function (event) {
         if (event.key === 'Enter') {
             login();
         }
@@ -73,7 +75,7 @@
             .catch(error => showError('Wystąpił błąd podczas rejestracji. Aktywowałeś konto?'));
     });
 
-    function login(){
+    function login() {
 
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
