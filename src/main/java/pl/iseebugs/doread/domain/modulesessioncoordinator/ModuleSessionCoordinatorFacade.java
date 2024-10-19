@@ -16,6 +16,7 @@ import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -50,6 +51,7 @@ public class ModuleSessionCoordinatorFacade {
         for (SessionWriteModel session: sessions) {
             sessionFacade.deleteSession(userId, session.getId());
         }
+        sentenceFacade.rearrangeSetByModuleId(userId, moduleId,new ArrayList<SentenceWriteModel>());
         moduleFacade.deleteModule(moduleId, userId);
     }
 
