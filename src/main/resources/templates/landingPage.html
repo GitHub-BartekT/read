@@ -53,7 +53,7 @@
     });
 
     document.getElementById('registerBtn').addEventListener('click', function () {
-        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
+        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z linkiem aktywacyjnym.")
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         fetch('/api/auth/create/signup', {
@@ -68,7 +68,7 @@
                 if (data.statusCode !== 200) {
                     showError(data.message);
                 } else {
-                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
+                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z linkiem aktywacyjnym.")
                     console.log('Zarejestrowano:', data);
                 }
             })
