@@ -3,7 +3,7 @@ version: '3.8'
 services:
   do-read:
     container_name: do-read
-    image: 211125674580.dkr.ecr.eu-central-1.amazonaws.com/do-read:1.0.1
+    image: 211125674580.dkr.ecr.eu-central-1.amazonaws.com/do-read:1.0.2
     restart: always
     env_file:
       - .env

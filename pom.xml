@@ -12,7 +12,7 @@
 	<artifactId>read</artifactId>
 	<version>1.0.2</version>
 	<name>do read</name>
-	<description>Demo project for Spring Boot security</description>
+	<description>Demo project for Spring Boot The do-read app helps children learn to read by playing short, focused reading sessions.</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
