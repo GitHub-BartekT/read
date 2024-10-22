@@ -43,6 +43,7 @@ class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/static/**",
                                 "/favicon.ico",
+                                "/home.html",
                                 "/about.html",
                                 "/dashboard.html",
                                 "/session.html",

@@ -6,7 +6,7 @@ const API_URL_MODULE = API_BASE_URL + '/module';
 const API_URL_SESSION = API_BASE_URL + '/session';
 
 function goToLoginPage() {
-    window.location.href = '/';
+    window.location.href = '/index.html';
 }
 
 function refreshToken() {
