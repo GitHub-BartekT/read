@@ -13,7 +13,7 @@ Most children regularly watch cartoons. **do-read** integrates reading lessons i
 
 ## Screenshots + Live Demo
 ### WWW
-🌐[Ro to the website!](http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/)🌐
+🌐[Go to the website!](http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/)🌐
 
 ### Live demo
 📺[Watch the demo on YouTube](https://youtu.be/iQrmxAIZE3I)📺
