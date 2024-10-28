@@ -12,6 +12,9 @@ the preparation takes a lot of effort, leading many parents to abandon the metho
 Most children regularly watch cartoons. **do-read** integrates reading lessons into their screen time, where parents can play brief reading sessions that align with the Domans’ teaching methods.
 
 ## Screenshots + Live Demo
+### WWW
+🌐[Go to the website!](http://ec2-3-64-60-246.eu-central-1.compute.amazonaws.com:8000/)🌐
+
 ### Live demo
 📺[Watch the demo on YouTube](https://youtu.be/iQrmxAIZE3I)📺
 ### Login page
