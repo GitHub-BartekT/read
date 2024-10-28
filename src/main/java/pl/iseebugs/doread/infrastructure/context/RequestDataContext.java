@@ -17,11 +17,11 @@ import java.util.List;
 public class RequestDataContext {
     private Long userId;
     private Long sessionId;
-    private List<Long> moduleId;
+    private Long moduleId;
 
     public RequestDataContext() {
         this.userId = null;
         this.sessionId = null;
-        this.moduleId = new ArrayList<>();
+        this.moduleId = null;
     }
 }

@@ -53,7 +53,9 @@ public class ModuleSessionCoordinatorFacade {
         return moduleFacade.getModulesByUserId(userId);
     }
 
-    public void deleteModule(Long userId, Long moduleId){
+    public void deleteModule(){
+        Long userId = requestDataContext.getUserId();
+        Long moduleId = requestDataContext.getModuleId();
         List<SessionWriteModel> sessions = sessionFacade.getSessionsForUserAndModule(userId, moduleId);
         for (SessionWriteModel session: sessions) {
             sessionFacade.deleteSession(userId, session.getId());
@@ -62,7 +64,8 @@ public class ModuleSessionCoordinatorFacade {
         moduleFacade.deleteModule(moduleId, userId);
     }
 
-    public ModuleReadModel updateModuleWithSessionName(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+    public ModuleReadModel updateModuleWithSessionName(ModuleWriteModel toUpdate) throws ModuleNotFoundException {
+        Long userId = requestDataContext.getUserId();
         sessionFacade.updateSessionName(userId, toUpdate);
         return moduleFacade.updateModule(userId, toUpdate);
     }
