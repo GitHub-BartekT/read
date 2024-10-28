@@ -32,11 +32,11 @@ class JWTAuthFilter extends OncePerRequestFilter {
     private final AppUserFacade appUserFacade;
 
 
-    JWTAuthFilter(JWTUtils jwtUtils, AppUserInfoService appUserInfoService, final AppUserFacade appUserFacade) {
+    JWTAuthFilter(JWTUtils jwtUtils, AppUserInfoService appUserInfoService, final AppUserFacade appUserFacade, RequestDataContext requestDataContext) {
         this.jwtUtils = jwtUtils;
         this.appUserInfoService = appUserInfoService;
         this.appUserFacade = appUserFacade;
-        this.requestDataContext = new RequestDataContext();
+        this.requestDataContext = requestDataContext;
     }
 
     @Override
@@ -54,10 +54,14 @@ class JWTAuthFilter extends OncePerRequestFilter {
 
         final String jwtToken = authHeader.substring(7);
         final String userEmail = jwtUtils.extractUsername(jwtToken);
+        log.info("User email in bearer token: {}", userEmail);
+
         try {
             AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
             requestDataContext.setUserId(user.id());
+            log.info("User id in bearer token: {}", user.id());
         } catch (EmailNotFoundException e) {
+            log.info("User not found");
             ApiResponseFactory.createResponseWithoutData(HttpServletResponse.SC_FORBIDDEN, "User not found.");
             return;
         }

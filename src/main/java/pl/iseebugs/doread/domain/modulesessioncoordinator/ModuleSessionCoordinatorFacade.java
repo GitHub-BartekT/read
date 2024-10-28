@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.domain.modulesessioncoordinator;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.doread.domain.module.ModuleFacade;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
@@ -15,11 +16,13 @@ import pl.iseebugs.doread.domain.session.SessionFacade;
 import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.session.dto.SessionWriteModel;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
+import pl.iseebugs.doread.infrastructure.context.RequestDataContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+@Log4j2
 @Service
 @AllArgsConstructor
 public class ModuleSessionCoordinatorFacade {
@@ -31,6 +34,8 @@ public class ModuleSessionCoordinatorFacade {
     private final SessionFacade sessionFacade;
     private final SentencesProperties sentencesProperties;
     private final SentenceFacade sentenceFacade;
+    private final RequestDataContext requestDataContext;
+
 
     public void creatingPredefinedModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException, SentenceNotFoundException {
         ModuleReadModel module = moduleFacade.createModule(userId, MODULE_NAME);
@@ -39,7 +44,9 @@ public class ModuleSessionCoordinatorFacade {
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());
     }
 
-    public List<ModuleReadModel> createNewModule(Long userId) throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
+    public List<ModuleReadModel> createNewModule() throws AppUserNotFoundException, ModuleNotFoundException, SessionNotFoundException {
+        Long userId = requestDataContext.getUserId();
+        log.info("User id: {}", userId);
         ModuleReadModel module = moduleFacade.createModule(userId, NEW_MODULE);
         SessionWriteModel session = sessionFacade.createSession(userId, NEW_MODULE);
         sessionFacade.addModuleToSession(userId,session.getId(), module.getId());

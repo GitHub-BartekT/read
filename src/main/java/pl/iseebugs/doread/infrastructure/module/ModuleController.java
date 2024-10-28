@@ -63,10 +63,7 @@ class ModuleController {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        String accessToken = authHeader.substring(7);
-        String userEmail = securityFacade.extractEmail(accessToken);
-        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        List<ModuleReadModel> data = moduleSessionCoordinatorFacade.createNewModule(user.id());
+        List<ModuleReadModel> data = moduleSessionCoordinatorFacade.createNewModule();
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
