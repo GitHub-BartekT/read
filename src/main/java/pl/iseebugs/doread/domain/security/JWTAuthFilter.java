@@ -14,6 +14,11 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import pl.iseebugs.doread.domain.ApiResponse;
+import pl.iseebugs.doread.domain.account.ApiResponseFactory;
+import pl.iseebugs.doread.domain.account.EmailNotFoundException;
+import pl.iseebugs.doread.domain.user.AppUserFacade;
+import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
+import pl.iseebugs.doread.infrastructure.context.RequestDataContext;
 
 import java.io.IOException;
 
@@ -23,10 +28,15 @@ class JWTAuthFilter extends OncePerRequestFilter {
 
     private final JWTUtils jwtUtils;
     private final AppUserInfoService appUserInfoService;
+    private final RequestDataContext requestDataContext;
+    private final AppUserFacade appUserFacade;
 
-    JWTAuthFilter(JWTUtils jwtUtils, AppUserInfoService appUserInfoService) {
+
+    JWTAuthFilter(JWTUtils jwtUtils, AppUserInfoService appUserInfoService, final AppUserFacade appUserFacade) {
         this.jwtUtils = jwtUtils;
         this.appUserInfoService = appUserInfoService;
+        this.appUserFacade = appUserFacade;
+        this.requestDataContext = new RequestDataContext();
     }
 
     @Override
@@ -44,6 +54,13 @@ class JWTAuthFilter extends OncePerRequestFilter {
 
         final String jwtToken = authHeader.substring(7);
         final String userEmail = jwtUtils.extractUsername(jwtToken);
+        try {
+            AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
+            requestDataContext.setUserId(user.id());
+        } catch (EmailNotFoundException e) {
+            ApiResponseFactory.createResponseWithoutData(HttpServletResponse.SC_FORBIDDEN, "User not found.");
+            return;
+        }
 
         if (request.getRequestURI().equals("/api/auth/refresh")) {
             if (userEmail != null && jwtUtils.isRefreshToken(jwtToken)) {

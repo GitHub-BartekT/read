@@ -205,7 +205,7 @@ public class SentenceFacade {
         return getAllByUserIdAndModuleId(userId, moduleId);
     }
 
-    //To tests. Removing all sentences from module.
+    //TODO To tests. Removing all sentences from module.
     @Transactional
     public List<SentenceReadModel> rearrangeSetByModuleId(Long userId, Long moduleId, List<SentenceWriteModel> inserts) {
         List<Sentence> existingSentences = sentenceRepository.findByUserIdAndModuleIdOrderByOrdinalNumberAsc(userId, moduleId);

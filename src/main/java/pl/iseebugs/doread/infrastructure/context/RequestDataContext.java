@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -17,4 +18,10 @@ public class RequestDataContext {
     private Long userId;
     private Long sessionId;
     private List<Long> moduleId;
+
+    public RequestDataContext() {
+        this.userId = null;
+        this.sessionId = null;
+        this.moduleId = new ArrayList<>();
+    }
 }
