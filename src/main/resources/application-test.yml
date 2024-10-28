@@ -23,9 +23,6 @@ spring:
           timeout: 3000
           writetimeout: 5000
 
-  config:
-    import: "classpath:email-config.yml"
-
 auth:
   secret: rk1aAhLGxQqOQ64WfnWP340qzQ0h9zX4QpC/5fR6GY4=
   expiration-refresh-token-time: 2592000000 # 24 hours (86.400.000 milliseconds) x 30 days 2.592.000.000 milliseconds
@@ -36,21 +33,3 @@ auth:
 app:
   uri: http://localhost
   port: 8080
-
-sentences:
-  polish:
-    - mama
-    - tata
-    - brat
-    - siostra
-    - babcia
-    - dziadek
-    - buła
-    - banan
-    - chleb
-    - marchewka
-    - dynia
-    - mus
-    - zupa
-    - woda
-    - mleko
