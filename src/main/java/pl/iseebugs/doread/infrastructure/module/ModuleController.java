@@ -19,7 +19,10 @@ import pl.iseebugs.doread.domain.session.SessionNotFoundException;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
+import pl.iseebugs.doread.infrastructure.context.RequestDataContext;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Log4j2
@@ -32,17 +35,16 @@ class ModuleController {
     SecurityFacade securityFacade;
     AppUserFacade appUserFacade;
     ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade;
+    RequestDataContext requestDataContext;
 
     @DeleteMapping()
     public ResponseEntity<ApiResponse<Void>> deleteModule(@RequestHeader("Authorization") String authHeader, @RequestParam Long moduleId) throws EmailNotFoundException {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        String accessToken = authHeader.substring(7);
-        String userEmail = securityFacade.extractEmail(accessToken);
-        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        moduleSessionCoordinatorFacade.deleteModule(user.id(), moduleId);
-        log.info("Deleted module: userId: {}, moduleId: {}", user.id(), moduleId);
+        requestDataContext.setModuleId(moduleId);
+        moduleSessionCoordinatorFacade.deleteModule();
+        log.info("Deleted module: userId: {}, moduleId: {}", requestDataContext.getUserId(), moduleId);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(201, "Moduł usunięty pomyślnie."));
     }
 
@@ -63,10 +65,7 @@ class ModuleController {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        String accessToken = authHeader.substring(7);
-        String userEmail = securityFacade.extractEmail(accessToken);
-        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        List<ModuleReadModel> data = moduleSessionCoordinatorFacade.createNewModule(user.id());
+        List<ModuleReadModel> data = moduleSessionCoordinatorFacade.createNewModule();
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Modules List.", data));
     }
 
@@ -87,10 +86,7 @@ class ModuleController {
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-        String accessToken = authHeader.substring(7);
-        String userEmail = securityFacade.extractEmail(accessToken);
-        AppUserReadModel user =  appUserFacade.findByEmail(userEmail);
-        ModuleReadModel data = moduleSessionCoordinatorFacade.updateModuleWithSessionName(user.id(), toWrite);
+        ModuleReadModel data = moduleSessionCoordinatorFacade.updateModuleWithSessionName(toWrite);
         return ResponseEntity.ok(ApiResponseFactory.createSuccessResponse("Module " + data.getModuleName(), data));
     }
 
