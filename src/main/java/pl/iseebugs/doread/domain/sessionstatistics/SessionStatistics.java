@@ -13,16 +13,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SessionStatistics {
 
-    @SequenceGenerator(
-            name = "session_statistics_sequence",
-            sequenceName = "session_statistics_sequence",
-            allocationSize = 1
-    )
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "session_statistics_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "user_id", nullable = false)
     private Long userId;

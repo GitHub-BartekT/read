@@ -15,7 +15,7 @@ class Sentence {
     @SequenceGenerator(
             name = "sentences_sequence",
             sequenceName = "sentences_sequence",
-            allocationSize = 1
+            allocationSize = 20
     )
     @Id
     @GeneratedValue(

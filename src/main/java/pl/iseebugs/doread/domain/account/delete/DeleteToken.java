@@ -13,16 +13,8 @@ import java.time.LocalDateTime;
 @Entity
 public class DeleteToken {
 
-    @SequenceGenerator(
-            name = "delete_token_sequence",
-            sequenceName = "delete_token_sequence",
-            allocationSize = 1
-    )
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "delete_token_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
