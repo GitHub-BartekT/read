@@ -1,3 +1,7 @@
 spring:
   profiles:
     active: dev
+  config:
+    import:
+      - "classpath:email-config.yml"
+      - "classpath:sentence-config.yml"
