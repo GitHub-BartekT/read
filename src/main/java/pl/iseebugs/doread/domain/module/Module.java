@@ -13,16 +13,8 @@ import org.hibernate.annotations.GenericGenerator;
 @AllArgsConstructor
 class Module {
 
-    @SequenceGenerator(
-            name = "modules_sequence",
-            sequenceName = "modules_sequence",
-            allocationSize = 1
-    )
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "modules_sequence"
-    )
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "user_id")
     private Long userId;

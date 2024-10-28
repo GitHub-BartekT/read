@@ -16,8 +16,7 @@ import java.util.List;
 class Session {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessions_sequence")
-    @SequenceGenerator(name = "sessions_sequence", sequenceName = "sessions_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "user_id", nullable = false)

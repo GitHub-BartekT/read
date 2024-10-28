@@ -11,10 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Table(name = "sessions_modules", uniqueConstraints = {@UniqueConstraint(columnNames = {"sessions_id", "module_id"})})
 class SessionModule {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessions_modules_sequence")
-    @SequenceGenerator(name = "sessions_modules_sequence", sequenceName = "sessions_modules_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
