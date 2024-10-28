@@ -24,8 +24,8 @@ public class EmailFacade implements EmailSender{
     private final EmailProperties emailProperties;
 
     @Autowired
-    public EmailFacade(final JavaMailSender mailSender, final TemplateEngine templateEngine, final EmailProperties emailProperties) {
-        this.mailSender = mailSender;
+    public EmailFacade(final JavaMailSender javaMailSender, final TemplateEngine templateEngine, final EmailProperties emailProperties) {
+        this.mailSender = javaMailSender;
         this.templateEngine = templateEngine;
         this.emailProperties = emailProperties;
     }
@@ -37,7 +37,7 @@ public class EmailFacade implements EmailSender{
         if (template == null){
             throw new InvalidEmailTypeException("Invalid email type: " + type);
         }
-        String firstName = userData.getFirstName() == null ? "new user" : userData.getFirstName();
+        String firstName = userData.getFirstName() == null ? "Użytkowniku" : userData.getFirstName();
 
         Context context = new Context();
         String welcomeText = template.getWelcomeText().replace("${name}", firstName);
