@@ -40,11 +40,4 @@ class AccountDeleteController {
 
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/delete-confirm")
-    public ResponseEntity<ApiResponse<Void>> deleteConfirm(@RequestParam("token") String token) throws TokenNotFoundException, AppUserNotFoundException, EmailNotFoundException {
-        accountDeleteFacade.confirmDeleteToken(token);
-        ApiResponse<Void> response = ApiResponseFactory.createResponseWithoutData(HttpStatus.NO_CONTENT.value(), "User account successfully deleted.");
-        return ResponseEntity.ok(response);
-    }
 }

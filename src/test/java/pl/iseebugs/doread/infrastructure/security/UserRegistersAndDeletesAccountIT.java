@@ -255,27 +255,15 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 () -> assertThat(deleteResultDto.getMessage()).isEqualTo("Delete confirmation mail created successfully.")
        );
 
-
     //Step 12: User made GET /api/auth/delete-confirm?token= with “Authorization: AAAA.BBBB.CCC”
     //and system returned OK(204)
         log.info("Step 12.");
-        ResultActions confirmationDeleteRegisterRequest = mockMvc.perform(get("/api/auth/delete/delete-confirm?token=" + deleteToken)
-                .header("Authorization", "Bearer " + newAccessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-        );
+        ResultActions confirmationDeleteRegisterRequest = mockMvc.perform(get("/api/auth/delete/delete-confirm?token=" + deleteToken))
+                .andExpect(status().isOk())
+                .andExpect(view().name("accountDeletionSuccess"));
 
-        // then
-        MvcResult deletedAccount = confirmationDeleteRegisterRequest.andExpect(status().isOk()).andReturn();
-        String deletedAccountActionResultJson = deletedAccount.getResponse().getContentAsString();
-        ApiResponse<LoginTokenDto> deletedAccountResultDto = objectMapper.readValue(deletedAccountActionResultJson, new TypeReference<>() {
-        });
-        //then
-        assertAll(
-                () -> assertThat(deletedAccountResultDto.getStatusCode()).isEqualTo(204),
-                () -> assertThat(deletedAccountResultDto.getMessage()).isEqualTo("User account successfully deleted.")
-        );
 
-    //Step 13: User tried to get JWT by requesting POST /auth/signin
+        //Step 13: User tried to get JWT by requesting POST /auth/signin
     //with username='someTestUser', password='somePassword' and system returned UNAUTHORIZED
         // given && when
         log.info("Step 13.");
