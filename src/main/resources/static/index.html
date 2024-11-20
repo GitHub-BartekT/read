@@ -9,28 +9,28 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>do read</h1>
+<div class="background-section">
+    <div class="image-section"></div>
 
-    <form id="authForm">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="Wprowadź email" required>
+    <div class="container">
+        <h1>Witaj w do-read!</h1>
+        <form id="authForm">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Wprowadź email" required>
 
-        <label for="password">Hasło</label>
-        <input type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
+            <label for="password">Hasło</label>
+            <input type="password" id="password" name="password" placeholder="Wprowadź hasło" required>
 
-        <button type="button" id="loginBtn" class="login">Zaloguj się</button>
-        <button type="button" id="registerBtn" class="register">Załóż konto</button>
-    </form>
-    <div id="errorMessage" class="error-message"></div>
-    <br>
-    <br>
-    <form>
-        <button type="button" id="activationTokenBtn" class="grey-button">Nowy link aktywacyjny.</button>
-    </form>
-
+            <button type="button" id="loginBtn" class="login">Zaloguj się</button>
+            <p>Pierwszy raz? <a href="">Załóż konto</a></p>
+        </form>
+        <div id="errorMessage" class="error-message"></div>
+        <br>
+        <br>
+    </div>
 </div>
-<footer>
+
+<footer class="footer">
     <div class="footer-links">
         <a href="/changelog.html">Documentation</a>
         <span>|</span>
@@ -123,9 +123,7 @@
 
         if (email === null || email === "") {
             showError("Podaj email.")
-        }
-        else
-        {
+        } else {
             fetch(API_URL_REFRESH_ACTIVATION_TOKEN, {
                 method: 'GET',
                 headers: {

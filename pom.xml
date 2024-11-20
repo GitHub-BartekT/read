@@ -23,6 +23,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
 		<!--Database-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -37,7 +42,6 @@
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-core</artifactId>
 			<version>10.8.1</version>
-
 		</dependency>
 		<dependency>
 			<groupId>org.flywaydb</groupId>

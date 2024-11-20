@@ -1,24 +1,59 @@
+:root {
+    --accent-light-red: #FF4D4D;
+    --accent-red: #FF0000;
+    --accent-dark-red: #B20000;
+
+    --background-white: #FFFFFF;
+    --background-off-white: #f0efee;
+
+    --light-gray: #E0E0E0;
+    --gray: #B0B0B0;
+    --dark-gray: #2c3b57;
+
+    --dark-blue: #0056B3;
+}
+
 
 body {
-    background-color: white;
+    background-color: var(--background-off-white);
     font-family: Arial, sans-serif;
 }
 
+.background-section {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    color: var(--background-off-white);
+}
+
+.image-section {
+    flex: 1;
+    background-image: url('https://iseebugs.pl/wp-content/app-do-read/girl.webp');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: saturate(0.5);
+    width: 25%;
+    height: auto;
+    max-height: 75vh;
+}
+
 .container {
-    max-width: 400px;
-    margin: 0 auto;
-    padding-top: 50px;
+    width: 25%;
+    background-color: var(--light-gray);
+    padding: 20px;
     text-align: center;
 }
 
 h1 {
     font-size: 50px;
-    color: red;
+    color: var(--dark-gray);
     margin-bottom: 30px;
 }
 
 form {
     display: flex;
+    color: var(--dark-gray);
     flex-direction: column;
     margin-bottom: 20px;
 }
@@ -40,32 +75,33 @@ input {
 button {
     padding: 10px 20px;
     font-size: 18px;
-    color: white;
+    color: var(--background-off-white);
     border: none;
     border-radius: 5px;
     cursor: pointer;
     margin-bottom: 10px;
-}
-
-button.login {
-    background-color: #4CAF50;
-}
-
-button.register {
-    background-color: #007bff;
+    background-color: var(--dark-blue);
 }
 
 button:hover {
-    opacity: 0.9;
-}
-
-button.grey-button {
-    background-color: #7a7979;
+    opacity: 0.8;
 }
 
 .error-message {
-    color: red;
+    color: var(--accent-dark-red);
     margin-top: 10px;
+}
+
+.footer {
+    position: fixed; /* Przypięcie stopki do ekranu */
+    bottom: 0;       /* Położenie przy dolnej krawędzi */
+    left: 0;         /* Rozciągnięcie od lewej strony */
+    width: 100%;     /* Rozciągnięcie na całą szerokość */
+    background-color: var(--background-off-white);
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Opcjonalnie: cień dla separacji */
+    z-index: 100;    /* Aby stopka była zawsze na wierzchu */
 }
 
 

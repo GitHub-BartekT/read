@@ -33,7 +33,7 @@ public class SessionFacade {
     private final AppUserFacade appUserFacade;
     private final SentenceFacade sentenceFacade;
     private final SessionStatisticsFacade sessionStatisticsFacade;
-
+    private final SessionModuleRepository sessionModuleRepository;
 
     public SessionWriteModel createSession(Long userId, String sessionName) throws AppUserNotFoundException {
         Session session = new Session();
@@ -49,7 +49,6 @@ public class SessionFacade {
 
         session.setOrdinalType(OrdinalType.QUEUE);
         session.setOrdinalSchema("1");
-        session.setSessionModules(new ArrayList<>());
 
         Session result = sessionRepository.save(session);
         return SessionMapper.toDto(result);
@@ -73,10 +72,11 @@ public class SessionFacade {
                 .session(userSession)
                 .ordinalPosition(maxOrdinalPosition + 1L)
                 .build();
-
-        userSession.getSessionModules().add(newSession);
-
-        sessionRepository.save(userSession);
+        SessionModule savedSessionModule = sessionModuleRepository.save(newSession);
+        userSession.getSessionModules().add(savedSessionModule);
+        var result = sessionRepository.save(userSession);
+        log.info("Module session size: {}", result.getSessionModules().size());
+        log.info("Module session Id: {}", result.getSessionModules().get(0));
     }
 
     public List<SessionWriteModel> findAllSessionsByUserId(Long userId) {
@@ -158,7 +158,7 @@ public class SessionFacade {
         List<Session> userSessions = sessionRepository.findSessionsByUserIdAndModuleIdWithSingleModule(userId, toUpdate.getId());
         log.info("Session size: {}", userSessions.size());
 
-        if(userSessions.size() == 1) {
+        if (userSessions.size() == 1) {
             Session entity = sessionRepository.findByIdAndUserId(userSessions.get(0).getId(), userId)
                     .orElseThrow(ModuleNotFoundException::new);
             log.info("Session id: {}", entity.getId());
