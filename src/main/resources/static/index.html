@@ -10,7 +10,8 @@
 <body>
 
 <div class="background-section">
-    <div class="image-section" style="background-image: url('https://iseebugs.pl/wp-content/app-do-read/girl.webp')"></div>
+    <div class="image-section"
+         style="background-image: url('https://iseebugs.pl/wp-content/app-do-read/girl.webp')"></div>
 
     <div class="container">
         <h1>Witaj w do-read!</h1>
@@ -40,121 +41,7 @@
         <p>2023-2024 Bartlomiej Tucholski All Rights Reserved</p>
     </div>
 </footer>
-<script>
-
-    document.getElementById('loginBtn').addEventListener('click', function () {
-        login();
-    });
-
-    document.getElementById('password').addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            login();
-        }
-    });
-
-    document.getElementById('registerBtn').addEventListener('click', function () {
-        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z linkiem aktywacyjnym.")
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        fetch('/api/auth/create/signup', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email, password})
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.statusCode !== 200) {
-                    showError(data.message);
-                } else {
-                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z linkiem aktywacyjnym.")
-                    console.log('Zarejestrowano:', data);
-                }
-            })
-            .catch(error => showError('Wystąpił błąd podczas rejestracji. Aktywowałeś konto?'));
-    });
-
-    function login() {
-        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        fetch('/api/auth/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({email, password})
-        })
-            .then(response => {
-                if (response.ok) {
-                    showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
-                    return response.json();
-                } else {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Wystąpił błąd podczas logowania.');
-                    });
-                }
-            }).then(data => {
-            if (data.statusCode !== 200) {
-                showError(data.body.message);
-            } else {
-                const accessToken = data.data.accessToken;
-                const refreshToken = data.data.refreshToken;
-
-                // Zapis tokenów w localStorage
-                localStorage.setItem('accessToken', accessToken);
-                localStorage.setItem('refreshToken', refreshToken);
-                window.location.href = '/dashboard.html';
-            }
-        })
-            .catch(error => showError('Wystąpił błąd podczas logowania.'));
-    }
-
-    document.getElementById('activationTokenBtn').addEventListener('click', function () {
-        activationLink();
-    });
-
-    function activationLink() {
-        showError("W przeciągu kilku minut otrzymasz wiadomość na podanego maila z liniem aktywacyjnym.")
-        const email = document.getElementById('email').value;
-        const API_URL_REFRESH_ACTIVATION_TOKEN = '/api/auth/create/refresh-confirmation-token?email=' + email;
-
-        if (email === null || email === "") {
-            showError("Podaj email.")
-        } else {
-            fetch(API_URL_REFRESH_ACTIVATION_TOKEN, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        return response.json().then(data => {
-                            throw new Error(data.message || 'Wystąpił błąd podczas próby uzyskania nowego linku aktywacyjnego.');
-                        });
-                    }
-                }).then(data => {
-                if (data.statusCode !== 204) {
-                    showError(data.body.message);
-                } else {
-                    showError('Email został wysłany!')
-
-                }
-            })
-                .catch(error => showError(''));
-        }
-    }
-
-    function showError(message) {
-        const errorMessageElement = document.getElementById('errorMessage');
-        errorMessageElement.textContent = message;
-    }
-
-</script>
+<script src="/js/index.js"></script>
+<script src="/js/login.js"></script>
 </body>
 </html>
