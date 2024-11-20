@@ -28,7 +28,6 @@ body {
 
 .image-section {
     flex: 1;
-    background-image: url('https://iseebugs.pl/wp-content/app-do-read/girl.webp');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
