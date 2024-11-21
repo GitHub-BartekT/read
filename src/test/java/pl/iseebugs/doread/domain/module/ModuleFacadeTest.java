@@ -24,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Log4j2
 @Transactional
 class ModuleFacadeTest extends BaseIT {
 
@@ -528,13 +527,11 @@ class ModuleFacadeTest extends BaseIT {
         Long moduleId = userModule.getId();
 
         int dataSizeBefore = moduleFacade.getAllModules().size();
-        log.info("database before deleting: {}", dataSizeBefore);
         // When
         moduleFacade.deleteModule(moduleId, userId);
 
         // Then
         int dataSizeAfter = moduleFacade.getAllModules().size();
-        log.info("database after deleting: {}", dataSizeAfter);
 
         assertAll(
                 () -> assertThat(dataSizeBefore).isEqualTo(dataSizeAfter + 1)

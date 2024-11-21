@@ -77,15 +77,12 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
         // then
         MvcResult registerActionResult = successRegisterRequest.andExpect(status().isOk()).andReturn();
         String registerActionResultJson = registerActionResult.getResponse().getContentAsString();
-        ApiResponse<LoginTokenDto> registerResultDto = objectMapper.readValue(
+        ApiResponse<LoginResponse> registerResultDto = objectMapper.readValue(
                 registerActionResultJson, new TypeReference<>() {});
 
-        String registrationToken = registerResultDto.getData().token();
-
-        final ApiResponse<LoginTokenDto> finalConfirmResultDto = registerResultDto;
+        String accessToken1 = registerResultDto.getData().getAccessToken();
         assertAll(
-                () -> assertThat(registrationToken).isNotBlank(),
-                () -> assertThat(finalConfirmResultDto.getData().expiresAt()).isNotNull()
+                () -> assertThat(accessToken1).isNotBlank()
         );
 
 
@@ -98,15 +95,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 .andExpect(status().isOk())
                 .andExpect(view().name("error"));
 
-    //Step 5: user made POST /api/auth/confirm with token="someToken" and system responses with status OK(200)
-        // given && when
-        log.info("Step 5. Confirm token successfully");
-        ResultActions confirmRegisterRequest = mockMvc.perform(get("/api/auth/confirm?token=" + registrationToken))
-                .andExpect(status().isOk())
-                .andExpect(view().name("registrationSuccess"));
-
-
-    //Step 6: user tried to get JWT by requesting POST /api/auth/signin with username="someTestUser", password="someTestPassword"
+    //Step 5: user tried to get JWT by requesting POST /api/auth/signin with username="someTestUser", password="someTestPassword"
     //and system returned OK(200) and accessToken=AAAA.BBBB.CCC and refreshToken=DDDD.EEEE.FFF
         // given && when
         log.info("Step 6. SignIn successfuly");
@@ -137,7 +126,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 () -> assertThat(StringUtils.countOccurrencesOf(accessToken, ".")).isEqualTo(2),
                 () -> assertThat(StringUtils.countOccurrencesOf(refreshToken, ".")).isEqualTo(2)
         );
-    //Step 7: User made POST /api/auth/refresh with “Authorization: AAAA.BBBB.CCC” (access token)
+    //Step 6: User made POST /api/auth/refresh with “Authorization: AAAA.BBBB.CCC” (access token)
     // and system returned UNAUTHORIZED(401)
         // given && when
         log.info("Step 7. Refresh access token with invalid token type.");
@@ -159,7 +148,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
         );
 
 
-    //Step 8: User made POST /api/auth/refresh with “Authorization: DDDD.EEEE.FFF (refresh token)
+    //Step 7: User made POST /api/auth/refresh with “Authorization: DDDD.EEEE.FFF (refresh token)
     // and system returned OK(200) and token=GGGG.HHHH.III and refreshToken=DDDD.EEEE.FFF
         // given && when
         log.info("Step 8. Refresh access token successfully");
@@ -188,7 +177,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
         );
 
 
-    //Step 9: User made POST /api/auth/updateUser with header “Authorization: GGGG.HHHH.III” and new data
+    //Step 8: User made POST /api/auth/updateUser with header “Authorization: GGGG.HHHH.III” and new data
     // and system returned OK(200)
         // given && when
         log.info("Step 9.");
@@ -219,7 +208,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 () -> assertThat(result.getLastName()).isEqualTo("Bar")
        );
 
-    //Step 10:    User made DELETE /api/auth/deleteUser “Authorization: AAAA.BBBB.CCC” (refresh token)
+    //Step 9:    User made DELETE /api/auth/deleteUser “Authorization: AAAA.BBBB.CCC” (refresh token)
     // and system returned UNAUTHORIZED(401)
         log.info("Step 10. Delete account with bad type token.");
         ResultActions badDeleteRegisterRequest = mockMvc.perform(delete("/api/auth/delete")
@@ -235,7 +224,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
         );
 
 
-    //Step 11: User made DELETE /api/auth/deleteUser with “Authorization: AAAA.BBBB.CCC”
+    //Step 10: User made DELETE /api/auth/deleteUser with “Authorization: AAAA.BBBB.CCC”
     //and system returned OK(204)
         log.info("Step 11.");
         ResultActions deleteRegisterRequest = mockMvc.perform(delete("/api/auth/delete")
@@ -255,7 +244,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 () -> assertThat(deleteResultDto.getMessage()).isEqualTo("Delete confirmation mail created successfully.")
        );
 
-    //Step 12: User made GET /api/auth/delete-confirm?token= with “Authorization: AAAA.BBBB.CCC”
+    //Step 11: User made GET /api/auth/delete-confirm?token= with “Authorization: AAAA.BBBB.CCC”
     //and system returned OK(204)
         log.info("Step 12.");
         ResultActions confirmationDeleteRegisterRequest = mockMvc.perform(get("/api/auth/delete/delete-confirm?token=" + deleteToken))
@@ -263,7 +252,7 @@ class UserRegistersAndDeletesAccountIT extends BaseIT {
                 .andExpect(view().name("accountDeletionSuccess"));
 
 
-        //Step 13: User tried to get JWT by requesting POST /auth/signin
+        //Step 12: User tried to get JWT by requesting POST /auth/signin
     //with username='someTestUser', password='somePassword' and system returned UNAUTHORIZED
         // given && when
         log.info("Step 13.");

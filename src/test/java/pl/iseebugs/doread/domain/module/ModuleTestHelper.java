@@ -12,7 +12,6 @@ import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
 import java.util.List;
 
-@Log4j2
 @Component
 @AllArgsConstructor
 class ModuleTestHelper {
@@ -42,7 +41,6 @@ class ModuleTestHelper {
         for (int i = 0; i < modulesQuantity; i++) {
             String moduleName = "testModule_" + (i + 1);
             moduleFacade.createModule(userId, moduleName);
-            log.info("Created module: {}, for user: {}", moduleName, userId);
         }
     }
 

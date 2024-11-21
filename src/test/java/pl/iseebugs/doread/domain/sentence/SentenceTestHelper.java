@@ -14,7 +14,6 @@ import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
 @Component
 @AllArgsConstructor
 class SentenceTestHelper {
@@ -45,7 +44,6 @@ class SentenceTestHelper {
         for (int i = 0; i < modulesQuantity; i++) {
             String sentenceText = "testSentence_" + (i + 1);
             sentenceFacade.create(userId, moduleId, sentenceText);
-            log.info("Created sentence: {}, for user: {}", sentenceText, userId);
         }
     }
 
