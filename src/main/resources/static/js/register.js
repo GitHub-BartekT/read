@@ -28,8 +28,7 @@ function register() {
             if (data.statusCode !== 200) {
                 showError(data.message);
             } else {
-                showError("Coś poszło nie tak.")
-                console.log('Zarejestrowano:', data);
+                login();
             }
         })
         .catch(error => showError('Wystąpił błąd podczas rejestracji.'));
