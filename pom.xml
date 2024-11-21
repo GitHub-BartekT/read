@@ -10,7 +10,7 @@
     </parent>
     <groupId>pl.iseebugs</groupId>
     <artifactId>read</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>do read</name>
     <description>Demo project for Spring Boot The do-read app helps children learn to read by playing short, focused
         reading sessions.
@@ -190,13 +190,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.flywaydb</groupId>
-                <artifactId>flyway-maven-plugin</artifactId>
-                <version>10.17.0</version>
-            </plugin>
-
             <!-- Plugin Surefire for unit tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
