@@ -24,6 +24,7 @@ public class AppUser{
     private String role;
     private Boolean locked;
     private Boolean enabled;
+    private boolean isConfirmed;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -11,6 +11,10 @@
     --dark-gray: #2c3b57;
 
     --dark-blue: #0056B3;
+
+    --light-green: #4CAF50;
+    --dark-green: #2E7D32;
+    --darker-green: #1B5E20;
 }
 
 
@@ -87,7 +91,7 @@ button:hover {
 }
 
 .error-message {
-    color: var(--accent-dark-red);
+    color: var(--darker-green);
     margin-top: 10px;
 }
 

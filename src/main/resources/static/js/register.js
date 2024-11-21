@@ -12,7 +12,7 @@ function register() {
     if (!checkForm()){
         return;
     }
-
+    showError("Właśnie tworzymy Ci kont! Za chwilę zostaniesz automatycznie zalogowany!")
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
