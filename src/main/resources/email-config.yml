@@ -4,16 +4,16 @@ email:
     email: "no-reply@iseebugs.pl"
   templates:
     activation:
-      subject: "do-read aktywacja konta"
+      subject: "do-read potwierdzenie maila"
       template: "authorization-email"
       welcome-text: "${name}, witaj w do-read!"
-      text1: "Proszę aktywuj swoje konto klikając w poniższy link:"
+      text1: "Proszę potwierdź swojego maila klikając w poniższy link:"
       text2: "Fajnie, że jesteś!"
     token-expired:
-      subject: "do-read nowy token rejestracyjny"
+      subject: "do-read potwierdzenie maila"
       template: "authorization-email"
       welcome-text: "${name}, twój nowy link!"
-      text1: "Aktywuj swoje konto klikając w nowowygenerowany link aktywacyjny:"
+      text1: "Potwierdź swojego maila klikając w nowowygenerowany link aktywacyjny:"
       text2:  "Pamiętaj masz tylko ${minutes} minut na skorzystanie z linku. Potem musisz go wygenerować na nowo."
     activation-successfully:
       subject: "Account activated successfully!"

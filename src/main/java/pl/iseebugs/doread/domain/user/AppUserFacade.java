@@ -1,14 +1,9 @@
 package pl.iseebugs.doread.domain.user;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
-import pl.iseebugs.doread.domain.module.ModuleFacade;
-import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
-import pl.iseebugs.doread.domain.sentence.SentenceFacade;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import pl.iseebugs.doread.domain.user.dto.AppUserWriteModel;
 
@@ -85,10 +80,10 @@ public class AppUserFacade {
         return argument != null && !argument.isBlank();
     }
 
-    public void enableAppUser(Long id) throws AppUserNotFoundException {
+    public void confirmAccount(Long id) throws AppUserNotFoundException {
         appUserRepository.findById(id).orElseThrow(AppUserNotFoundException::new);
 
-        appUserRepository.enableAppUser(id);
+        appUserRepository.confirmAccount(id);
     }
 
     public AppUserReadModel create(AppUserWriteModel appUser) throws AppUserNotFoundException {
@@ -99,6 +94,7 @@ public class AppUserFacade {
             throw new IllegalArgumentException("User already exists.");
         }
         AppUser toCreate = AppUserMapper.toAppUser(appUser);
+        toCreate.setConfirmed(false);
         AppUser created = appUserRepository.save(toCreate);
 
         return AppUserMapper.toAppUserReadModel(created);

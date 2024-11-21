@@ -8,7 +8,9 @@ import pl.iseebugs.doread.domain.account.AccountHelper;
 import pl.iseebugs.doread.domain.account.ApiResponseFactory;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
+import pl.iseebugs.doread.domain.account.lifecycle.LifecycleAccountFacade;
 import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginRequest;
+import pl.iseebugs.doread.domain.account.lifecycle.dto.LoginResponse;
 import pl.iseebugs.doread.domain.module.ModuleNotFoundException;
 import pl.iseebugs.doread.domain.modulesessioncoordinator.ModuleSessionCoordinatorFacade;
 import pl.iseebugs.doread.domain.email.EmailSender;
@@ -45,22 +47,24 @@ public class AccountCreateFacade {
     AccountHelper accountHelper;
     CreateAccountValidator createAccountValidator;
     ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade;
+    private final LifecycleAccountFacade lifecycleAccountFacade;
 
     AccountCreateFacade(SecurityFacade securityFacade,
                         AppUserFacade appUserFacade,
                         ConfirmationTokenService confirmationTokenService,
                         AccountHelper accountHelper,
                         CreateAccountValidator createAccountValidator,
-                        ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade) {
+                        ModuleSessionCoordinatorFacade moduleSessionCoordinatorFacade, final LifecycleAccountFacade lifecycleAccountFacade) {
         this.securityFacade = securityFacade;
         this.appUserFacade = appUserFacade;
         this.confirmationTokenService = confirmationTokenService;
         this.accountHelper = accountHelper;
         this.createAccountValidator = createAccountValidator;
         this.moduleSessionCoordinatorFacade = moduleSessionCoordinatorFacade;
+        this.lifecycleAccountFacade = lifecycleAccountFacade;
     }
 
-    public ApiResponse<LoginTokenDto>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, SentenceNotFoundException {
+    public ApiResponse<LoginResponse>  signUp(LoginRequest registrationRequest) throws EmailSender.EmailConflictException, InvalidEmailTypeException, AppUserNotFoundException, TokenNotFoundException, ModuleNotFoundException, SessionNotFoundException, SentenceNotFoundException, EmailNotFoundException {
         String email = registrationRequest.getEmail();
         String password = securityFacade.passwordEncode(registrationRequest.getPassword());
 
@@ -72,11 +76,7 @@ public class AccountCreateFacade {
         moduleSessionCoordinatorFacade.creatingPredefinedModule(createdUser.id());
 
         sendConfirmationEmail(email, token);
-
-        Date tokenExpiresAt = confirmationTokenService.calculateTokenExpiration(token);
-        LoginTokenDto loginTokenDto = new LoginTokenDto(token, tokenExpiresAt);
-
-        return ApiResponseFactory.createSuccessResponse("Wiadomość z linkiem została wysłana!", loginTokenDto);
+        return lifecycleAccountFacade.login(registrationRequest);
     }
 
     public ApiResponse<Void> confirmToken(final String token) throws TokenNotFoundException, RegistrationTokenConflictException, AppUserNotFoundException {
@@ -86,7 +86,7 @@ public class AccountCreateFacade {
         createAccountValidator.validateConfirmationToken(confirmationToken);
 
         confirmationTokenService.setConfirmedAt(token);
-        appUserFacade.enableAppUser(confirmationToken.getAppUserId());
+        appUserFacade.confirmAccount(confirmationToken.getAppUserId());
         return ApiResponseFactory.createResponseWithoutData(HttpStatus.OK.value(), "Account successfully confirmed");
     }
 
@@ -139,7 +139,7 @@ public class AccountCreateFacade {
                 .password(password)
                 .role(USER_ROLE)
                 .locked(false)
-                .enabled(false)
+                .enabled(true)
                 .build();
         return appUserFacade.create(newUser);
     }

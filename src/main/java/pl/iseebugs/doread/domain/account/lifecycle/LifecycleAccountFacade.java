@@ -32,7 +32,6 @@ public class LifecycleAccountFacade {
 
     private final AppUserFacade appUserFacade;
     private final SecurityFacade securityFacade;
-    private final LifecycleValidator lifecycleValidator;
     private final EmailFacade emailFacade;
     private final AccountHelper accountHelper;
 
@@ -42,7 +41,6 @@ public class LifecycleAccountFacade {
 
         AppUserReadModel user = appUserFacade.findByEmail(email);
         securityFacade.authenticateByAuthenticationManager(email, password);
-        lifecycleValidator.validConfirmationToken(user.id());
 
         return ApiResponseFactory.createSuccessResponse("Login success",buildLoginResponse(user));
     }

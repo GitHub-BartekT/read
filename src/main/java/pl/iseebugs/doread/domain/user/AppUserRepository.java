@@ -24,14 +24,8 @@ public interface AppUserRepository extends JpaRepository<AppUser,Long> {
     @Transactional
     @Modifying
     @Query("UPDATE AppUser a " +
-            "SET a.enabled = TRUE WHERE a.id = ?1")
-    void enableAppUser(Long id);
+            "SET a.isConfirmed = TRUE WHERE a.id = ?1")
+    void confirmAccount(Long id);
 
     AppUser save(AppUser entity);
-
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM AppUser a WHERE a.email = ?1")
-    void deleteByEmail(String email);
-
 }

@@ -34,5 +34,5 @@ class Session {
 
     @OneToMany(mappedBy = "session", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("ordinalPosition ASC")
-    private List<SessionModule> sessionModules = new ArrayList<>();;
+    private List<SessionModule> sessionModules = new ArrayList<>();
 }

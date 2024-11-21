@@ -45,6 +45,7 @@ class SecurityConfig {
                                 "/favicon.ico",
                                 "/home.html",
                                 "/about.html",
+                                "/register.html",
                                 "/dashboard.html",
                                 "/session.html",
                                 "/modules.html",

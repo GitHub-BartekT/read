@@ -1,0 +1,2 @@
+ALTER TABLE app_user
+ADD COLUMN is_confirmed BOOLEAN DEFAULT FALSE;
