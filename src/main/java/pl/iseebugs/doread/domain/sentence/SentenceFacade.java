@@ -196,7 +196,7 @@ public class SentenceFacade {
         Long ordinalNumber = 1L;
 
         for (Sentence sentence: existingSentences) {
-            if(sentence.getOrdinalNumber() != ordinalNumber) {
+            if(!sentence.getOrdinalNumber().equals(ordinalNumber)) {
                 sentence.setOrdinalNumber(ordinalNumber);
             }
             ordinalNumber++;
