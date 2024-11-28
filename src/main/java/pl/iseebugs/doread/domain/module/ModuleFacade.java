@@ -98,7 +98,7 @@ public class ModuleFacade {
                 .moduleName(moduleName)
                 .userId(user.id())
                 .sessionsPerDay(3)
-                .presentationsPerSession(5)
+                .presentationsPerSession(8)
                 .newSentencesPerDay(1)
                 .actualDay(1)
                 .nextSession(1)
