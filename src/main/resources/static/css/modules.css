@@ -211,6 +211,29 @@ input {
     padding: 10px;
 }
 
+.scroll-box {
+    overflow: auto;
+    border: 2px solid black;
+    font-family: monospace;
+}
+
+/* For browsers that support `scrollbar-*` properties */
+@supports (scrollbar-color: auto) {
+    .scroll-box {
+        scrollbar-color: #fd9f12 #ffdf73;
+    }
+}
+
+/* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
+@supports selector(::-webkit-scrollbar) {
+    .scroll-box::-webkit-scrollbar {
+        background: #fd9f12;
+    }
+    .scroll-box::-webkit-scrollbar-thumb {
+        background: yellow;
+    }
+}
+
 .add-sentence-table {
     margin-bottom: 20px;
 }

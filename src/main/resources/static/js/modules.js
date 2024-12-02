@@ -1,5 +1,18 @@
 getAllUserModules();
 
+function setModulesButton(module, newModuleBtn) {
+    const allButtons = document.querySelectorAll("#new-session-buttons .button");
+
+    allButtons.forEach(button => {
+        button.classList.remove("green-button");
+        button.classList.add("blue-button");
+    });
+
+    fetchModuleDetails(module.id);
+    newModuleBtn.classList.remove("blue-button");
+    newModuleBtn.classList.add("green-button");
+}
+
 function getAllUserModules() {
     console.log('Fetching all modules...');
     const token = localStorage.getItem('accessToken');
@@ -25,13 +38,13 @@ function getAllUserModules() {
                 data.data.forEach((module) => {
                     const newModuleBtn = document.createElement("button");
                     newModuleBtn.className = "button";
-                    newModuleBtn.classList.add("left-button", "blue-button")
+                    newModuleBtn.classList.add("blue-button")
                     newModuleBtn.textContent = module.moduleName;
                     newModuleBtn.id = 'module-' + module.id;
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
-                        fetchModuleDetails(module.id);
+                        setModulesButton(module, newModuleBtn);
                     });
 
                     tempParent.appendChild(newModuleBtn);
@@ -68,14 +81,17 @@ function createNewModule() {
                 data.data.forEach((module) => {
                     const newModuleBtn = document.createElement("button");
                     newModuleBtn.className = "button";
-                    newModuleBtn.classList.add("left-button", "blue-button")
+                    newModuleBtn.classList.add("blue-button")
                     newModuleBtn.textContent = module.moduleName;
                     newModuleBtn.id = 'module-' + module.id;
 
                     // Add event listener to select the module
                     newModuleBtn.addEventListener('click', () => {
+                        console.log('Clicked button:', newModuleBtn.id);
+                        console.log('Before:', newModuleBtn.className);
                         clearLabels();
-                        fetchModuleDetails(module.id);
+                        setModulesButton(module, newModuleBtn);
+                        console.log('After:', newModuleBtn.className);
                     });
 
                     tempParent.appendChild(newModuleBtn);
