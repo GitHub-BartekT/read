@@ -2,6 +2,7 @@ const token = localStorage.getItem('accessToken');
 const sessionId = new URLSearchParams(window.location.search).get('sessionId');
 let currentSentenceIndex = 0;
 let sentences = [];
+const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🐘'];
 
 // Fetch the sentences from the API
 fetch(`${API_URL_SESSION}/next-session?sessionId=${sessionId}`, {
@@ -33,7 +34,7 @@ function showNextSentence() {
         currentSentenceIndex++;
         console.log("current sentence indes: " + currentSentenceIndex);
     } else if (currentSentenceIndex === sentences.length) {
-        sentenceElement.innerHTML = `🐘`;
+        sentenceElement.innerHTML = getRandomEmoji();
         showFireworks();
         endSession(); // Call the function to end the session
         currentSentenceIndex++;
@@ -67,4 +68,9 @@ function showFireworks() {
     fireworks.forEach(firework => {
         firework.style.display = 'block';
     });
+}
+
+function getRandomEmoji() {
+    const randomIndex = Math.floor(Math.random() * emojis.length);
+    return emojis[randomIndex];
 }
