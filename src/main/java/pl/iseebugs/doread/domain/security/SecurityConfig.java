@@ -52,6 +52,7 @@ class SecurityConfig {
                                 "/account.html",
                                 "/api/auth/delete/delete-confirm",
                                 "/api/auth/password",
+                                "/api/auth/password/**",
                                 "/changelog.html",
                                 "/RODO.html").permitAll()
                         .requestMatchers(

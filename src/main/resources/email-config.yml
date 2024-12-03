@@ -25,8 +25,8 @@ email:
       subject: "do-read nowe hasło"
       template: "authorization-email"
       welcome-text: "${name}, witaj w do-read!"
-      text1: "Oto twoje nowe hasło:"
-      text2: "Do zobaczenia wkrótce"
+      text1: "Link do zmiany hasła:"
+      text2: ""
     delete-account:
       subject: "do-read usunięcie konta"
       template: "authorization-email"

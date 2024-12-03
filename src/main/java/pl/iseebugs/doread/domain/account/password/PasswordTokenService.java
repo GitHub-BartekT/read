@@ -54,6 +54,10 @@ class PasswordTokenService {
         return java.util.Date.from(confirmationToken.getExpiresAt().atZone(ZoneId.systemDefault()).toInstant());
     }
 
+    public Optional<PasswordToken> getTokenByUserId(Long id) {
+        return passwordTokenRepository.findTokenByEmail(id);
+    }
+
     public Optional<PasswordToken> getTokenByToken(String token) {
         return passwordTokenRepository.findByToken(token);
     }

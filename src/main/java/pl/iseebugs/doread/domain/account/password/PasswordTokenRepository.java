@@ -15,4 +15,6 @@ interface PasswordTokenRepository extends JpaRepository<PasswordToken, Long> {
 
     Optional<PasswordToken> findByToken (String token);
 
+    @Query("SELECT c FROM PasswordToken c WHERE c.appUserId = ?1")
+    Optional<PasswordToken> findTokenByEmail(Long id);
 }

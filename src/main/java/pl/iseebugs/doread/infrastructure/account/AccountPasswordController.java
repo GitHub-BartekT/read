@@ -29,7 +29,7 @@ class AccountPasswordController {
     PasswordFacade passwordFacade;
 
     @PostMapping("/{email}")
-    public ResponseEntity<ApiResponse<Void>> signUp(@PathVariable String email) throws InvalidEmailTypeException, TokenNotFoundException, EmailNotFoundException, RegistrationTokenConflictException {
+    public ResponseEntity<ApiResponse<Void>> getPasswordToken(@PathVariable String email) throws InvalidEmailTypeException, TokenNotFoundException, EmailNotFoundException, RegistrationTokenConflictException {
         passwordFacade.generateAndSendPasswordToken(email);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(HttpStatus.NO_CONTENT.value(), ""));
     }
