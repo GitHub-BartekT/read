@@ -40,6 +40,10 @@ public class AccountHelper {
         sendMailWithToken(EmailType.ACTIVATION, email, endpoint, token);
     }
 
+    public void sendMailWithPasswordToken(final String email, final String endpoint, final String token) throws InvalidEmailTypeException {
+        sendMailWithToken(EmailType.RESET, email, endpoint, token);
+    }
+
     public void sendMailWithDeleteToken(final String email, final String endpoint, final String token) throws InvalidEmailTypeException {
         sendMailWithToken(EmailType.DELETE, email, endpoint, token);
     }
@@ -67,5 +71,14 @@ public class AccountHelper {
     public AppUserReadModel getAppUserReadModelFromToken(final String accessToken) throws EmailNotFoundException {
         String userEmail = securityFacade.extractEmail(accessToken);
         return appUserFacade.findByEmail(userEmail);
+    }
+
+    public static AppUserDto mapUserToDto(AppUserReadModel user) {
+        return AppUserDto.builder()
+                .id(user.id())
+                .firstName(user.firstName())
+                .lastName(user.lastName())
+                .email(user.email())
+                .build();
     }
 }

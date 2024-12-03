@@ -1,6 +1,7 @@
 package pl.iseebugs.doread.domain.user;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
@@ -11,6 +12,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class AppUserFacade {
 
     private final AppUserRepository appUserRepository;
@@ -65,12 +67,17 @@ public class AppUserFacade {
         }
         if (validateStringArgument(appUser.getPassword())) {
             toUpdate.setPassword(appUser.getPassword());
+            log.info("set new password: {}", appUser.getPassword());
         }
         if (validateStringArgument(appUser.getRole())) {
             toUpdate.setRole(appUser.getRole());
         }
-        toUpdate.setEnabled(appUser.isEnabled());
-        toUpdate.setLocked(appUser.isLocked());
+        if(appUser.getLocked() != null){
+            toUpdate.setLocked(appUser.getLocked());
+        }
+        if(appUser.getEnabled() != null){
+            toUpdate.setEnabled(appUser.getEnabled());
+        }
 
         AppUser updated = appUserRepository.save(toUpdate);
         return AppUserMapper.toAppUserReadModel(updated);

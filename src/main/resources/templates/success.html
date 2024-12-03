@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error</title>
+    <title>Potwierdzenie emaila zakończone sukcesem</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,8 +53,9 @@
 <body>
 
 <div class="container">
-    <h1>Coś poszło nie tak ;(</h1>
-    <button><a href="/">Przejdź do strony głównej</a></button>
+    <h1 th:text="${header}"></h1>
+    <p th:text="${text}"></p>
+    <button><a href="/">Strona główna</a></button>
 </div>
 
 </body>

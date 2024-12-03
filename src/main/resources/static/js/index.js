@@ -4,12 +4,9 @@ function showError(message) {
 }
 
 function checkForm() {
-    const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showError('Nieprawidłowy format e-mail.');
+    if (!checkEmail()){
         return false;
     }
 
@@ -18,6 +15,17 @@ function checkForm() {
         return false;
     }
     showError('');
+    return true;
+}
+
+function checkEmail() {
+    const email = document.getElementById('email').value;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        showError('Nieprawidłowy format e-mail.');
+        return false;
+    }
     return true;
 }
 

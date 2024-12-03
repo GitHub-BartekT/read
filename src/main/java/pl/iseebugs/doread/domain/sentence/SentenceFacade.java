@@ -180,7 +180,6 @@ public class SentenceFacade {
         sentenceValidator.longValidator(ordinalNumber, "Invalid ordinalNumber");
 
         sentenceRepository.deleteByUserIdAndModuleIdAndOrdinalNumber(userId, moduleId, ordinalNumber);
-        log.info("Deleted sentence: userId: {}, moduleId: {}, ordinalNumber: {}", userId, moduleId, ordinalNumber);
         return rearrangeSetAfterDeletedOneSentence(userId, moduleId);
     }
 
@@ -217,10 +216,7 @@ public class SentenceFacade {
 
         existingSentences.stream()
                 .filter(sentence -> !newIds.contains(sentence.getId()))
-                .forEach(sentence ->{
-                    sentenceRepository.delete(sentence);
-                    log.info("Deleted sentence: userId: {}, moduleId: {}, sentenceId: {}", userId, moduleId, sentence.getId());
-                });
+                .forEach(sentenceRepository::delete);
 
         for (int i = 0; i < inserts.size(); i++) {
             SentenceWriteModel insert = inserts.get(i);

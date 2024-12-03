@@ -32,7 +32,6 @@ public class LifecycleAccountFacade {
 
     private final AppUserFacade appUserFacade;
     private final SecurityFacade securityFacade;
-    private final EmailFacade emailFacade;
     private final AccountHelper accountHelper;
 
     public ApiResponse<LoginResponse> login(LoginRequest loginRequest) throws TokenNotFoundException, EmailNotFoundException {
@@ -74,33 +73,7 @@ public class LifecycleAccountFacade {
         AppUserWriteModel toUpdate = buildUpdatedUserModel(appUserFromDataBase, firstName, lastName);
 
         AppUserReadModel ourUserResult = appUserFacade.updatePersonalData(toUpdate);
-        return ApiResponseFactory.createSuccessResponse("Account data update successfully.",mapUserToDto(ourUserResult));
-    }
-
-    public void updatePassword(String accessToken, String newPassword) throws InvalidEmailTypeException, AppUserNotFoundException, EmailNotFoundException {
-        AppUserReadModel appUserFromDB = accountHelper.getAppUserReadModelFromToken(accessToken);
-        updatePasswordAndNotify(newPassword, appUserFromDB);
-    }
-
-    public void resetPasswordAndNotify(String accessToken) throws InvalidEmailTypeException, AppUserNotFoundException, EmailNotFoundException {
-        updatePassword(accessToken, getUUID());
-    }
-
-    private void updatePasswordAndNotify(final String newPassword, final AppUserReadModel appUserFromDB) throws AppUserNotFoundException, EmailNotFoundException, InvalidEmailTypeException {
-        String encodePassword = securityFacade.passwordEncode(newPassword);
-
-        AppUserWriteModel toUpdate = AppUserWriteModel.builder()
-                .id(appUserFromDB.id())
-                .password(encodePassword)
-                .build();
-
-        AppUserReadModel updated = appUserFacade.update(toUpdate);
-        AppUserDto responseDTO = mapUserToDto(updated);
-
-        emailFacade.sendTemplateEmail(
-                EmailType.RESET,
-                responseDTO,
-                newPassword);
+        return ApiResponseFactory.createSuccessResponse("Account data update successfully.",AccountHelper.mapUserToDto(ourUserResult));
     }
 
     private LoginResponse createLoginResponse(LoginTokenDto accessToken, LoginTokenDto refreshToken) {
@@ -118,15 +91,6 @@ public class LifecycleAccountFacade {
                 .email(existingUser.email())
                 .firstName(firstName)
                 .lastName(lastName)
-                .build();
-    }
-
-    private AppUserDto mapUserToDto(AppUserReadModel user) {
-        return AppUserDto.builder()
-                .id(user.id())
-                .firstName(user.firstName())
-                .lastName(user.lastName())
-                .email(user.email())
                 .build();
     }
 }

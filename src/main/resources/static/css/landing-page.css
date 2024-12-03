@@ -107,4 +107,8 @@ button:hover {
     z-index: 100;    /* Aby stopka była zawsze na wierzchu */
 }
 
-
+#forgotten-password {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}

@@ -10,18 +10,36 @@
 <body>
 
 <div class="container">
-    <div class="column center-column">
+    <div class="column center-column settings-col-1">
         <h2 id="hello">Witaj!</h2>
         <h2>Co chcesz zrobić?</h2><br>
         <a href="modules.html">
             <button class="button blue-button change-buttons">Ustawienia modułów</button>
         </a>
-        <button id="logout-button" class="button yellow-button change-buttons">Wylogować się</button>
-        <button id="delete-account-btn" class="button red-button change-buttons">Usunąć konto</button>
+        <button id="logout-button" class="button yellow-button change-buttons">Wyloguj</button>
+        <button id="change-password" class="button yellow-button change-buttons" >Zmiana hasła</button>
+        <button id="delete-account-btn" class="button red-button change-buttons">Usuń konto</button>
         <a href="dashboard.html">
-            <button class="button grey-button change-buttons">Zabierz mnie stąd!</button>
+            <button class="button grey-button change-buttons">Menu główne</button>
         </a>
+        <div id="errorMessage" class="error-message"></div>
     </div>
+    <div id="settings-right-column" class="container settings-col-2">
+        <form id="changePassword">
+            <label for="newPassword1">Podaj nowe hasło</label>
+            <br>
+            <input type="password" id="newPassword1" name="password-1" placeholder="Wprowadź hasło" required disabled>
+            <br>
+
+            <label for="newPassword2">Powtórz nowe hasło</label>
+            <br>
+            <input type="password" id="newPassword2" name="password-2" placeholder="Powtórz hasło" required disabled>
+            <br>
+
+            <button type="button" id="acceptNewPassword" class="button grey-button" disabled>Zmień hasło</button>
+        </form>
+    </div>
+
 </div>
 
 <script src="/js/master.js"></script>

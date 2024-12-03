@@ -12,6 +12,6 @@ public class AppUserWriteModel {
     private String email;
     private String password;
     private String role;
-    private boolean locked;
-    private boolean enabled;
+    private Boolean locked;
+    private Boolean enabled;
 }

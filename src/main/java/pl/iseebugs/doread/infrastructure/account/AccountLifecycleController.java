@@ -47,28 +47,4 @@ class AccountLifecycleController {
         String accessToken = authHeader.substring(7);
         return ResponseEntity.ok(lifecycleAccountFacade.updateUserData(accessToken, appUserWriteModel));
     }
-
-    @PatchMapping("/users/forgotten-password")
-    ResponseEntity<ApiResponse<Void>> generateNewPassword(@RequestHeader("Authorization") String authHeader) throws Exception {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        String accessToken = authHeader.substring(7);
-        lifecycleAccountFacade.resetPasswordAndNotify(accessToken);
-        return ResponseEntity.ok(ApiResponseFactory
-                .createResponseWithoutData(HttpStatus.OK.value(), "Password reset successfully and notification sent"));
-
-    }
-
-    @PatchMapping("/users/password")
-    ResponseEntity<ApiResponse<Void>> generateNewPassword(@RequestHeader("Authorization") String authHeader, @RequestBody String newPassword) throws Exception {
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-        }
-        String accessToken = authHeader.substring(7);
-        lifecycleAccountFacade.updatePassword(accessToken, newPassword);
-
-        return ResponseEntity.ok(ApiResponseFactory
-                .createResponseWithoutData(HttpStatus.OK.value(), "Password updated successfully"));
-    }
 }

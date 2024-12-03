@@ -3,6 +3,7 @@
     justify-content: space-between;
     padding: 20px;
     gap: 20px;
+    text-align: center;
 }
 
 .left-column {
@@ -32,6 +33,24 @@
     padding-bottom: 50px;
 }
 
+form {
+    display: flex;
+    color: var(--dark-gray);
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+
+.settings-col-1{
+    float: left;
+    width: 30%;
+}
+
+.settings-col-2{
+    float: left;
+    width: 50%;
+    padding: 20px;
+}
 .right-column {
     flex: 1;
     max-width: 15%;

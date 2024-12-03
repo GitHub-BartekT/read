@@ -29,14 +29,14 @@ class SecurityConfig {
     FilterChainExceptionHandler filterChainExceptionHandler;
 
 
-    SecurityConfig(JWTAuthFilter jwtAuthFilter, AppUserFacade appUserFacade, FilterChainExceptionHandler filterChainExceptionHandler){
+    SecurityConfig(JWTAuthFilter jwtAuthFilter, AppUserFacade appUserFacade, FilterChainExceptionHandler filterChainExceptionHandler) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.appUserFacade = appUserFacade;
         this.filterChainExceptionHandler = filterChainExceptionHandler;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .addFilterBefore(filterChainExceptionHandler, LogoutFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
@@ -50,13 +50,15 @@ class SecurityConfig {
                                 "/session.html",
                                 "/modules.html",
                                 "/account.html",
-                                "/api/auth/delete/delete-confirm",
                                 "/changelog.html",
                                 "/RODO.html").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/index.html",
                                 "/api/auth",
+                                "/api/auth/delete/delete-confirm",
+                                "/api/auth/password",
+                                "/api/auth/password/**",
                                 "/api/auth/create",
                                 "/api/auth/create/**",
                                 "/api/auth/confirm",
@@ -79,7 +81,7 @@ class SecurityConfig {
                                 "/api/module",
                                 "/api/module/**",
                                 "/dashboard"
-                                )
+                        )
                         .hasAnyAuthority("USER")
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -90,7 +92,7 @@ class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
         daoAuthenticationProvider.setUserDetailsService(userDetailsService());
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -98,17 +100,17 @@ class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService userDetailsService() {
         return new AppUserInfoService(appUserFacade);
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
