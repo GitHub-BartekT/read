@@ -7,9 +7,11 @@ import pl.iseebugs.doread.domain.account.AccountHelper;
 import pl.iseebugs.doread.domain.account.EmailNotFoundException;
 import pl.iseebugs.doread.domain.account.TokenNotFoundException;
 import pl.iseebugs.doread.domain.account.create.RegistrationTokenConflictException;
+import pl.iseebugs.doread.domain.account.lifecycle.dto.AppUserDto;
+import pl.iseebugs.doread.domain.email.EmailFacade;
+import pl.iseebugs.doread.domain.email.EmailType;
 import pl.iseebugs.doread.domain.email.InvalidEmailTypeException;
 import pl.iseebugs.doread.domain.security.SecurityFacade;
-import pl.iseebugs.doread.domain.user.AppUser;
 import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
@@ -24,12 +26,12 @@ import java.util.Optional;
 public class PasswordFacade {
 
     private static final String SET_PASSWORD_ENDPOINT = "/api/auth/password?token=";
-    private static final int TOKEN_STATUS = 200;
 
     private final PasswordTokenService passwordTokenService;
     private final AccountHelper accountHelper;
     private final AppUserFacade appUserFacade;
     private final SecurityFacade securityFacade;
+    private final EmailFacade emailFacade;
 
     public void generateAndSendPasswordToken(String email) throws EmailNotFoundException, InvalidEmailTypeException, TokenNotFoundException, RegistrationTokenConflictException {
         AppUserReadModel user = appUserFacade.findByEmail(email);
@@ -48,7 +50,6 @@ public class PasswordFacade {
     public boolean createNewPassword(String token, String newPassword) throws AppUserNotFoundException, EmailNotFoundException {
         Optional<PasswordToken> existingPasswordToken = passwordTokenService.getTokenByToken(token);
         if (isTokenValid(token)) {
-            log.info("new password: {}", newPassword);
             String encodePassword = securityFacade.passwordEncode(newPassword);
             AppUserReadModel appUserFromDB = appUserFacade.findUserById(existingPasswordToken.orElseThrow().getAppUserId());
             AppUserWriteModel toUpdate = AppUserWriteModel.builder()
@@ -56,10 +57,31 @@ public class PasswordFacade {
                     .password(encodePassword)
                     .build();
             AppUserReadModel updated = appUserFacade.update(toUpdate);
-            log.info("created password: {}", updated.password());
             return true;
         }
         return false;
+    }
+
+    public void updatePassword(String accessToken, String newPassword) throws InvalidEmailTypeException, AppUserNotFoundException, EmailNotFoundException {
+        AppUserReadModel appUserFromDB = accountHelper.getAppUserReadModelFromToken(accessToken);
+        updatePasswordAndNotify(newPassword, appUserFromDB);
+    }
+
+    private void updatePasswordAndNotify(final String newPassword, final AppUserReadModel appUserFromDB) throws AppUserNotFoundException, EmailNotFoundException, InvalidEmailTypeException {
+        String encodePassword = securityFacade.passwordEncode(newPassword);
+
+        AppUserWriteModel toUpdate = AppUserWriteModel.builder()
+                .id(appUserFromDB.id())
+                .password(encodePassword)
+                .build();
+
+        AppUserReadModel updated = appUserFacade.update(toUpdate);
+        AppUserDto responseDTO = AccountHelper.mapUserToDto(updated);
+
+        emailFacade.sendTemplateEmail(
+                EmailType.RESET,
+                responseDTO,
+                newPassword);
     }
 
     private String refreshExistingPasswordToken(PasswordToken existingToken) {
@@ -78,5 +100,4 @@ public class PasswordFacade {
         Optional<PasswordToken> passwordToken = passwordTokenService.getTokenByToken(token);
         return passwordToken.isPresent() && passwordToken.get().getConfirmedAt() == null && passwordToken.get().getExpiresAt().isAfter(LocalDateTime.now());
     }
-
 }

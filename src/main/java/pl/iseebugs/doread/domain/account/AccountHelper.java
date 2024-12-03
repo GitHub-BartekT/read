@@ -72,4 +72,13 @@ public class AccountHelper {
         String userEmail = securityFacade.extractEmail(accessToken);
         return appUserFacade.findByEmail(userEmail);
     }
+
+    public static AppUserDto mapUserToDto(AppUserReadModel user) {
+        return AppUserDto.builder()
+                .id(user.id())
+                .firstName(user.firstName())
+                .lastName(user.lastName())
+                .email(user.email())
+                .build();
+    }
 }

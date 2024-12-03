@@ -224,7 +224,7 @@ class ModuleFacadeTest extends BaseIT {
         assertAll(
                 () -> assertThat(result.getModuleName()).isEqualTo("New module"),
                 () -> assertThat(result.getSessionsPerDay()).isEqualTo(3),
-                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(5),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(8),
                 () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(1),
                 () -> assertThat(result.getActualDay()).isEqualTo(1),
                 () -> assertThat(result.getNextSession()).isEqualTo(1),
@@ -251,7 +251,7 @@ class ModuleFacadeTest extends BaseIT {
         assertAll(
                 () -> assertThat(result.getModuleName()).isEqualTo(moduleName),
                 () -> assertThat(result.getSessionsPerDay()).isEqualTo(3),
-                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(5),
+                () -> assertThat(result.getPresentationsPerSession()).isEqualTo(8),
                 () -> assertThat(result.getNewSentencesPerDay()).isEqualTo(1),
                 () -> assertThat(result.getActualDay()).isEqualTo(1),
                 () -> assertThat(result.getNextSession()).isEqualTo(1),

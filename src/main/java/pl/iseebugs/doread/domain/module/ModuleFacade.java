@@ -1,8 +1,6 @@
 package pl.iseebugs.doread.domain.module;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.hibernate.mapping.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.iseebugs.doread.domain.module.dto.ModuleReadModel;
@@ -14,7 +12,6 @@ import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
 @AllArgsConstructor
 @Service
 public class ModuleFacade {
@@ -114,7 +111,6 @@ public class ModuleFacade {
      * @since 1.0
      */
     public ModuleReadModel updateModule(Long userId, ModuleWriteModel toUpdate) throws ModuleNotFoundException {
-        log.info("updateModule: User id:{}, module id: {}", userId, toUpdate.getId());
         userAndModuleIdsValidator(userId, toUpdate.getId());
 
         Module entity = moduleRepository.findByIdAndUserId(toUpdate.getId(), userId)
@@ -198,12 +194,6 @@ public class ModuleFacade {
      */
     @Transactional
     public void deleteModule(Long moduleId, Long userId) {
-        log.info(
-                "Class.method: {}{}(moduleId {}, userId {});",
-                this.getClass().getSimpleName(),
-                "deleteByIdAndUserId",
-                moduleId,
-                userId);
         moduleRepository.deleteByIdAndUserId(moduleId, userId);
     }
 

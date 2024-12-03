@@ -35,5 +35,3 @@ class AccountCreateController {
         return ResponseEntity.ok(accountCreateFacade.refreshConfirmationToken(email));
     }
 }
-
-

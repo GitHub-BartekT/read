@@ -23,15 +23,27 @@ import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/auth/password")
+@RequestMapping("/api/auth")
 class AccountPasswordController {
 
     PasswordFacade passwordFacade;
 
-    @PostMapping("/{email}")
+    @PostMapping("/password/{email}")
     public ResponseEntity<ApiResponse<Void>> getPasswordToken(@PathVariable String email) throws InvalidEmailTypeException, TokenNotFoundException, EmailNotFoundException, RegistrationTokenConflictException {
         passwordFacade.generateAndSendPasswordToken(email);
         return ResponseEntity.ok(ApiResponseFactory.createResponseWithoutData(HttpStatus.NO_CONTENT.value(), ""));
+    }
+
+    @PatchMapping("/users/password")
+    ResponseEntity<ApiResponse<Void>> generateNewPassword(@RequestHeader("Authorization") String authHeader, @RequestBody String newPassword) throws Exception {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+        String accessToken = authHeader.substring(7);
+        passwordFacade.updatePassword(accessToken, newPassword);
+
+        return ResponseEntity.ok(ApiResponseFactory
+                .createResponseWithoutData(HttpStatus.OK.value(), "Password updated successfully"));
     }
 }
 
