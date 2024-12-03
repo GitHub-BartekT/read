@@ -33,7 +33,8 @@ function showNextSentence() {
         currentSentenceIndex++;
         console.log("current sentence indes: " + currentSentenceIndex);
     } else if (currentSentenceIndex === sentences.length) {
-        sentenceElement.innerHTML = `😀<br><span>Koniec sesji!</span>`;
+        sentenceElement.innerHTML = `🐘`;
+        showFireworks();
         endSession(); // Call the function to end the session
         currentSentenceIndex++;
     } else {
@@ -59,4 +60,11 @@ function endSession() {
 
 function redirectToDashboard() {
     window.location.href = '/dashboard.html'; // Redirect to the dashboard
+}
+
+function showFireworks() {
+    const fireworks = document.querySelectorAll('.firework');
+    fireworks.forEach(firework => {
+        firework.style.display = 'block';
+    });
 }
