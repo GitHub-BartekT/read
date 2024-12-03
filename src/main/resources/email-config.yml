@@ -23,7 +23,7 @@ email:
       text2:
     reset-password:
       subject: "do-read nowe hasło"
-      template: "information-email"
+      template: "authorization-email"
       welcome-text: "${name}, witaj w do-read!"
       text1: "Oto twoje nowe hasło:"
       text2: "Do zobaczenia wkrótce"
