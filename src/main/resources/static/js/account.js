@@ -1,3 +1,5 @@
+const API_URL_PASSWORD = API_BASE_URL + '/auth/users/password';
+
 function logout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
@@ -19,14 +21,40 @@ function changePassword() {
     if (!checkPasswords()) {
         return;
     }
-
+    fetchNewPassword()
     setElementDisabled('newPassword1', true);
     setElementDisabled('newPassword2', true);
     setElementDisabled('acceptNewPassword', true);
     const button = document.getElementById("acceptNewPassword");
     button.classList.remove("green-button");
     button.classList.add("grey-button");
-    showError("");
+}
+
+function fetchNewPassword() {
+    const token = localStorage.getItem('accessToken');
+
+    const newPassword = document.getElementById('newPassword1').value;
+
+    fetch(`${API_URL_PASSWORD}`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        },
+        body: newPassword
+    }) .then(response => {
+        return response.json();
+    })
+        .then(apiResponse => {
+            if (apiResponse.statusCode === 200) {
+                showError("Hasło zostało zmienione!");
+            } else {
+                showError(apiResponse.message || "Wystąpił problem ze zmianą hasła.");
+            }
+        })
+        .catch(error => {
+            showError(error.message || 'Wystąpił błąd podczas zmiany hasła.');
+        });
 }
 
 function checkPasswords() {
