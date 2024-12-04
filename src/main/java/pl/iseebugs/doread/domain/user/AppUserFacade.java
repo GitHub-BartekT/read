@@ -67,7 +67,6 @@ public class AppUserFacade {
         }
         if (validateStringArgument(appUser.getPassword())) {
             toUpdate.setPassword(appUser.getPassword());
-            log.info("set new password: {}", appUser.getPassword());
         }
         if (validateStringArgument(appUser.getRole())) {
             toUpdate.setRole(appUser.getRole());
