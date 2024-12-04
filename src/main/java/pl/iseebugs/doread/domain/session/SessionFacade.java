@@ -17,10 +17,7 @@ import pl.iseebugs.doread.domain.user.AppUserFacade;
 import pl.iseebugs.doread.domain.user.AppUserNotFoundException;
 import pl.iseebugs.doread.domain.user.dto.AppUserReadModel;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -114,7 +111,11 @@ public class SessionFacade {
 
             List<String> sentenceStrings = sentences.stream()
                     .map(SentenceReadModel::getSentence)
-                    .toList();
+                    .collect(Collectors.toCollection(ArrayList::new));
+
+            if(userSession.getOrdinalType().equals(OrdinalType.RANDOM)){
+                shuffleSublist(sentenceStrings);
+            }
 
             session.put(module.getId(), sentenceStrings);
         }
@@ -126,6 +127,14 @@ public class SessionFacade {
         nextSessionSentences.forEach(System.out::println);
         sessionStatisticsFacade.createSessionStatistic(userId, sessionId, nextSessionSentences.size(), false, userSession.getOrdinalSchema(), modules.size());
         return nextSessionSentences;
+    }
+
+    public static void shuffleSublist(List<String> list) {
+        if (list.size() <= 1) {
+            return;
+        }
+        List<String> sublist = list.subList(0, list.size() - 1);
+        Collections.shuffle(sublist);
     }
 
     public void endSession(Long userId, Long sessionId) throws AppUserNotFoundException, SessionNotFoundException, ModuleNotFoundException {
