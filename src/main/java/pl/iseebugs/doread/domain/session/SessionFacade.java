@@ -44,7 +44,7 @@ public class SessionFacade {
             session.setName(sessionName);
         }
 
-        session.setOrdinalType(OrdinalType.QUEUE);
+        session.setOrdinalType(OrdinalType.RANDOM);
         session.setOrdinalSchema("1");
 
         Session result = sessionRepository.save(session);
