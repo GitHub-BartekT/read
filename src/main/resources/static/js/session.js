@@ -2,7 +2,7 @@ const token = localStorage.getItem('accessToken');
 const sessionId = new URLSearchParams(window.location.search).get('sessionId');
 let currentSentenceIndex = 0;
 let sentences = [];
-const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🐘'];
+const emojis = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🐘', '🦕', '🦖', '🐊', '🐈', '🐅', '🐆', '🐖', '🐓', '🦆', '🦈', '🐄', '🚀'];
 
 // Fetch the sentences from the API
 fetch(`${API_URL_SESSION}/next-session?sessionId=${sessionId}`, {
