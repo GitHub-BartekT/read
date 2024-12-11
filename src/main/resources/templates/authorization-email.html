@@ -3,23 +3,142 @@
   <head>
     <title>Activation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      table {
+        border-spacing: 0;
+        border-collapse: collapse;
+      }
+
+      .email-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        padding-top: 20px;
+        padding-bottom: 20px;
+      }
+
+      .header {
+        border-radius: 25px;
+        background-color: #007bff;
+        color: #ffffff;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .header a {
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 24px;
+        font-weight: bold;
+      }
+
+      .content {
+        padding: 20px 40px;
+      }
+
+      .content h1 {
+        font-size: 24px;
+        margin: 20px 0;
+        color: #333333;
+      }
+
+      .content p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555555;
+      }
+
+      .button-container {
+        text-align: center;
+        margin: 20px 0;
+      }
+
+      .button {
+        display: inline-block;
+        background-color: #faca0c;
+        color: black !important;
+        min-width: 150px;
+        margin-bottom: 10px;
+        padding: 10px;
+        text-align: center;
+        font-size: 20px;
+        border-radius: 12px;
+        border-width: 3px;
+        border-style: solid;
+        border-color: #000000;
+      }
+
+      .button:hover {
+        background-color: #fd9f12;
+
+      }
+
+      .footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #4CAF50;
+        font-size: 14px;
+        color: black;
+        border-radius: 25px;
+      }
+
+      .footer a {
+        color: white;
+        text-decoration: none;
+        margin: 0 8px;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
   <body>
-    <table>
-      <tr>
-        <td>
-          <p th:text="${welcomeText}"></p>
-          <p th:text="${text1}"></p>
-          <p>
-            <a  th:href="${link}" >Link</a>
-          </p>
-          <p th:text="${text2}"></p>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          Do zobaczenia!<br>
-        </td>
-      </tr>
-    </table>
+  <table width="100%" role="presentation" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+      <td align="center" style="padding: 20px 0;">
+        <table class="email-container">
+          <!-- Header -->
+          <tr>
+            <td class="header">
+              <a href="https://do-read.pl/" target="_blank">do-read.pl</a>
+            </td>
+          </tr>
+          <!-- Content -->
+          <tr>
+            <td class="content">
+              <h1 th:text="${welcomeText}"></h1>
+              <p th:text="${text1}"></p>
+              <br>
+              <div class="button-container">
+                <a class="button" th:href="${link}">Klik!</a>
+              </div>
+              <br>
+              <p>Jeśli nie prosiłeś o ten e-mail, nie ma powodu do obaw. Możesz go bezpiecznie zignorować.</p>
+              <br>
+              <p th:text="${text2}"></p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td class="footer">
+              <a href="https://do-read.pl/">Strona główna</a> |
+              <a href="https://www.linkedin.com/in/bartlomiejtucholski" target="_blank">LinkedIn</a> |
+              <a href="https://do-read.pl/RODO.html">Polityka prywatności</a>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
   </body>
 </html>
