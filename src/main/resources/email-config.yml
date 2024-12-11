@@ -15,12 +15,12 @@ email:
       welcome-text: "${name}, twój nowy link!"
       text1: "Twój link znajdziesz poniżej - kliknij przycisk aby potwierdzić swojego emaila."
       text2:  "Fajnie, że z nami jesteś!"
-    activation-successfully:
-      subject: "Account activated successfully!"
-      template: "success-email"
-      welcome-text:
-      text1:
-      text2:
+    new-password:
+      subject: "do-read.pl Ustawiono nowe hasło"
+      template: "information-email"
+      welcome-text: "${name}, twoje hasło zostało zmienione!"
+      text1: "Właśnie zostało zmienione Twoje hasło na portalu do-read.pl!"
+      text2: "Dobrze, że dbasz o swoje bezpieczeństwo!"
     reset-password:
       subject: "do-read.pl Nowe hasło"
       template: "authorization-email"
