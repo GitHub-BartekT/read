@@ -115,19 +115,19 @@ form {
     padding: 20px;
     min-height: 300px;
     max-height: 6800px;
-    margin-bottom: 20px; /* Space between words list and the next element */
+    margin-bottom: 20px;
 }
 
 .scrollable-words ol {
-    padding: 20px;  /* Remove default list padding */
+    padding: 20px;
     overflow-y: auto;
     max-height:320px;
-    list-style-position: inside; /* Ensure list items are inside the container */
+    list-style-position: inside;
 }
 
 .scrollable-words li {
     font-size: 20px;
-    margin-bottom: 15px; /* Add space between each list item */
+    margin-bottom: 15px;
 }
 
 h2 {

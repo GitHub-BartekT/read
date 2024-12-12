@@ -49,44 +49,48 @@ h1 {
     display: block;
     width: 100%;
     padding: 30px 20px;
-    margin: 10px 0;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 24px;
+    margin: 10px;
+    background-color: #40d17e;
+    color: black;
+    font-size: 30px;
     cursor: pointer;
     text-align: center;
-    transition: background-color 0.3s ease;
+    text-decoration: none;
+    transition: background-color 0.1s ease;
+    border-radius: 25px;
+    border-width: 3px;
+    border-style: solid;
+    border-color: #000000;
+
 }
 
 .button:hover {
-    background-color: #45a049;
+    background-color: #2ca961;
 }
 
 .yellow-button {
     background-color: #ffcc00;
-    color: #1a237e;
 }
 
 .yellow-button:hover {
     background-color: #e6b800;
 }
 
-.blue-button {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 15px;
-    background-color: #007bff;
+a {
+    text-decoration: none;
     color: white;
-    border: none;
-    border-radius: 25px;
+}
+
+.blue-button {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #73bef5;
     font-size: 20px;
-    cursor: pointer;
+    border-radius: 12px;
 }
 
 .blue-button:hover {
-    background-color: #0056b3;
+    background-color: #53a9ec;
 }
 
 .right-column .blue-button {
