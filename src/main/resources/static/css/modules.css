@@ -12,25 +12,19 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border-right: 3px solid rgb(128, 128, 128);
     padding-right: 20px;
     margin-right: 20px;
 }
 
-.vertical-separator {
-    width: 3px;
-    background-color: rgb(128, 128, 128);
-    margin: 0 20px;
-}
-/* Center column */
-
 .center-column {
-    flex: 2; /* This makes it wider */
+    flex: 2;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     padding-bottom: 50px;
+    text-align: left;
+    margin-left: 0;
 }
 
 form {
@@ -40,17 +34,30 @@ form {
     margin-bottom: 20px;
 }
 
-
-.settings-col-1{
-    float: left;
-    width: 30%;
+.form {
+    margin-top: 10px;
+    padding: 10px;
 }
 
-.settings-col-2{
-    float: left;
-    width: 50%;
-    padding: 20px;
+.form label {
+    display: block; /* Ustawia każdy label w osobnej linii */
+    margin-bottom: 10px; /* Odstęp poniżej label */
 }
+
+.form input {
+    display: block; /* Ustawia każdy input w osobnej linii */
+    margin-bottom: 15px; /* Odstęp poniżej input */
+}
+
+h2 {
+    text-align: left;
+    margin-left: 0;
+}
+
+.link-button {
+    cursor: pointer;
+}
+
 .right-column {
     flex: 1;
     max-width: 15%;
@@ -61,7 +68,6 @@ form {
     padding-left: 20px;
     margin-left: 20px;
     border-left: 3px solid rgb(128, 128, 128);
-
 }
 
 .full-width-link {
@@ -115,30 +121,38 @@ form {
     padding: 20px;
     min-height: 300px;
     max-height: 6800px;
-    margin-bottom: 20px; /* Space between words list and the next element */
+    margin-bottom: 20px;
 }
 
 .scrollable-words ol {
-    padding: 20px;  /* Remove default list padding */
+    padding: 20px;
     overflow-y: auto;
     max-height:320px;
-    list-style-position: inside; /* Ensure list items are inside the container */
+    list-style-position: inside;
 }
 
 .scrollable-words li {
     font-size: 20px;
-    margin-bottom: 15px; /* Add space between each list item */
+    margin-bottom: 15px;
 }
 
 h2 {
     font-size: 30px;
     color: #333;
-    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: red;
+    font-size: 25px;
+    margin: 10px 0;
+    text-align: center;
 }
 
 .button {
     width: 100%;
-    margin-bottom: 10px;
+    margin-top: 10px;
     padding: 10px;
     text-align: center;
     font-size: 20px;
@@ -225,8 +239,13 @@ input:disabled {
     cursor: not-allowed;
 }
 
+#changePassword {
+    font-size: 20px;
+    font-family: Arial, sans-serif;
+}
+
 input {
-    font-size: 17px;
+    font-size: 20px;
     padding: 10px;
 }
 
@@ -236,14 +255,12 @@ input {
     font-family: monospace;
 }
 
-/* For browsers that support `scrollbar-*` properties */
 @supports (scrollbar-color: auto) {
     .scroll-box {
         scrollbar-color: #fd9f12 #ffdf73;
     }
 }
 
-/* Otherwise, use `::-webkit-scrollbar-*` pseudo-elements */
 @supports selector(::-webkit-scrollbar) {
     .scroll-box::-webkit-scrollbar {
         background: #fd9f12;
@@ -265,4 +282,11 @@ input {
 .add-sentence-table select {
     font-size: 17px;
     padding: 1px;
+}
+
+.video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }

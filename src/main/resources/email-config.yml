@@ -1,36 +1,36 @@
 email:
   sender:
-    name: "ISeeBugs"
+    name: "do-read.pl"
     email: "no-reply@iseebugs.pl"
   templates:
     activation:
-      subject: "do-read potwierdzenie maila"
+      subject: "do-read.pl Weryfikacja emaila"
       template: "authorization-email"
-      welcome-text: "${name}, witaj w do-read!"
-      text1: "Proszę potwierdź swojego maila klikając w poniższy link:"
-      text2: "Fajnie, że jesteś!"
+      welcome-text: "${name}, witaj w do-read.pl!"
+      text1: "Kliknij poniższy przycisk aby potwierdzić swojego emaila."
+      text2: "Fajnie, że z nami jesteś!"
     token-expired:
-      subject: "do-read potwierdzenie maila"
+      subject: "do-read.pl Nowy token aktywacyjny"
       template: "authorization-email"
       welcome-text: "${name}, twój nowy link!"
-      text1: "Potwierdź swojego maila klikając w nowowygenerowany link aktywacyjny:"
-      text2:  "Pamiętaj masz tylko ${minutes} minut na skorzystanie z linku. Potem musisz go wygenerować na nowo."
-    activation-successfully:
-      subject: "Account activated successfully!"
-      template: "success-email"
-      welcome-text:
-      text1:
-      text2:
+      text1: "Twój link znajdziesz poniżej - kliknij przycisk aby potwierdzić swojego emaila."
+      text2:  "Fajnie, że z nami jesteś!"
+    new-password:
+      subject: "do-read.pl Ustawiono nowe hasło"
+      template: "information-email"
+      welcome-text: "${name}, twoje hasło zostało zmienione!"
+      text1: "Właśnie zostało zmienione Twoje hasło na portalu do-read.pl!"
+      text2: "Dobrze, że dbasz o swoje bezpieczeństwo!"
     reset-password:
-      subject: "do-read nowe hasło"
+      subject: "do-read.pl Nowe hasło"
       template: "authorization-email"
       welcome-text: "${name}, witaj w do-read!"
-      text1: "Link do zmiany hasła:"
-      text2: ""
+      text1: "Kliknij poniższy przycisk aby wygenerować nowe hasło:"
+      text2: "Fajnie, że z nami jesteś!"
     delete-account:
-      subject: "do-read usunięcie konta"
+      subject: "do-read.pl Usunięcie konta"
       template: "authorization-email"
       welcome-text: "${name}, do zobaczenia!"
-      text1: "Proszę potwierdź decyzję o usunięciu konta klikając w poniższy link:"
+      text1: "Proszę potwierdź decyzję o usunięciu konta klikając w poniższy przycisk:"
       text2: "Dobrze, że z nami byłeś!"
 

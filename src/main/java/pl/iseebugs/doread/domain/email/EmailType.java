@@ -3,7 +3,7 @@ package pl.iseebugs.doread.domain.email;
 public enum EmailType {
     ACTIVATION("activation"),
     EXPIRED("token-expired"),
-    SUCCESS("activation-successfully"),
+    NEW_PASSWORD("new-password"),
     RESET("reset-password"),
     DELETE("delete-account");
 

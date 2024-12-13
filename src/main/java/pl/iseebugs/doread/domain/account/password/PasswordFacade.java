@@ -79,7 +79,7 @@ public class PasswordFacade {
         AppUserDto responseDTO = AccountHelper.mapUserToDto(updated);
 
         emailFacade.sendTemplateEmail(
-                EmailType.RESET,
+                EmailType.NEW_PASSWORD,
                 responseDTO,
                 newPassword);
     }
