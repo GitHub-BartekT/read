@@ -10,39 +10,37 @@
 <body>
 
 <div class="container">
-    <div class="column center-column settings-col-1">
+    <div class="column left-column">
         <h2 id="hello">Ustawienia:</h2>
-     <!--   <h2>Ustawienia:</h2><br>-->
-        <a href="modules.html">
-            <button class="button blue-button change-buttons">Ustawienia modułów</button>
-        </a>
-        <h2>Konto:</h2><br>
-        <button id="logout-button" class="button yellow-button change-buttons">Wyloguj</button>
-        <button id="change-password" class="button yellow-button change-buttons" >Zmiana hasła</button>
-        <button id="delete-account-btn" class="button red-button change-buttons">Usuń konto</button>
-        <h2>Nawigacja:</h2><br>
-        <a href="dashboard.html">
-            <button class="button grey-button change-buttons">Menu główne</button>
-        </a>
-        <br>
-        <div id="errorMessage" class="error-message"></div>
+        <div class="module-list">
+            <a href="modules.html">
+                <button class="button blue-button">Ustawienia modułów</button>
+            </a>
+            <br>
+            <h2>Konto:</h2>
+            <button id="logout-button" class="button yellow-button">Wyloguj</button>
+            <button id="change-password" class="button yellow-button">Zmiana hasła</button>
+            <button id="delete-account-btn" class="button red-button">Usuń konto</button>
+            <br>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
     </div>
-    <div id="settings-right-column" class="container settings-col-2">
-        <form id="changePassword">
+    <div class="column center-column">
+        <form id="changePassword" class="form">
             <label for="newPassword1">Podaj nowe hasło</label>
-            <br>
             <input type="password" id="newPassword1" name="password-1" placeholder="Wprowadź hasło" required disabled>
-            <br>
-
             <label for="newPassword2">Powtórz nowe hasło</label>
-            <br>
             <input type="password" id="newPassword2" name="password-2" placeholder="Powtórz hasło" required disabled>
             <br>
 
             <button type="button" id="acceptNewPassword" class="button grey-button" disabled>Zmień hasło</button>
         </form>
     </div>
-
+    <div class="column right-column">
+        <a href="dashboard.html" class="full-width-link">
+            <button class="button green-button">Menu główne</button>
+        </a>
+    </div>
 </div>
 
 <script src="/js/master.js"></script>
